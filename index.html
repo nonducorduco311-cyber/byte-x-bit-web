@@ -238,6 +238,10 @@
   .tools{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
   .tool{border:1px solid var(--line);border-radius:12px;padding:18px 20px;background:var(--panel);transition:all .25s}
   .tool:hover{border-color:var(--line-2);transform:translateY(-2px)}
+  a.tool{display:block;color:inherit;text-decoration:none;position:relative}
+  a.tool:hover{border-color:var(--blue);box-shadow:0 14px 34px -20px rgba(59,158,255,.55)}
+  a.tool .live{color:var(--blue);font-family:var(--mono);font-size:12px;font-weight:700;margin-top:8px;display:inline-block;opacity:.9}
+  a.tool:hover .live{opacity:1}
   .tool .ttop{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
   .tool b{font-size:15px;font-weight:700}
   .tool p{color:var(--ink-dim);font-size:13.5px;line-height:1.45}
@@ -417,7 +421,7 @@
 
     <div class="grouplbl reveal" id="smb-free"><span>FREE TOOLS</span><span class="ln"></span></div>
     <div class="tools">
-      <div class="tool reveal"><div class="ttop"><b>Email Security Checker</b><span class="tag t-free">Free</span></div><p>Check SPF, DKIM, and DMARC — with plain-English fixes.</p></div>
+      <a class="tool reveal" href="/email-checker.html"><div class="ttop"><b>Email Security Checker</b><span class="tag t-free">Free</span></div><p>Check SPF, DKIM, and DMARC — with plain-English fixes.</p><span class="live">Open the tool →</span></a>
       <div class="tool reveal"><div class="ttop"><b>Posture Self-Check</b><span class="tag t-free">Free</span></div><p>Answer a few questions, get a score and a prioritized to-do list.</p></div>
       <div class="tool reveal"><div class="ttop"><b>IR Plan Generator</b><span class="tag t-free">Free</span></div><p>Build a tailored incident response plan in minutes.</p></div>
       <div class="tool reveal"><div class="ttop"><b>Breach-Exposure Checker</b><span class="tag t-free">Free</span></div><p>See whether your accounts appear in known breaches.</p></div>
@@ -488,7 +492,7 @@
 
     <div class="grouplbl reveal"><span>EVERYDAY SECURITY</span><span class="ln"></span></div>
     <div class="tools">
-      <div class="tool reveal"><div class="ttop"><b>Email Security Checker</b><span class="tag t-free">Free</span></div><p>Check SPF, DKIM, and DMARC — with plain-English fixes.</p></div>
+      <a class="tool reveal" href="/email-checker.html"><div class="ttop"><b>Email Security Checker</b><span class="tag t-free">Free</span></div><p>Check SPF, DKIM, and DMARC — with plain-English fixes.</p><span class="live">Open the tool →</span></a>
       <div class="tool reveal"><div class="ttop"><b>Posture Self-Check</b><span class="tag t-free">Free</span></div><p>Answer a few questions, get a score and a prioritized to-do list.</p></div>
       <div class="tool reveal"><div class="ttop"><b>IR Plan Generator</b><span class="tag t-free">Free</span></div><p>Build a tailored incident response plan in minutes.</p></div>
       <div class="tool reveal"><div class="ttop"><b>Breach-Exposure Checker</b><span class="tag t-free">Free</span></div><p>See whether your accounts appear in known breaches.</p></div>
