@@ -1,0 +1,29 @@
+# --- secrets: never commit ---
+*.env
+.env*
+*secret*
+*.key
+*.pem
+*.p12
+*.pfx
+*_key.txt
+*api*key*
+PILA_Master_API_Key.txt
+credentials*
+*.credentials
+id_rsa*
+id_ed25519*
+
+# --- backups / scratch ---
+*.bak
+*.bak-*
+*.orig
+*.tmp
+
+# --- OS / editor junk ---
+.DS_Store
+Thumbs.db
+*~
+.vscode/
+.idea/
+node_modules/

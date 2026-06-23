@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Email Security Checker — ByTE X Bit Technologies LLC</title>
+<meta name="description" content="Free tool: check whether your domain is protected against email spoofing — SPF, DKIM, and DMARC, in plain English, with the exact fix for anything missing. Runs entirely in your browser.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" href="/favicon.ico">
+<style>
+  :root{
+    --bg:#0a0e14;--bg-2:#0f1520;--panel:#121a26;--panel-2:#16202e;
+    --line:#1f2b3a;--line-2:#2a3a4f;
+    --ink:#e8eef5;--ink-dim:#9fb0c3;--ink-faint:#6b7d92;
+    --blue:#3b9eff;--blue-2:#1f6fd6;--purple:#a06bff;
+    --green:#34d399;--amber:#f6c453;--red:#ff6b6b;
+    --display:'Syne',sans-serif;--mono:'Space Mono',monospace;--maxw:880px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--display);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  ::selection{background:var(--blue);color:#02060c}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(900px 500px at 80% -10%,rgba(59,158,255,.10),transparent 60%),radial-gradient(700px 500px at -10% 20%,rgba(160,107,255,.08),transparent 60%)}
+  .grid-bg{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+    background-image:linear-gradient(rgba(31,43,58,.35) 1px,transparent 1px),linear-gradient(90deg,rgba(31,43,58,.35) 1px,transparent 1px);
+    background-size:54px 54px;mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,#000 30%,transparent 75%)}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;position:relative;z-index:2}
+
+  header.nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(12px);background:rgba(10,14,20,.72);border-bottom:1px solid var(--line)}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px;max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:-.02em;font-size:18px}
+  .brand img{height:32px;width:auto;filter:drop-shadow(0 0 14px rgba(59,158,255,.22))}
+  .brand .btxt{display:flex;flex-direction:column;line-height:1}
+  .brand small{font-family:var(--mono);font-size:9px;color:var(--ink-faint);letter-spacing:.18em;margin-top:2px;font-weight:400}
+  .back{font-size:13.5px;color:var(--ink-dim);font-family:var(--mono);transition:color .2s}
+  .back:hover{color:var(--blue)}
+
+  main{padding:54px 0 70px;position:relative}
+  .eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;color:var(--blue);border:1px solid var(--line-2);border-radius:100px;padding:6px 14px;margin-bottom:22px;background:rgba(59,158,255,.05);text-transform:uppercase}
+  h1{font-size:clamp(32px,5vw,52px);font-weight:800;letter-spacing:-.03em;line-height:1.04}
+  h1 .grad{background:linear-gradient(120deg,var(--blue),var(--purple));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .lead{color:var(--ink-dim);font-size:clamp(15px,2vw,18px);max-width:60ch;margin:18px 0 0}
+
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:26px;margin-top:34px}
+  .field{display:flex;flex-direction:column;gap:7px;margin-bottom:16px}
+  .field label{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint)}
+  .field input{background:var(--bg-2);border:1px solid var(--line-2);border-radius:10px;color:var(--ink);font-family:var(--mono);font-size:15px;padding:13px 15px;outline:none;transition:border-color .2s}
+  .field input:focus{border-color:var(--blue)}
+  .field .hint{font-size:12.5px;color:var(--ink-faint)}
+  .row{display:grid;grid-template-columns:1.6fr 1fr;gap:16px}
+  @media(max-width:640px){.row{grid-template-columns:1fr}}
+  .btn{display:inline-flex;align-items:center;gap:9px;font-family:var(--display);font-weight:700;font-size:15px;padding:14px 26px;border-radius:11px;cursor:pointer;border:1px solid transparent;background:linear-gradient(135deg,var(--blue),var(--blue-2));color:#02060c;box-shadow:0 8px 24px rgba(59,158,255,.25);transition:all .2s}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(59,158,255,.38)}
+  .btn:disabled{opacity:.55;cursor:wait;transform:none}
+  .privacy{font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);margin-top:16px;line-height:1.5}
+  .privacy b{color:var(--ink-dim)}
+  .err{color:var(--red);font-size:14px;margin-top:14px;min-height:18px;font-family:var(--mono)}
+
+  #summary{font-family:var(--mono);font-size:12.5px;color:var(--ink-faint);margin:34px 0 14px;display:none;letter-spacing:.03em}
+  .results{display:none;flex-direction:column;gap:16px}
+  .rcard{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px;position:relative;overflow:hidden;border-left-width:3px}
+  .rcard.pass{border-left-color:var(--green)} .rcard.warn{border-left-color:var(--amber)} .rcard.fail{border-left-color:var(--red)}
+  .rtop{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:12px}
+  .rtop h3{font-size:20px;font-weight:800}
+  .rtop .sub{font-family:var(--mono);font-size:11px;color:var(--ink-faint);letter-spacing:.08em}
+  .badge{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.1em;padding:5px 12px;border-radius:100px;white-space:nowrap}
+  .pass .badge{background:rgba(52,211,153,.16);color:var(--green)}
+  .warn .badge{background:rgba(246,196,83,.16);color:var(--amber)}
+  .fail .badge{background:rgba(255,107,107,.16);color:var(--red)}
+  .rec{font-family:var(--mono);font-size:12.5px;color:var(--ink-dim);background:var(--bg-2);border:1px solid var(--line);border-radius:9px;padding:11px 13px;margin-bottom:13px;word-break:break-all;line-height:1.5}
+  .rec .muted{color:var(--ink-faint)}
+  .explain{font-size:14.5px;color:var(--ink-dim);line-height:1.6}
+  .fix{font-size:14px;color:var(--ink);background:rgba(59,158,255,.07);border:1px solid var(--line-2);border-radius:9px;padding:12px 14px;margin-top:13px;line-height:1.6}
+  .fix code,.explain code{font-family:var(--mono);font-size:12.5px;background:var(--bg-2);border:1px solid var(--line);border-radius:5px;padding:1px 6px;color:var(--blue);word-break:break-all}
+
+  .explainer{margin-top:40px;border-top:1px solid var(--line);padding-top:28px}
+  .explainer h4{font-family:var(--mono);font-size:12px;letter-spacing:.12em;color:var(--ink-faint);text-transform:uppercase;margin-bottom:14px}
+  .explainer dl{display:grid;gap:12px}
+  .explainer dt{font-weight:700;font-size:15px;color:var(--ink)}
+  .explainer dd{font-size:14px;color:var(--ink-dim);margin-top:2px}
+
+  footer{border-top:1px solid var(--line);padding:30px 0;position:relative;z-index:2}
+  .foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:12px;color:var(--ink-faint)}
+  .foot a:hover{color:var(--blue)}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/">
+      <img src="/bxb-logo.png" alt="ByTE X Bit Technologies LLC">
+      <span class="btxt"><b>ByTE&nbsp;X&nbsp;Bit</b><small>TECHNOLOGIES&nbsp;LLC</small></span>
+    </a>
+    <a class="back" href="/">← Back to ByTE X Bit</a>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="eyebrow">● Free tool · Email security</div>
+    <h1>Email Security <span class="grad">Checker</span></h1>
+    <p class="lead">Is your domain protected against spoofing? This checks your <b>SPF</b>, <b>DKIM</b>, and <b>DMARC</b> records and explains, in plain English, what's set up and what to fix. No account, nothing installed — it runs entirely in your browser.</p>
+
+    <div class="panel">
+      <div class="row">
+        <div class="field">
+          <label for="domain">Your domain</label>
+          <input id="domain" type="text" placeholder="example.com" autocomplete="off" spellcheck="false">
+          <span class="hint">Just the domain — e.g. acme.com (no https://, no @).</span>
+        </div>
+        <div class="field">
+          <label for="selector">DKIM selector</label>
+          <input id="selector" type="text" placeholder="google" autocomplete="off" spellcheck="false" list="selectors" value="google">
+          <datalist id="selectors">
+            <option value="google"><option value="selector1"><option value="selector2">
+            <option value="k1"><option value="s1"><option value="s2">
+            <option value="default"><option value="mail"><option value="dkim"><option value="smtp">
+          </datalist>
+          <span class="hint">DKIM can't be auto-found — pick or type your selector.</span>
+        </div>
+      </div>
+      <button class="btn" id="run">Check my domain</button>
+      <div class="err" id="err"></div>
+      <p class="privacy">🔒 <b>Private by design.</b> Your domain is sent straight from your browser to a public DNS resolver (Cloudflare 1.1.1.1, with Google 8.8.8.8 as backup). ByTE&nbsp;X&nbsp;Bit never sees what you check — there's no server in the middle.</p>
+    </div>
+
+    <div id="summary"></div>
+    <div class="results" id="results">
+      <div class="rcard" id="card-spf">
+        <div class="rtop"><div><h3>SPF</h3><div class="sub">Who's allowed to send</div></div><span class="badge">—</span></div>
+        <div class="rec"></div><div class="explain"></div><div class="fix"></div>
+      </div>
+      <div class="rcard" id="card-dkim">
+        <div class="rtop"><div><h3>DKIM</h3><div class="sub">Cryptographic signature</div></div><span class="badge">—</span></div>
+        <div class="rec"></div><div class="explain"></div><div class="fix"></div>
+      </div>
+      <div class="rcard" id="card-dmarc">
+        <div class="rtop"><div><h3>DMARC</h3><div class="sub">What to do with failures</div></div><span class="badge">—</span></div>
+        <div class="rec"></div><div class="explain"></div><div class="fix"></div>
+      </div>
+    </div>
+
+    <div class="explainer">
+      <h4>What these three do</h4>
+      <dl>
+        <dt>SPF</dt><dd>Lists which mail servers are allowed to send email for your domain. Stops outsiders from sending as you.</dd>
+        <dt>DKIM</dt><dd>Adds a cryptographic signature to your outgoing mail so receivers can confirm it wasn't forged or altered.</dd>
+        <dt>DMARC</dt><dd>Ties SPF and DKIM together and tells receiving servers what to do with mail that fails — and sends you reports.</dd>
+      </dl>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span>© 2026 ByTE X Bit Technologies LLC · software &amp; services, no hardware</span>
+    <a href="/">byte-x-bit.com</a>
+  </div>
+</footer>
+
+<script>
+  var $ = function(s){return document.querySelector(s);};
+
+  function cleanDomain(input){
+    var d=(input||'').trim().toLowerCase();
+    d=d.replace(/^https?:\/\//,'').replace(/^www\./,'');
+    d=d.split('/')[0];
+    if(d.indexOf('@')>-1){ d=d.split('@').pop(); }
+    d=d.replace(/[^a-z0-9.\-]/g,'');
+    return d;
+  }
+  function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+  async function doh(name,type){
+    var eps=[
+      'https://cloudflare-dns.com/dns-query?name='+encodeURIComponent(name)+'&type='+type,
+      'https://dns.google/resolve?name='+encodeURIComponent(name)+'&type='+type
+    ];
+    var lastErr;
+    for(var i=0;i<eps.length;i++){
+      try{
+        var r=await fetch(eps[i],{headers:{accept:'application/dns-json'}});
+        if(!r.ok){lastErr=new Error('HTTP '+r.status);continue;}
+        return await r.json();
+      }catch(e){lastErr=e;}
+    }
+    throw lastErr||new Error('DNS query failed');
+  }
+  function txtValues(json){
+    if(!json||!json.Answer) return [];
+    return json.Answer.filter(function(a){return a.type===16;}).map(function(a){
+      var d=a.data||'';
+      var parts=d.match(/"([^"]*)"/g);
+      if(parts) return parts.map(function(p){return p.slice(1,-1);}).join('');
+      return d.replace(/^"|"$/g,'');
+    });
+  }
+
+  function analyzeSPF(vals){
+    var spf=vals.filter(function(v){return /^v=spf1/i.test(v.trim());});
+    if(spf.length===0) return {status:'fail',record:null,
+      explain:'No SPF record found. Without one, outsiders can send email claiming to be from your domain and receivers have no easy way to tell.',
+      fix:'Add a TXT record at your root domain: <code>v=spf1 include:YOUR_PROVIDER -all</code> — e.g. <code>_spf.google.com</code> (Google Workspace) or <code>spf.protection.outlook.com</code> (Microsoft 365).'};
+    if(spf.length>1) return {status:'fail',record:spf.join('   |   '),
+      explain:'You have more than one SPF record. That is invalid, and many receivers will ignore SPF entirely when this happens.',
+      fix:'Merge them into a single <code>v=spf1 …</code> record containing all your includes, ending in <code>-all</code>.'};
+    var rec=spf[0], m=rec.match(/([~\-+?])all/i);
+    var lookups=(rec.match(/include:|redirect=|exists:|\bptr\b/gi)||[]).length;
+    var status='pass',explain='',fix='';
+    if(!m){status='warn';explain='Your SPF record has no "all" mechanism, so it does not clearly say what to do with unlisted senders.';fix='End the record with <code>-all</code> (strict) or <code>~all</code> (soft fail).';}
+    else{
+      var q=m[1];
+      if(q==='-'){status='pass';explain='Strict SPF (<code>-all</code>). Mail from servers not on your list is rejected — the strongest setting.';}
+      else if(q==='~'){status='pass';explain='Soft-fail SPF (<code>~all</code>). Unlisted senders are flagged but not outright rejected. Common and acceptable; <code>-all</code> is stronger.';fix='Once you are confident your sender list is complete, tighten <code>~all</code> to <code>-all</code>.';}
+      else if(q==='?'){status='warn';explain='Neutral SPF (<code>?all</code>) offers almost no protection — it neither passes nor fails unlisted senders.';fix='Change <code>?all</code> to <code>~all</code> or <code>-all</code>.';}
+      else if(q==='+'){status='fail';explain='Your SPF ends in <code>+all</code>, which lets ANY server send as your domain. This defeats the point of SPF.';fix='Change <code>+all</code> to <code>-all</code> right away.';}
+    }
+    if(lookups>10){if(status!=='fail')status='warn';explain+=' It also looks like this record may exceed SPF\'s 10 DNS-lookup limit (~'+lookups+' detected), which can make SPF fail.';fix=(fix?fix+' ':'')+'Reduce DNS lookups (fewer includes or SPF flattening) to stay under 10.';}
+    return {status:status,record:rec,explain:explain,fix:fix};
+  }
+
+  function analyzeDMARC(vals){
+    var d=vals.find(function(v){return /^v=dmarc1/i.test(v.trim());});
+    if(!d) return {status:'fail',record:null,
+      explain:'No DMARC record found. DMARC ties SPF and DKIM together and tells receivers what to do with mail that fails — without it, spoofed mail can still get through.',
+      fix:'Add a TXT record at <code>_dmarc.yourdomain</code>: <code>v=DMARC1; p=none; rua=mailto:you@yourdomain</code>. Start at p=none to watch, then strengthen.'};
+    var p=((d.match(/p=([a-z]+)/i)||[])[1]||'').toLowerCase();
+    var rua=/rua=/i.test(d);
+    var status='pass',explain='',fix='';
+    if(p==='none'){status='warn';explain='DMARC is in monitoring mode (<code>p=none</code>). It reports problems but does not yet stop spoofed mail.';fix='Once legitimate mail is passing, strengthen to <code>p=quarantine</code>, then <code>p=reject</code>.';}
+    else if(p==='quarantine'){status='pass';explain='DMARC is enforcing (<code>p=quarantine</code>) — failing mail is sent to spam. A strong setting.';}
+    else if(p==='reject'){status='pass';explain='DMARC is fully enforcing (<code>p=reject</code>) — failing mail is rejected outright. The strongest setting.';}
+    else{status='warn';explain='A DMARC record exists but its policy (<code>p=</code>) is missing or unclear.';fix='Set <code>p=quarantine</code> or <code>p=reject</code>.';}
+    if(!rua){explain+=' No aggregate reporting (<code>rua=</code>) is set, so you are not receiving DMARC reports.';fix=(fix?fix+' ':'')+'Add <code>rua=mailto:you@yourdomain</code> to start getting reports.';}
+    return {status:status,record:d,explain:explain,fix:fix};
+  }
+
+  function analyzeDKIM(vals,selector,domain){
+    var rec=vals.find(function(v){return /v=dkim1/i.test(v)|| /(^|;|\s)p=/i.test(v);});
+    if(!rec) return {status:'warn',record:null,
+      explain:'No DKIM key found at <code>'+esc(selector)+'._domainkey.'+esc(domain)+'</code>. DKIM can\'t be auto-discovered, so this may mean DKIM isn\'t set up — or simply that your selector is different.',
+      fix:'Find your real selector in a received email\'s headers: look for <code>DKIM-Signature: … s=SELECTOR</code>, then re-check using that selector.'};
+    var pm=rec.match(/(^|;|\s)p=([A-Za-z0-9+\/=]*)/);
+    var p=pm?pm[2]:undefined;
+    if(p===''||p===undefined) return {status:'fail',record:rec,
+      explain:'A DKIM record exists at this selector, but its public key (<code>p=</code>) is empty — the key has been revoked or disabled, so signatures will fail.',
+      fix:'Re-publish a valid DKIM key from your email provider\'s admin console.'};
+    return {status:'pass',record:rec,
+      explain:'A valid DKIM key is published at this selector. Your outgoing mail can be cryptographically signed so receivers can confirm it wasn\'t forged or altered.',
+      fix:''};
+  }
+
+  function render(id,res){
+    var card=$('#card-'+id);
+    card.className='rcard '+res.status;
+    card.querySelector('.badge').textContent=res.status.toUpperCase();
+    card.querySelector('.rec').innerHTML=res.record?esc(res.record):'<span class="muted">— none found —</span>';
+    card.querySelector('.explain').innerHTML=res.explain;
+    var fixEl=card.querySelector('.fix');
+    if(res.fix){fixEl.style.display='block';fixEl.innerHTML='<b>Fix:</b> '+res.fix;}
+    else fixEl.style.display='none';
+  }
+
+  async function runCheck(){
+    var domain=cleanDomain($('#domain').value);
+    var selector=($('#selector').value||'').trim()||'google';
+    var err=$('#err');
+    if(!domain||domain.indexOf('.')<0){err.textContent='Enter a valid domain, like example.com';return;}
+    err.textContent='';
+    var btn=$('#run'); btn.disabled=true; var orig=btn.textContent; btn.textContent='Checking…';
+    try{
+      var res=await Promise.all([
+        doh(domain,'TXT'),
+        doh(selector+'._domainkey.'+domain,'TXT'),
+        doh('_dmarc.'+domain,'TXT')
+      ]);
+      render('spf',analyzeSPF(txtValues(res[0])));
+      render('dkim',analyzeDKIM(txtValues(res[1]),selector,domain));
+      render('dmarc',analyzeDMARC(txtValues(res[2])));
+      $('#summary').textContent='Checked '+domain+'  ·  DKIM selector: '+selector+'  ·  via Cloudflare 1.1.1.1';
+      $('#summary').style.display='block';
+      $('#results').style.display='flex';
+    }catch(e){
+      err.textContent='DNS lookup failed — check the domain and your connection, then try again.';
+    }finally{
+      btn.disabled=false; btn.textContent=orig;
+    }
+  }
+
+  $('#run').addEventListener('click',runCheck);
+  ['domain','selector'].forEach(function(id){
+    $('#'+id).addEventListener('keydown',function(e){if(e.key==='Enter')runCheck();});
+  });
+</script>
+</body>
+</html>
