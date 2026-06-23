@@ -329,6 +329,19 @@
   .door3 .go{display:inline-block;margin-top:16px;color:var(--ink);font-weight:600;font-size:14px}
   @media(max-width:860px){.doors3{grid-template-columns:1fr}.nav-links{display:none}.menu-btn{display:block}}
 
+  /* home assessment feature band */
+  .assess{margin-top:54px;border:1px solid var(--line-2);border-radius:20px;padding:38px 40px;position:relative;overflow:hidden;
+    background:linear-gradient(135deg,rgba(59,158,255,.10),rgba(160,107,255,.10)),var(--panel)}
+  .assess::before{content:"";position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(600px 240px at 90% -20%,rgba(160,107,255,.18),transparent 60%)}
+  .assess-grid{display:grid;grid-template-columns:1.6fr 1fr;gap:30px;align-items:center;position:relative;z-index:2}
+  .assess .eyebrow2{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--purple);text-transform:uppercase}
+  .assess h2{font-size:clamp(24px,3vw,32px);font-weight:800;letter-spacing:-.02em;margin:12px 0 12px;line-height:1.08}
+  .assess p{color:var(--ink-dim);font-size:15.5px;max-width:52ch}
+  .assess .meta{font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin-top:14px}
+  .assess-cta{display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+  @media(max-width:760px){.assess{padding:30px 26px}.assess-grid{grid-template-columns:1fr;gap:22px}.assess-cta{align-items:stretch}}
+
   /* page intro spacing for inner views */
   .view-pad{padding-top:64px}
 </style>
@@ -409,6 +422,21 @@
       <div class="door3 reveal" data-view="large"><div class="dk">FOR LARGE BUSINESSES</div><h3>Deepen your program</h3><p>Detection engineering, compliance, the professional platform, and custom builds.</p><span class="go">See enterprise offerings →</span></div>
       <div class="door3 reveal" data-view="tools"><div class="dk">JUST EXPLORING</div><h3>Try the tools</h3><p>Free, no commitment. Run a single tool or clone the whole community edition.</p><span class="go">Browse free tools →</span></div>
     </div>
+
+    <div class="assess reveal">
+      <div class="assess-grid">
+        <div>
+          <div class="eyebrow2">Free security self-assessment</div>
+          <h2>Not sure where your security stands?</h2>
+          <p>Answer a few plain-English questions about how your business runs today. You'll get a posture score, the gaps that matter most, and a clear picture of where we can help — in about two minutes. Nothing is installed, and nothing leaves your browser.</p>
+          <div class="meta">12 questions · instant score · private by design</div>
+        </div>
+        <div class="assess-cta">
+          <a href="/posture-check.html" class="btn btn-blue">Take the self-assessment →</a>
+          <a data-view="smb" class="btn btn-outline" style="cursor:pointer">See how we help →</a>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -422,9 +450,8 @@
     <div class="grouplbl reveal" id="smb-free"><span>FREE TOOLS</span><span class="ln"></span></div>
     <div class="tools">
       <a class="tool reveal" href="/email-checker.html"><div class="ttop"><b>Email Security Checker</b><span class="tag t-free">Free</span></div><p>Check SPF, DKIM, and DMARC — with plain-English fixes.</p><span class="live">Open the tool →</span></a>
-      <div class="tool reveal"><div class="ttop"><b>Posture Self-Check</b><span class="tag t-free">Free</span></div><p>Answer a few questions, get a score and a prioritized to-do list.</p></div>
-      <div class="tool reveal"><div class="ttop"><b>IR Plan Generator</b><span class="tag t-free">Free</span></div><p>Build a tailored incident response plan in minutes.</p></div>
-      <div class="tool reveal"><div class="ttop"><b>Breach-Exposure Checker</b><span class="tag t-free">Free</span></div><p>See whether your accounts appear in known breaches.</p></div>
+      <a class="tool reveal" href="/posture-scanner.html"><div class="ttop"><b>Posture Scanner</b><span class="tag t-free">Free · Download</span></div><p>A downloadable Windows/Linux scan of your system’s security — results stay on your machine.</p><span class="live">Get the scanner →</span></a>
+      <a class="tool reveal" href="/dns-checker.html"><div class="ttop"><b>DNS &amp; Domain Health Checker</b><span class="tag t-free">Free</span></div><p>Check your domain’s DNS, email security, and DNSSEC — in plain English.</p><span class="live">Open the tool →</span></a>
     </div>
 
     <div class="grouplbl reveal" id="smb-paid"><span>SERVICES · PAID</span><span class="ln"></span></div>
@@ -493,9 +520,8 @@
     <div class="grouplbl reveal"><span>EVERYDAY SECURITY</span><span class="ln"></span></div>
     <div class="tools">
       <a class="tool reveal" href="/email-checker.html"><div class="ttop"><b>Email Security Checker</b><span class="tag t-free">Free</span></div><p>Check SPF, DKIM, and DMARC — with plain-English fixes.</p><span class="live">Open the tool →</span></a>
-      <div class="tool reveal"><div class="ttop"><b>Posture Self-Check</b><span class="tag t-free">Free</span></div><p>Answer a few questions, get a score and a prioritized to-do list.</p></div>
-      <div class="tool reveal"><div class="ttop"><b>IR Plan Generator</b><span class="tag t-free">Free</span></div><p>Build a tailored incident response plan in minutes.</p></div>
-      <div class="tool reveal"><div class="ttop"><b>Breach-Exposure Checker</b><span class="tag t-free">Free</span></div><p>See whether your accounts appear in known breaches.</p></div>
+      <a class="tool reveal" href="/posture-scanner.html"><div class="ttop"><b>Posture Scanner</b><span class="tag t-free">Free · Download</span></div><p>A downloadable Windows/Linux scan of your system’s security — results stay on your machine.</p><span class="live">Get the scanner →</span></a>
+      <a class="tool reveal" href="/dns-checker.html"><div class="ttop"><b>DNS &amp; Domain Health Checker</b><span class="tag t-free">Free</span></div><p>Check your domain’s DNS, email security, and DNSSEC — in plain English.</p><span class="live">Open the tool →</span></a>
     </div>
 
     <div class="grouplbl reveal"><span>FOR SECURITY TEAMS</span><span class="ln"></span></div>

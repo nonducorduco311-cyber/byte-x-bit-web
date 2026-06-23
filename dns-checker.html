@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DNS &amp; Domain Health Checker — ByTE X Bit Technologies LLC</title>
+<meta name="description" content="Check your domain's DNS health in seconds — resolution, nameservers, email security (SPF/DMARC), DNSSEC and more. Free, runs in your browser, nothing stored.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0e14;--bg-2:#0f1520;--panel:#121a26;--panel-2:#16202e;
+    --line:#1f2b3a;--line-2:#2a3a4f;
+    --ink:#e8eef5;--ink-dim:#9fb0c3;--ink-faint:#6b7d92;
+    --blue:#3b9eff;--blue-2:#1f6fd6;--purple:#a06bff;
+    --green:#34d399;--amber:#f6c453;--red:#ff6b6b;
+    --display:'Syne',sans-serif;--mono:'Space Mono',monospace;--maxw:880px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--display);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  .grid-bg{position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(59,158,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(59,158,255,.04) 1px,transparent 1px);background-size:48px 48px;mask-image:radial-gradient(ellipse 80% 60% at 50% 0,#000,transparent)}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;position:relative;z-index:2}
+  a{color:inherit;text-decoration:none}
+
+  header.nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(12px);background:rgba(10,14,20,.72);border-bottom:1px solid var(--line)}
+  .nav-inner{max-width:var(--maxw);margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:-.02em;font-size:18px}
+  .brand img{height:32px;width:auto;filter:drop-shadow(0 0 14px rgba(59,158,255,.22))}
+  .brand .btxt{display:flex;flex-direction:column;line-height:1}
+  .brand small{font-family:var(--mono);font-size:9px;color:var(--ink-faint);letter-spacing:.18em;margin-top:2px;font-weight:400}
+  .back{font-size:13.5px;color:var(--ink-dim);font-family:var(--mono);transition:color .2s}
+  .back:hover{color:var(--blue)}
+
+  main{padding:54px 0 40px}
+  .eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;color:var(--blue);border:1px solid var(--line-2);border-radius:100px;padding:6px 14px;margin-bottom:22px;background:rgba(59,158,255,.05);text-transform:uppercase}
+  h1{font-size:clamp(30px,5vw,46px);font-weight:800;letter-spacing:-.03em;line-height:1.05}
+  h1 .grad{background:linear-gradient(120deg,var(--blue),var(--purple));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .lead{color:var(--ink-dim);font-size:clamp(15px,2vw,18px);max-width:64ch;margin:18px 0 0}
+
+  .promise{font-family:var(--mono);font-size:12.5px;color:var(--ink-dim);background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--green);border-radius:10px;padding:13px 16px;margin:26px 0 0;line-height:1.65}
+  .promise b{color:var(--green)}
+
+  .searchbar{display:flex;gap:12px;margin:30px 0 0;flex-wrap:wrap}
+  .searchbar input{flex:1;min-width:240px;font-family:var(--mono);font-size:16px;color:var(--ink);background:var(--bg-2);border:1px solid var(--line-2);border-radius:11px;padding:14px 16px;transition:border-color .15s,box-shadow .15s}
+  .searchbar input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(59,158,255,.12)}
+  .btn{display:inline-flex;align-items:center;gap:9px;font-family:var(--display);font-weight:700;font-size:15px;padding:14px 26px;border-radius:11px;cursor:pointer;border:1px solid transparent;background:linear-gradient(135deg,var(--blue),var(--blue-2));color:#02060c;box-shadow:0 8px 24px rgba(59,158,255,.25);transition:all .2s;white-space:nowrap}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 12px 30px rgba(59,158,255,.32)}
+  .btn:disabled{opacity:.55;cursor:default;transform:none;box-shadow:none}
+  .btn.ghost{background:transparent;border:1px solid var(--line-2);color:var(--ink-dim);box-shadow:none}
+  .btn.ghost:hover{border-color:var(--blue);color:var(--ink)}
+  .ex{font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);margin-top:10px}
+  .ex a{color:var(--blue)}
+
+  #status{font-family:var(--mono);font-size:13px;color:var(--ink-dim);margin-top:22px;display:none}
+  #err{font-size:14px;color:var(--ink-dim);background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--red);border-radius:10px;padding:14px 16px;margin-top:22px;display:none}
+
+  #results{display:none;margin-top:28px}
+  .summary{display:flex;gap:10px;flex-wrap:wrap;font-family:var(--mono);font-size:12px;margin-bottom:8px}
+  .pillc{border-radius:100px;padding:5px 13px;border:1px solid var(--line-2)}
+  .pillc.pass{color:var(--green);border-color:rgba(52,211,153,.4);background:rgba(52,211,153,.07)}
+  .pillc.warn{color:var(--amber);border-color:rgba(246,196,83,.4);background:rgba(246,196,83,.07)}
+  .pillc.fail{color:var(--red);border-color:rgba(255,107,107,.4);background:rgba(255,107,107,.07)}
+  .pillc.info{color:var(--blue);border-color:rgba(59,158,255,.4);background:rgba(59,158,255,.07)}
+
+  .cat{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin:26px 0 12px}
+  .f{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--line-2);border-radius:10px;padding:14px 16px;margin-bottom:10px}
+  .f.pass{border-left-color:var(--green)}
+  .f.warn{border-left-color:var(--amber)}
+  .f.fail{border-left-color:var(--red)}
+  .f.info{border-left-color:var(--blue)}
+  .ft{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .ft b{font-size:15px}
+  .badge{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;border-radius:5px;padding:3px 8px}
+  .badge.pass{color:var(--green);background:rgba(52,211,153,.12)}
+  .badge.warn{color:var(--amber);background:rgba(246,196,83,.12)}
+  .badge.fail{color:var(--red);background:rgba(255,107,107,.12)}
+  .badge.info{color:var(--blue);background:rgba(59,158,255,.12)}
+  .f .d{color:var(--ink-dim);font-size:14px;margin-top:6px}
+  .f .meta{font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin-top:6px;word-break:break-word}
+  .f .why{color:var(--ink-faint);font-size:13px;margin-top:6px}
+  .f .why b,.f .fix b{color:var(--ink-dim)}
+  .f .fix{color:var(--ink-dim);font-size:13.5px;margin-top:6px}
+
+  .cta-box{margin-top:34px;background:linear-gradient(135deg,rgba(59,158,255,.08),rgba(160,107,255,.08));border:1px solid var(--line-2);border-radius:16px;padding:26px;text-align:center}
+  .cta-box h3{font-size:20px;margin-bottom:8px}
+  .cta-box p{color:var(--ink-dim);max-width:54ch;margin:0 auto 18px}
+
+  .privacy{font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);margin-top:28px;line-height:1.5;text-align:center}
+  .privacy b{color:var(--ink-dim)}
+
+  footer{border-top:1px solid var(--line);padding:30px 0;position:relative;z-index:2;margin-top:48px}
+  .foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:12px;color:var(--ink-faint)}
+  .foot a:hover{color:var(--blue)}
+  .spin{display:inline-block;width:13px;height:13px;border:2px solid var(--line-2);border-top-color:var(--blue);border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px;margin-right:7px}
+  @keyframes sp{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/">
+      <img src="/bxb-logo.png" alt="ByTE X Bit Technologies LLC">
+      <span class="btxt"><b>ByTE&nbsp;X&nbsp;Bit</b><small>TECHNOLOGIES&nbsp;LLC</small></span>
+    </a>
+    <a class="back" href="/">← Back to ByTE X Bit</a>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="eyebrow">● Free tool · runs in your browser</div>
+    <h1>DNS &amp; Domain<br><span class="grad">Health Checker</span></h1>
+    <p class="lead">Your domain's DNS settings quietly control whether your website loads, whether your email gets delivered, and how easy you are to impersonate. Enter a domain to get a plain-language health check — resolution, nameservers, email security, DNSSEC and more.</p>
+
+    <div class="promise">🔒 <b>No server of ours is involved.</b> Your browser asks public DNS resolvers (Cloudflare, then Google) directly — exactly what any computer does to look up a website. We never see your query, and nothing is stored. You can watch the lookups in your browser's developer tools.</div>
+
+    <div class="searchbar">
+      <input type="text" id="domain" placeholder="yourdomain.com" autocomplete="off" autocapitalize="off" spellcheck="false">
+      <button class="btn" id="go">Check domain →</button>
+    </div>
+    <div class="ex">Try: <a href="#" data-ex="cloudflare.com">cloudflare.com</a> · <a href="#" data-ex="github.com">github.com</a></div>
+
+    <div id="status"></div>
+    <div id="err"></div>
+
+    <div id="results">
+      <div class="summary" id="summary"></div>
+      <div id="findings"></div>
+
+      <div class="cta-box">
+        <h3>Want these gaps fixed — and kept fixed?</h3>
+        <p>ByTE X Bit helps small businesses lock down DNS, email authentication, and domain security as part of a managed security service. We can set this up correctly and watch it for you.</p>
+        <a class="btn" href="mailto:bryant@byte-x-bit.com?subject=DNS%20%26%20Domain%20Security%20Help">Talk to us →</a>
+      </div>
+    </div>
+
+    <p class="privacy">🔒 100% client-side. Lookups go straight from your browser to public DNS-over-HTTPS resolvers; ByTE X Bit runs no backend and stores nothing. Results are a point-in-time snapshot of public DNS and are general guidance, not a full audit.</p>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span>© 2026 ByTE X Bit Technologies LLC · software &amp; services, no hardware</span>
+    <a href="/">byte-x-bit.com</a>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  function esc(s){return (s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+
+  // DNS record type numbers
+  var T={A:1,NS:2,CNAME:5,MX:15,TXT:16,AAAA:28,DS:43,DNSKEY:48,CAA:257};
+
+  // Query DNS-over-HTTPS: Cloudflare first, Google fallback.
+  // Returns the parsed JSON, or the string "UNREACHABLE" if BOTH resolvers
+  // could not be contacted (so we never mistake a blocked lookup for "no record").
+  async function doh(name,type){
+    var endpoints=[
+      "https://cloudflare-dns.com/dns-query?name="+encodeURIComponent(name)+"&type="+type,
+      "https://dns.google/resolve?name="+encodeURIComponent(name)+"&type="+type
+    ];
+    var reached=false;
+    for(var i=0;i<endpoints.length;i++){
+      try{
+        var r=await fetch(endpoints[i],{headers:{"accept":"application/dns-json"}});
+        if(r.ok){ return await r.json(); }
+        reached=true; // got an HTTP response, just not ok
+      }catch(e){ /* network/blocked — try next */ }
+    }
+    return reached ? null : "UNREACHABLE";
+  }
+  function answers(j,type){
+    if(!j||!j.Answer)return [];
+    return j.Answer.filter(function(a){return a.type===type;}).map(function(a){return a.data;});
+  }
+  function txtClean(s){ return String(s).replace(/^"|"$/g,"").replace(/""/g,""); }
+
+  var findings=[]; // {cat,status,title,detail,meta,why,fix}
+  function add(f){ findings.push(f); }
+
+  function cleanDomain(raw){
+    var d=(raw||"").trim().toLowerCase();
+    d=d.replace(/^https?:\/\//,"").replace(/\/.*$/,"").replace(/:\d+$/,"");
+    d=d.replace(/\.$/,"");
+    if(d.indexOf("www.")===0) d=d.slice(4);
+    return d;
+  }
+  function validDomain(d){ return /^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$/.test(d); }
+
+  async function run(){
+    var domain=cleanDomain($("domain").value);
+    $("err").style.display="none";
+    $("results").style.display="none";
+    findings=[];
+
+    if(!domain || !validDomain(domain)){
+      $("err").textContent="Please enter a valid domain name, like yourcompany.com (no http://, no path).";
+      $("err").style.display="block";
+      return;
+    }
+
+    var go=$("go"); go.disabled=true;
+    $("status").style.display="block";
+    $("status").innerHTML='<span class="spin"></span>Looking up '+esc(domain)+' …';
+
+    try{
+      // fire the lookups in parallel
+      var aQ=doh(domain,T.A), aaaaQ=doh(domain,T.AAAA), nsQ=doh(domain,T.NS),
+          wwwQ=doh("www."+domain,T.A), mxQ=doh(domain,T.MX), txtQ=doh(domain,T.TXT),
+          dmarcQ=doh("_dmarc."+domain,T.TXT), dnskeyQ=doh(domain,T.DNSKEY), caaQ=doh(domain,T.CAA);
+
+      var aj=await aQ;
+
+      // If the resolvers themselves couldn't be reached, say so honestly rather
+      // than reporting the domain as broken. Common on networks that block DoH.
+      if(aj==="UNREACHABLE"){
+        $("status").style.display="none";
+        $("err").innerHTML="Couldn\u2019t reach the public DNS resolvers (Cloudflare or Google) from this browser. "+
+          "Your network may be blocking DNS-over-HTTPS \u2014 common on managed or filtered networks. "+
+          "Try from a different network (or your phone on cellular) and the check will work.";
+        $("err").style.display="block";
+        go.disabled=false;
+        return;
+      }
+
+      // NXDOMAIN guard
+      if(aj && aj.Status===3){
+        $("status").style.display="none";
+        $("err").textContent="\u201C"+domain+"\u201D doesn\u2019t appear to exist (no DNS records found). Check the spelling.";
+        $("err").style.display="block";
+        go.disabled=false;
+        return;
+      }
+
+      var aRec=answers(aj,T.A);
+      var aaaaRec=answers(await aaaaQ,T.AAAA);
+      var nsRec=answers(await nsQ,T.NS);
+      var wwwj=await wwwQ; var wwwHas=(answers(wwwj,T.A).length>0)||(wwwj&&wwwj.Answer&&wwwj.Answer.some(function(a){return a.type===T.CNAME;}));
+      var mxRec=answers(await mxQ,T.MX);
+      var txtRec=answers(await txtQ,T.TXT).map(txtClean);
+      var dmarcRec=answers(await dmarcQ,T.TXT).map(txtClean).filter(function(t){return /v=DMARC1/i.test(t);});
+      var dnskeyj=await dnskeyQ; var dnssec=(answers(dnskeyj,T.DNSKEY).length>0)||(aj&&aj.AD===true)||(dnskeyj&&dnskeyj.AD===true);
+      var caaRec=answers(await caaQ,T.CAA);
+
+      // ---- Resolution & reachability ----
+      if(aRec.length){
+        add({cat:"Resolution & reachability",status:"pass",title:"Domain resolves",
+          detail:"Resolves to "+aRec.length+" IPv4 address"+(aRec.length>1?"es":"")+".",meta:aRec.join(", ")});
+      }else{
+        add({cat:"Resolution & reachability",status:"fail",title:"Domain does not resolve",
+          detail:"No IPv4 (A) record found for "+domain+".",
+          why:"Without an A record, browsers can't find your website at this name.",
+          fix:"Add an A (or CNAME) record at your DNS host pointing to your web server or hosting provider."});
+      }
+      add({cat:"Resolution & reachability",status: wwwHas?"pass":"warn",
+        title:"www version",
+        detail: wwwHas?"www."+domain+" resolves.":"www."+domain+" doesn't resolve.",
+        why: wwwHas?"":"Visitors who type www. in front of your domain could hit an error.",
+        fix: wwwHas?"":"Add a CNAME for www pointing to your domain (or an A record)."});
+      if(aaaaRec.length){
+        add({cat:"Resolution & reachability",status:"info",title:"IPv6 (AAAA)",
+          detail:"IPv6 is configured ("+aaaaRec.length+" record"+(aaaaRec.length>1?"s":"")+").",meta:aaaaRec.join(", ")});
+      }else{
+        add({cat:"Resolution & reachability",status:"info",title:"IPv6 (AAAA)",
+          detail:"No IPv6 (AAAA) record.",
+          why:"Optional, but IPv6 is increasingly common and some networks prefer it."});
+      }
+      if(nsRec.length>=2){
+        add({cat:"Resolution & reachability",status:"pass",title:"Nameservers",
+          detail:nsRec.length+" nameservers (good redundancy).",meta:nsRec.join(", ")});
+      }else if(nsRec.length===1){
+        add({cat:"Resolution & reachability",status:"warn",title:"Nameservers",
+          detail:"Only one nameserver.",meta:nsRec.join(", "),
+          why:"A single nameserver is a single point of failure — if it goes down, your whole domain becomes unreachable.",
+          fix:"Use at least two nameservers (most DNS hosts provide several by default)."});
+      }else{
+        add({cat:"Resolution & reachability",status:"fail",title:"Nameservers",
+          detail:"No nameservers found.",
+          why:"Without nameservers, nothing about this domain can resolve."});
+      }
+
+      // ---- Email security ----
+      var spf=txtRec.filter(function(t){return /^v=spf1/i.test(t);});
+      if(mxRec.length){
+        add({cat:"Email security",status:"pass",title:"Mail servers (MX)",
+          detail:"Email is configured ("+mxRec.length+" MX record"+(mxRec.length>1?"s":"")+").",meta:mxRec.join("  |  ")});
+      }else{
+        add({cat:"Email security",status:"info",title:"Mail servers (MX)",
+          detail:"No MX records — this domain doesn't receive email.",
+          why:"That may be intentional. Even non-mail domains should still publish SPF and DMARC so attackers can't spoof them."});
+      }
+      if(spf.length){
+        var spfRec=spf[0];
+        var strict=/[-~]all\s*$/.test(spfRec); var permissive=/[?+]all\s*$/.test(spfRec);
+        add({cat:"Email security",status: permissive?"warn":"pass",title:"SPF record",
+          detail: permissive?"SPF is present but ends with a permissive \u201Call\u201D rule.":"SPF record found.",
+          meta:spfRec,
+          why: permissive?"A '?all' or '+all' ending tells receivers to accept mail from anywhere, which defeats the purpose.":"",
+          fix: permissive?"End your SPF with '-all' (reject) or '~all' (soft-fail) once you've listed your real senders.":""});
+      }else{
+        add({cat:"Email security",status:"warn",title:"SPF record",
+          detail:"No SPF record found.",
+          why:"SPF lists who is allowed to send email as your domain. Without it, spoofing your domain is easier.",
+          fix:"Publish a TXT record starting with 'v=spf1' that lists your mail providers, ending in '-all' or '~all'."});
+      }
+      if(dmarcRec.length){
+        var dm=dmarcRec[0]; var pol=(dm.match(/p=([a-z]+)/i)||[])[1]||"none";
+        pol=pol.toLowerCase();
+        if(pol==="reject"||pol==="quarantine"){
+          add({cat:"Email security",status:"pass",title:"DMARC policy",
+            detail:"DMARC is enforcing (p="+pol+").",meta:dm});
+        }else{
+          add({cat:"Email security",status:"warn",title:"DMARC policy",
+            detail:"DMARC is present but set to monitor only (p=none).",meta:dm,
+            why:"p=none collects reports but doesn't actually stop anyone from spoofing your domain.",
+            fix:"After reviewing reports, move to p=quarantine and then p=reject to block impersonation."});
+        }
+      }else{
+        add({cat:"Email security",status:"warn",title:"DMARC policy",
+          detail:"No DMARC record found.",
+          why:"DMARC ties SPF and DKIM together and tells receivers what to do with mail that fails — it's the main defense against people impersonating your domain.",
+          fix:"Publish a TXT record at _dmarc."+domain+" starting with 'v=DMARC1; p=none' to begin, then tighten to quarantine/reject."});
+      }
+      add({cat:"Email security",status:"info",title:"DKIM",
+        detail:"DKIM needs your mail provider's selector to check.",
+        why:"DKIM signatures live at a selector-specific name, so they can't be found by domain alone.",
+        fix:"Use our Email Security Checker to test DKIM with your selector \u2014 see /email-checker.html."});
+
+      // ---- Integrity & trust ----
+      if(dnssec){
+        add({cat:"Integrity & trust",status:"pass",title:"DNSSEC",
+          detail:"DNSSEC is enabled (responses are cryptographically signed)."});
+      }else{
+        add({cat:"Integrity & trust",status:"info",title:"DNSSEC",
+          detail:"DNSSEC is not enabled.",
+          why:"DNSSEC protects against attackers tampering with your DNS answers (e.g. redirecting your site or mail).",
+          fix:"Many registrars/DNS hosts enable DNSSEC with one click. Worth turning on if yours supports it."});
+      }
+      if(caaRec.length){
+        add({cat:"Integrity & trust",status:"pass",title:"CAA records",
+          detail:"CAA records restrict which certificate authorities can issue certificates for your domain.",meta:caaRec.join(", ")});
+      }else{
+        add({cat:"Integrity & trust",status:"info",title:"CAA records",
+          detail:"No CAA records.",
+          why:"CAA limits which CAs may issue TLS certificates for your domain, reducing mis-issuance risk.",
+          fix:"Optional: add a CAA record naming the certificate authority you use."});
+      }
+
+      render(domain);
+    }catch(e){
+      $("status").style.display="none";
+      $("err").textContent="Something went wrong reaching the DNS resolvers. Check your connection and try again.";
+      $("err").style.display="block";
+    }
+    go.disabled=false;
+  }
+
+  function render(domain){
+    $("status").style.display="none";
+    var counts={pass:0,warn:0,fail:0,info:0};
+    findings.forEach(function(f){counts[f.status]++;});
+
+    var sum='';
+    if(counts.fail) sum+='<span class="pillc fail">'+counts.fail+' to fix</span>';
+    if(counts.warn) sum+='<span class="pillc warn">'+counts.warn+' to improve</span>';
+    if(counts.pass) sum+='<span class="pillc pass">'+counts.pass+' looking good</span>';
+    if(counts.info) sum+='<span class="pillc info">'+counts.info+' notes</span>';
+    $("summary").innerHTML=sum;
+
+    // group by category, order: fails/warns naturally sit within each category
+    var order=["Resolution & reachability","Email security","Integrity & trust"];
+    var html="";
+    order.forEach(function(cat){
+      var list=findings.filter(function(f){return f.cat===cat;});
+      if(!list.length)return;
+      // sort within category: fail, warn, pass, info
+      var rank={fail:0,warn:1,pass:2,info:3};
+      list.sort(function(a,b){return rank[a.status]-rank[b.status];});
+      html+='<div class="cat">'+esc(cat)+'</div>';
+      list.forEach(function(f){
+        html+='<div class="f '+f.status+'"><div class="ft"><b>'+esc(f.title)+'</b>'+
+          '<span class="badge '+f.status+'">'+f.status+'</span></div>';
+        if(f.detail) html+='<div class="d">'+esc(f.detail)+'</div>';
+        if(f.meta) html+='<div class="meta">'+esc(f.meta)+'</div>';
+        if(f.why) html+='<div class="why"><b>Why it matters:</b> '+esc(f.why)+'</div>';
+        if(f.fix) html+='<div class="fix"><b>Fix:</b> '+esc(f.fix)+'</div>';
+        html+='</div>';
+      });
+    });
+    $("findings").innerHTML=html;
+    $("results").style.display="block";
+    $("results").scrollIntoView({behavior:"smooth",block:"start"});
+  }
+
+  $("go").addEventListener("click",run);
+  $("domain").addEventListener("keydown",function(e){ if(e.key==="Enter") run(); });
+  document.querySelectorAll("[data-ex]").forEach(function(a){
+    a.addEventListener("click",function(e){ e.preventDefault(); $("domain").value=this.getAttribute("data-ex"); run(); });
+  });
+})();
+</script>
+</body>
+</html>
