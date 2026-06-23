@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phishing &amp; Scam Spotter — ByTE X Bit Technologies LLC</title>
+<meta name="description" content="Paste a suspicious email or text and see the scam red flags explained in plain English. Free, runs entirely in your browser — nothing is uploaded.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0e14;--bg-2:#0f1520;--panel:#121a26;--panel-2:#16202e;
+    --line:#1f2b3a;--line-2:#2a3a4f;
+    --ink:#e8eef5;--ink-dim:#9fb0c3;--ink-faint:#6b7d92;
+    --blue:#3b9eff;--blue-2:#1f6fd6;--purple:#a06bff;
+    --green:#34d399;--amber:#f6c453;--red:#ff6b6b;
+    --display:'Syne',sans-serif;--mono:'Space Mono',monospace;--maxw:880px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--display);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  .grid-bg{position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(59,158,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(59,158,255,.04) 1px,transparent 1px);background-size:48px 48px;mask-image:radial-gradient(ellipse 80% 60% at 50% 0,#000,transparent)}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;position:relative;z-index:2}
+  a{color:inherit;text-decoration:none}
+
+  header.nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(12px);background:rgba(10,14,20,.72);border-bottom:1px solid var(--line)}
+  .nav-inner{max-width:var(--maxw);margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:-.02em;font-size:18px}
+  .brand img{height:32px;width:auto;filter:drop-shadow(0 0 14px rgba(59,158,255,.22))}
+  .brand .btxt{display:flex;flex-direction:column;line-height:1}
+  .brand small{font-family:var(--mono);font-size:9px;color:var(--ink-faint);letter-spacing:.18em;margin-top:2px;font-weight:400}
+  .back{font-size:13.5px;color:var(--ink-dim);font-family:var(--mono);transition:color .2s}
+  .back:hover{color:var(--blue)}
+
+  main{padding:54px 0 40px}
+  .eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;color:var(--blue);border:1px solid var(--line-2);border-radius:100px;padding:6px 14px;margin-bottom:22px;background:rgba(59,158,255,.05);text-transform:uppercase}
+  h1{font-size:clamp(30px,5vw,46px);font-weight:800;letter-spacing:-.03em;line-height:1.05}
+  h1 .grad{background:linear-gradient(120deg,var(--blue),var(--purple));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .lead{color:var(--ink-dim);font-size:clamp(15px,2vw,18px);max-width:64ch;margin:18px 0 0}
+
+  .promise{font-family:var(--mono);font-size:12.5px;color:var(--ink-dim);background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--green);border-radius:10px;padding:13px 16px;margin:26px 0 0;line-height:1.65}
+  .promise b{color:var(--green)}
+
+  .field{margin-top:24px}
+  label{display:block;font-size:13px;color:var(--ink-dim);margin-bottom:8px;font-weight:500}
+  textarea{width:100%;font-family:var(--mono);font-size:14px;color:var(--ink);background:var(--bg-2);border:1px solid var(--line-2);border-radius:12px;padding:15px 16px;min-height:200px;resize:vertical;line-height:1.6;transition:border-color .15s,box-shadow .15s}
+  textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(59,158,255,.12)}
+
+  .btn-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
+  .btn{display:inline-flex;align-items:center;gap:9px;font-family:var(--display);font-weight:700;font-size:15px;padding:13px 26px;border-radius:11px;cursor:pointer;border:1px solid transparent;background:linear-gradient(135deg,var(--blue),var(--blue-2));color:#02060c;box-shadow:0 8px 24px rgba(59,158,255,.25);transition:all .2s}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 12px 30px rgba(59,158,255,.32)}
+  .btn.ghost{background:transparent;border:1px solid var(--line-2);color:var(--ink-dim);box-shadow:none}
+  .btn.ghost:hover{border-color:var(--blue);color:var(--ink)}
+  .ex{font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);margin-top:12px}
+  .ex a{color:var(--blue);cursor:pointer}
+
+  #err{font-size:14px;color:var(--ink-dim);background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--red);border-radius:10px;padding:14px 16px;margin-top:18px;display:none}
+
+  #results{display:none;margin-top:30px}
+  .verdict{border-radius:14px;padding:20px 22px;border:1px solid var(--line-2);margin-bottom:8px}
+  .verdict.r0{background:rgba(52,211,153,.08);border-color:rgba(52,211,153,.4)}
+  .verdict.r1{background:rgba(246,196,83,.08);border-color:rgba(246,196,83,.4)}
+  .verdict.r2{background:rgba(246,196,83,.10);border-color:rgba(246,196,83,.5)}
+  .verdict.r3{background:rgba(255,107,107,.09);border-color:rgba(255,107,107,.45)}
+  .verdict.r4{background:rgba(255,107,107,.12);border-color:rgba(255,107,107,.6)}
+  .verdict .vlabel{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint)}
+  .verdict h2{font-size:23px;margin:4px 0 6px;letter-spacing:-.02em}
+  .verdict.r0 h2{color:var(--green)} .verdict.r1 h2,.verdict.r2 h2{color:var(--amber)} .verdict.r3 h2,.verdict.r4 h2{color:var(--red)}
+  .verdict p{color:var(--ink-dim);font-size:14.5px}
+
+  .cat{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin:26px 0 12px}
+  .flag{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--amber);border-radius:10px;padding:14px 16px;margin-bottom:10px}
+  .flag .ft{font-size:15px;font-weight:700}
+  .flag .why{color:var(--ink-dim);font-size:13.5px;margin-top:5px}
+  .flag .snip{font-family:var(--mono);font-size:12px;color:var(--amber);background:rgba(246,196,83,.08);border-radius:6px;padding:6px 9px;margin-top:8px;word-break:break-word}
+
+  .todo{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-top:8px}
+  .todo h4{font-size:15px;margin-bottom:8px}
+  .todo ul{margin:0 0 0 20px}
+  .todo li{font-size:14px;color:var(--ink-dim);margin:5px 0}
+
+  .highlight-wrap{margin-top:8px}
+  .msgview{background:#fff;color:#1a2330;border-radius:12px;padding:18px 20px;font-family:var(--mono);font-size:13px;line-height:1.7;white-space:pre-wrap;word-break:break-word;max-height:340px;overflow:auto}
+  .msgview mark{background:#ffe08a;color:#5a4a1a;border-radius:3px;padding:0 2px;font-weight:700}
+
+  .cta-box{margin-top:34px;background:linear-gradient(135deg,rgba(59,158,255,.08),rgba(160,107,255,.08));border:1px solid var(--line-2);border-radius:16px;padding:26px;text-align:center}
+  .cta-box h3{font-size:20px;margin-bottom:8px}
+  .cta-box p{color:var(--ink-dim);max-width:54ch;margin:0 auto 18px}
+
+  .privacy{font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);margin-top:28px;line-height:1.5;text-align:center}
+  .privacy b{color:var(--ink-dim)}
+
+  footer{border-top:1px solid var(--line);padding:30px 0;position:relative;z-index:2;margin-top:48px}
+  .foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:12px;color:var(--ink-faint)}
+  .foot a:hover{color:var(--blue)}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/">
+      <img src="/bxb-logo.png" alt="ByTE X Bit Technologies LLC">
+      <span class="btxt"><b>ByTE&nbsp;X&nbsp;Bit</b><small>TECHNOLOGIES&nbsp;LLC</small></span>
+    </a>
+    <a class="back" href="/">← Back to ByTE X Bit</a>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="eyebrow">● Free tool · runs in your browser</div>
+    <h1>Phishing &amp;<br><span class="grad">Scam Spotter</span></h1>
+    <p class="lead">Phishing is how most laptops, phones, and accounts get compromised — one click on a convincing message. Paste a suspicious email or text below and we'll point out the warning signs in plain English, so you (and your team) learn to spot them.</p>
+
+    <div class="promise">🔒 <b>Your message never leaves this page.</b> The whole analysis happens in your browser — nothing you paste is uploaded, logged, or sent to ByTE X Bit or anyone else. Close the tab and it's gone.</div>
+
+    <div class="field">
+      <label for="msg">Paste the suspicious email or text message</label>
+      <textarea id="msg" placeholder="Paste the full message here — including the sender line and any links, if you have them."></textarea>
+    </div>
+    <div class="btn-row">
+      <button class="btn" id="go">Check this message →</button>
+      <button class="btn ghost" id="clear">Clear</button>
+    </div>
+    <div class="ex">Not sure? <a id="ex1">Load an example scam</a> · <a id="ex2">Load a sneakier one</a></div>
+
+    <div id="err"></div>
+
+    <div id="results">
+      <div class="verdict" id="verdict">
+        <div class="vlabel">Verdict</div>
+        <h2 id="vtitle"></h2>
+        <p id="vtext"></p>
+      </div>
+
+      <div id="flags-wrap" style="display:none">
+        <div class="cat">Warning signs we found</div>
+        <div id="flags"></div>
+      </div>
+
+      <div class="cat">The message, with red flags highlighted</div>
+      <div class="highlight-wrap"><div class="msgview" id="msgview"></div></div>
+
+      <div class="cat">What to do</div>
+      <div class="todo">
+        <h4 id="todo-h">Stay safe</h4>
+        <ul id="todo-list"></ul>
+      </div>
+
+      <div class="cta-box">
+        <h3>Want your whole team to spot these?</h3>
+        <p>The weakest link is usually a busy person clicking too fast. ByTE X Bit runs short, practical phishing-awareness training and simulations for small businesses — so your people become the defense, not the gap.</p>
+        <a class="btn" href="mailto:bryant@byte-x-bit.com?subject=Phishing%20Awareness%20Training">Talk to us →</a>
+      </div>
+    </div>
+
+    <p class="privacy">🔒 100% client-side. Analysis happens in your browser; nothing is uploaded or stored. This is a guide, not a guarantee — a clean-looking message can still be a scam. When in doubt, verify through a channel you trust.</p>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span>© 2026 ByTE X Bit Technologies LLC · software &amp; services, no hardware</span>
+    <a href="/">byte-x-bit.com</a>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  function esc(s){return (s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+  function reEsc(s){return s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");}
+
+  // Keyword-based detectors. Each returns the first matching snippet or null.
+  var KW=[
+    {cat:"Urgency & pressure",weight:2,why:"Scammers rush you so you act before thinking. Real organizations rarely demand instant action.",
+     words:["act now","urgent","immediately","right away","as soon as possible","within 24 hours","within 48 hours","expires today","expiring","expire","final notice","last warning","limited time","do not delay","don't delay","time-sensitive","time sensitive","immediate action","action required","respond now","verify now","update now"]},
+    {cat:"Threats & fear",weight:2,why:"Threatening to suspend, fine, or take legal action is a classic pressure tactic.",
+     words:["account has been suspended","account suspended","account is suspended","account will be","account locked","account has been locked","locked out","unauthorized access","suspicious activity","unusual activity","will be closed","will be terminated","will be deleted","legal action","lawsuit","you will be arrested","arrest warrant","penalty","overdue payment","failure to comply","failure to respond"]},
+    {cat:"Asks for passwords, codes, or payment",weight:3,why:"Legitimate companies never ask you to confirm passwords, card numbers, or one-time codes by email or text.",
+     words:["verify your account","verify your identity","confirm your account","confirm your identity","update your payment","update your billing","update payment information","verify your password","confirm your password","enter your password","sign in to confirm","provide your","your social security","social security number","credit card number","card number","banking details","bank account number","routing number","one-time code","verification code","security code","2fa code","otp code"]},
+    {cat:"Money lure / too good to be true",weight:2,why:"Prizes, refunds, inheritances, and guaranteed returns are bait. If it sounds too good to be true, it is.",
+     words:["you have won","you've won","you won","congratulations you","claim your prize","lottery","inheritance","unclaimed funds","tax refund","you are owed","you are entitled","claim your refund","gift card","gift cards","wire transfer","bitcoin","cryptocurrency","crypto wallet","investment opportunity","guaranteed return","double your money","risk-free","work from home"]},
+    {cat:"Gift-card / boss-impersonation (BEC)",weight:3,why:"A boss or vendor asking for gift cards, secrecy, or a 'quick favor' is the signature of business email compromise.",
+     words:["buy gift cards","purchase gift cards","gift card codes","keep this confidential","keep this between us","don't tell anyone","do not tell anyone","are you at your desk","are you available","quick favor","i need you to","handle this discreetly","wire the funds","change the bank details","update the bank account","new banking information"]},
+    {cat:"Generic, impersonal greeting",weight:1,why:"Mass scam emails often can't use your real name, so they open with a generic greeting.",
+     words:["dear customer","dear user","dear account holder","dear member","dear valued customer","dear sir/madam","dear sir or madam","hello user","attention account holder"]},
+    {cat:"Pushes an attachment",weight:2,why:"Unexpected attachments — especially ones that ask you to 'enable content' — are a common way to deliver malware.",
+     words:["open the attached","see attached","review the attached","attached invoice","attached document","enable content","enable editing","enable macros",".exe",".zip file",".scr"]}
+  ];
+
+  var BRANDS=["paypal","apple","microsoft","office365","amazon","netflix","irs","social security administration","bank of america","wells fargo","chase","citibank","usps","fedex","ups","docusign","geek squad","norton","mcafee","coinbase","venmo","zelle","google account"];
+
+  function findFlags(text){
+    var lower=text.toLowerCase();
+    var flags=[]; var snippets=[];
+
+    KW.forEach(function(d){
+      for(var i=0;i<d.words.length;i++){
+        var w=d.words[i];
+        var idx=lower.indexOf(w);
+        if(idx>=0){
+          var snip=text.substr(Math.max(0,idx-12), w.length+34).trim();
+          flags.push({cat:d.cat,why:d.why,weight:d.weight,snip:snip});
+          snippets.push(text.substr(idx,w.length));
+          break; // one hit per category is enough
+        }
+      }
+    });
+
+    // --- link analysis ---
+    var urls=text.match(/https?:\/\/[^\s"'<>)]+/gi)||[];
+    var linkIssues=[];
+    var shorteners=["bit.ly","tinyurl.com","t.co","goo.gl","ow.ly","is.gd","buff.ly","rebrand.ly","cutt.ly","rb.gy","shorturl.at"];
+    urls.forEach(function(u){
+      var host="";
+      try{ host=(u.match(/^https?:\/\/([^\/:?#]+)/i)||[])[1]||""; }catch(e){}
+      host=host.toLowerCase();
+      if(!host) return;
+      if(/^https?:\/\//i.test(u)===false) return;
+      if(/^http:\/\//i.test(u)) linkIssues.push({u:u,r:"Uses insecure http:// (no encryption)."});
+      if(/^\d{1,3}(\.\d{1,3}){3}$/.test(host)) linkIssues.push({u:u,r:"Link goes to a raw IP address instead of a real domain name."});
+      if(host.indexOf("xn--")>=0) linkIssues.push({u:u,r:"Domain uses punycode — often used to disguise a lookalike address."});
+      shorteners.forEach(function(s){ if(host===s||host.endsWith("."+s)) linkIssues.push({u:u,r:"Uses a link shortener ("+s+") that hides the real destination."}); });
+      // brand lookalike: brand word appears in host but host isn't the brand's real domain
+      BRANDS.forEach(function(b){
+        var key=b.replace(/[^a-z0-9]/g,"");
+        if(key.length>=4 && host.replace(/[^a-z0-9]/g,"").indexOf(key)>=0 && host.indexOf(key+".")!==0 && !host.endsWith(key+".com")){
+          linkIssues.push({u:u,r:'Domain contains "'+b+'" but isn\u2019t the real '+b+' site — a common impersonation trick.'});
+        }
+      });
+      // lots of hyphens / very long host
+      if((host.match(/-/g)||[]).length>=3) linkIssues.push({u:u,r:"Domain has an unusual number of hyphens — often a sign of a fake."});
+    });
+    // dedupe link issues by url+reason
+    var seen={};
+    linkIssues=linkIssues.filter(function(x){var k=x.u+x.r;if(seen[k])return false;seen[k]=true;return true;});
+    if(linkIssues.length){
+      var detail=linkIssues.slice(0,5).map(function(x){return x.r+"  ["+x.u.slice(0,60)+"]";}).join("  \u2022  ");
+      flags.push({cat:"Suspicious link",why:"The web address doesn't match what it claims, or is built to hide where it really goes. Hover (don't click) to see the true destination.",weight:3,snip:detail});
+      urls.forEach(function(u){ snippets.push(u); });
+    }
+
+    // brand impersonation context (mention of a brand alongside other flags)
+    var brandHit=null;
+    for(var i=0;i<BRANDS.length;i++){ if(lower.indexOf(BRANDS[i])>=0){ brandHit=BRANDS[i]; break; } }
+    if(brandHit && flags.length){
+      flags.push({cat:"Impersonates a known brand",why:"The message invokes a trusted name ("+brandHit+") to lower your guard. Brand names are easy to fake.",weight:1,snip:brandHit});
+      snippets.push(brandHit);
+    }
+
+    return {flags:flags, snippets:snippets};
+  }
+
+  function verdictFor(score, nflags){
+    // tiers: 0 none, 1 low, 2 medium, 3 high, 4 very high
+    if(nflags===0) return {r:0,title:"No obvious red flags",
+      text:"Nothing here matched the common scam patterns. That\u2019s reassuring \u2014 but not a guarantee. Sophisticated scams can look clean, so if anything feels off, verify with the sender through a channel you trust before acting."};
+    if(score<=2) return {r:1,title:"A couple of things to double-check",
+      text:"There are one or two mild warning signs. Treat it with healthy caution \u2014 don\u2019t click links or share anything until you\u2019re sure who really sent it."};
+    if(score<=5) return {r:2,title:"Be cautious \u2014 several scam signals",
+      text:"This message shows multiple patterns scammers use. Don\u2019t act on it yet. Verify the sender independently before clicking, replying, or sharing anything."};
+    if(score<=9) return {r:3,title:"Likely a scam",
+      text:"This matches how phishing and scam messages are built. Don\u2019t click links, open attachments, reply, or share any information. Verify through a trusted channel and consider reporting it."};
+    return {r:4,title:"Almost certainly a scam",
+      text:"This is loaded with the hallmarks of a phishing or fraud attempt. Do not click, reply, call, pay, or share anything. Delete it, and warn others if it came through a work account."};
+  }
+
+  function todoFor(r){
+    var base=[
+      "Don\u2019t click any links or open attachments in the message.",
+      "Don\u2019t reply, and don\u2019t call phone numbers listed in the message.",
+      "Never share passwords, one-time codes, or card details by email or text \u2014 no real company asks for these.",
+      "Verify independently: contact the company or person using a number or website you look up yourself, not the one in the message."
+    ];
+    if(r>=3){
+      base.push("If it came to a work account, report it to your IT/security contact and don\u2019t forward it to coworkers.");
+      base.push("Report phishing to the FTC at reportfraud.ftc.gov (US) and to the impersonated company.");
+    }
+    if(r===0){
+      return ["Even with no obvious flags, verify unexpected requests for money, logins, or data through a trusted channel.",
+        "Be extra careful if the message creates urgency or asks you to act outside your normal process."];
+    }
+    return base;
+  }
+
+  function highlight(text, snippets){
+    var html=esc(text);
+    // unique, longest-first so longer matches wrap before shorter substrings
+    var uniq=[];
+    snippets.forEach(function(s){ if(s && s.length>=3 && uniq.indexOf(s)<0) uniq.push(s); });
+    uniq.sort(function(a,b){return b.length-a.length;});
+    uniq.forEach(function(s){
+      try{
+        var re=new RegExp(reEsc(esc(s)),"gi");
+        html=html.replace(re,function(m){return "<mark>"+m+"</mark>";});
+      }catch(e){}
+    });
+    return html;
+  }
+
+  function analyze(){
+    var text=$("msg").value.trim();
+    $("err").style.display="none";
+    if(text.length<15){
+      $("err").textContent="Paste a bit more of the message (at least a sentence or two) so we have something to analyze.";
+      $("err").style.display="block";
+      $("results").style.display="none";
+      return;
+    }
+    var res=findFlags(text);
+    var score=res.flags.reduce(function(a,f){return a+f.weight;},0);
+    var v=verdictFor(score,res.flags.length);
+
+    var vEl=$("verdict");
+    vEl.className="verdict r"+v.r;
+    $("vtitle").textContent=v.title;
+    $("vtext").textContent=v.text;
+
+    if(res.flags.length){
+      // order strongest first
+      res.flags.sort(function(a,b){return b.weight-a.weight;});
+      var fh="";
+      res.flags.forEach(function(f){
+        fh+='<div class="flag"><div class="ft">'+esc(f.cat)+'</div>'+
+            '<div class="why">'+esc(f.why)+'</div>'+
+            (f.snip?'<div class="snip">'+esc(f.snip)+'</div>':'')+'</div>';
+      });
+      $("flags").innerHTML=fh;
+      $("flags-wrap").style.display="block";
+    }else{
+      $("flags-wrap").style.display="none";
+    }
+
+    $("msgview").innerHTML=highlight(text,res.snippets);
+
+    $("todo-h").textContent = v.r>=3 ? "Do not act on this" : (v.r===0 ? "Stay alert anyway" : "Be careful");
+    var tl=todoFor(v.r);
+    $("todo-list").innerHTML=tl.map(function(t){return "<li>"+esc(t)+"</li>";}).join("");
+
+    $("results").style.display="block";
+    $("results").scrollIntoView({behavior:"smooth",block:"start"});
+  }
+
+  var EX1="From: PayPal Service <service@paypal-secure-alerts.com>\n\nDear Customer,\n\nWe detected unusual activity on your account. Your account has been suspended for your protection. You must verify your identity immediately or your account will be permanently closed within 24 hours.\n\nClick here to verify now: http://paypal-secure-alerts.com/login\n\nFailure to respond will result in account termination.\n\nPayPal Security Team";
+  var EX2="Hi,\n\nAre you at your desk? I'm heading into a meeting and need a quick favor. I need you to purchase 4 gift cards ($200 each) for a client appreciation gift. Keep this confidential for now, it's a surprise. Send me the codes once you have them and I'll reimburse you today.\n\nThanks,\nThe CEO\n(sent from my iPhone)";
+
+  $("go").addEventListener("click",analyze);
+  $("clear").addEventListener("click",function(){$("msg").value="";$("results").style.display="none";$("err").style.display="none";$("msg").focus();});
+  $("ex1").addEventListener("click",function(){$("msg").value=EX1;analyze();});
+  $("ex2").addEventListener("click",function(){$("msg").value=EX2;analyze();});
+})();
+</script>
+</body>
+</html>
