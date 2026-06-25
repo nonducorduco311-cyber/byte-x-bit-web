@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ByTE X Bit Technologies LLC — Cybersecurity Software &amp; Services</title>
-<meta name="description" content="ByTE X Bit Technologies keeps organizations safe, secure, and reliable through cybersecurity services and software-defined applications — free tools, a professional purple/blue-team platform (PILA, CODE, GHOST, SENTINEL), and custom builds. Open core, Apache 2.0. No hardware.">
+<meta name="description" content="ByTE X Bit Technologies keeps organizations safe, secure, and reliable through cybersecurity services and software-defined applications — free tools, a professional purple/blue-team platform (PILA, CODE, GHOST, SENTINEL), and custom builds. Open core, Apache 2.0.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -316,14 +316,15 @@
   .view.active{display:block}
 
   /* landing entry doors */
-  .doors3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:46px}
+  .doors3{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-top:46px}
   .door3{border:1px solid var(--line);border-radius:16px;padding:30px;background:var(--panel);cursor:pointer;transition:all .25s;text-align:left;position:relative;overflow:hidden}
   .door3::after{content:"";position:absolute;top:0;left:0;right:0;height:3px;opacity:.9;background:linear-gradient(90deg,var(--blue),transparent)}
   .door3:nth-child(2)::after{background:linear-gradient(90deg,var(--purple),transparent)}
-  .door3:nth-child(3)::after{background:linear-gradient(90deg,var(--green),transparent)}
+  .door3:nth-child(3)::after{background:linear-gradient(90deg,var(--amber),transparent)}
+  .door3:nth-child(4)::after{background:linear-gradient(90deg,var(--green),transparent)}
   .door3:hover{border-color:var(--line-2);transform:translateY(-4px)}
   .door3 .dk{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--blue)}
-  .door3:nth-child(2) .dk{color:var(--purple)} .door3:nth-child(3) .dk{color:var(--green)}
+  .door3:nth-child(2) .dk{color:var(--purple)} .door3:nth-child(3) .dk{color:var(--amber)} .door3:nth-child(4) .dk{color:var(--green)}
   .door3 h3{font-size:22px;font-weight:800;margin:13px 0 9px;letter-spacing:-.01em}
   .door3 p{color:var(--ink-dim);font-size:14.5px}
   .door3 .go{display:inline-block;margin-top:16px;color:var(--ink);font-weight:600;font-size:14px}
@@ -363,7 +364,7 @@
           <div class="dhead">Small Businesses</div>
           <a data-view="smb">Overview</a>
           <a data-view="smb" data-anchor="smb-free">Free tools <small class="free">FREE</small></a>
-          <a data-view="smb" data-anchor="smb-paid">Services <small class="paid">PAID</small></a>
+          <a data-view="smb" data-anchor="smb-paid">Services</a>
           <div class="ddiv"></div>
           <a data-view="contact">Get started →</a>
         </div>
@@ -374,13 +375,23 @@
           <div class="dhead">Large Businesses &amp; Enterprise</div>
           <a data-view="large">Overview</a>
           <a data-view="large" data-anchor="large-free">Free tools <small class="free">FREE</small></a>
-          <a data-view="large" data-anchor="large-services">Services <small class="paid">PAID</small></a>
-          <a data-view="large" data-anchor="large-platform">The platform <small class="paid">PAID</small></a>
+          <a data-view="large" data-anchor="large-services">Services</a>
+          <a data-view="large" data-anchor="large-platform">The platform</a>
           <div class="ddiv"></div>
           <a data-view="contact">Talk to us →</a>
         </div>
       </div>
-      <div class="navitem has-dd" data-nav="tools">
+      <div class="navitem has-dd" data-nav="gov">
+        <button>For Government <span class="caret">▾</span></button>
+        <div class="dropdown">
+          <div class="dhead">Government &amp; Public Sector</div>
+          <a data-view="gov">Overview</a>
+          <a data-view="gov" data-anchor="gov-services">Services</a>
+          <a data-view="gov" data-anchor="gov-contracting">Contracting readiness</a>
+          <div class="ddiv"></div>
+          <a data-view="contact">Talk to us →</a>
+        </div>
+      </div>
         <button>Try the Tools <span class="caret">▾</span></button>
         <div class="dropdown">
           <div class="dhead">Free &amp; Open Source</div>
@@ -412,7 +423,7 @@
     <div>
     <div class="eyebrow reveal"><span class="dot"></span> CYBERSECURITY · SOFTWARE &amp; SERVICES</div>
     <h1 class="hero-h reveal">Keep your business <span class="grad">safe, secure, and reliable.</span></h1>
-    <p class="lead reveal">Security tools and hands-on expertise to keep your organization protected — delivered entirely as software and services. No hardware, and no black boxes you can't audit.</p>
+    <p class="lead reveal">We bring the security practices that protect government and defense networks to organizations of every size — small businesses, enterprises, and public-sector agencies alike. Delivered entirely as software and services — no black boxes you can't audit.</p>
     <p class="sub reveal">Choose your path — or just grab a free tool and start experimenting.</p>
     </div>
     <div class="hero-logo reveal"><img src="bxb-lockup.png" alt="ByTE X Bit Technologies LLC"></div>
@@ -420,6 +431,7 @@
     <div class="doors3">
       <div class="door3 reveal" data-view="smb"><div class="dk">FOR SMALL BUSINESSES</div><h3>Stay protected, lean</h3><p>Done-for-you security without hiring a team — plus free tools you can use today.</p><span class="go">See small-business offerings →</span></div>
       <div class="door3 reveal" data-view="large"><div class="dk">FOR LARGE BUSINESSES</div><h3>Deepen your program</h3><p>Detection engineering, compliance, the professional platform, and custom builds.</p><span class="go">See enterprise offerings →</span></div>
+      <div class="door3 reveal" data-view="gov"><div class="dk">GOVERNMENT &amp; PUBLIC SECTOR</div><h3>Mission-grade security</h3><p>Compliance, validation, and engineering for agencies — available for subcontracting and partnership.</p><span class="go">See public-sector offerings →</span></div>
       <div class="door3 reveal" data-view="tools"><div class="dk">JUST EXPLORING</div><h3>Try the tools</h3><p>Free, no commitment. Run a single tool or clone the whole community edition.</p><span class="go">Browse free tools →</span></div>
     </div>
 
@@ -455,7 +467,7 @@
       <a class="tool reveal" href="/phishing-spotter.html"><div class="ttop"><b>Phishing &amp; Scam Spotter</b><span class="tag t-free">Free</span></div><p>Paste a suspicious email or text and see the scam red flags explained.</p><span class="live">Open the tool →</span></a>
     </div>
 
-    <div class="grouplbl reveal" id="smb-paid"><span>SERVICES · PAID</span><span class="ln"></span></div>
+    <div class="grouplbl reveal" id="smb-paid"><span>SERVICES</span><span class="ln"></span></div>
     <div class="svc-grid">
       <div class="svc reveal"><span class="sk">Assess</span><h4>Security Health Check</h4><p>A clear picture of where you stand and a prioritized list of what to fix first.</p></div>
       <div class="svc reveal"><span class="sk">Operate</span><h4>Managed Monitoring</h4><p>We set up your detection and alerting, then keep the noise down so real threats stand out.</p></div>
@@ -479,14 +491,14 @@
 
     <div class="grouplbl reveal" id="large-free"><span>FREE TOOLS FOR SECURITY TEAMS</span><span class="ln"></span></div>
     <div class="tools">
-      <div class="tool reveal"><div class="ttop"><b>ATT&amp;CK Coverage Viewer</b><span class="tag t-free">Free</span></div><p>Visualize what your stack detects. The scoring engine is the paid part.</p></div>
+      <div class="tool reveal"><div class="ttop"><b>ATT&amp;CK Coverage Viewer</b><span class="tag t-free">Free</span></div><p>Visualize what your stack detects. The scoring engine is the professional part.</p></div>
       <div class="tool reveal"><div class="ttop"><b>Detection Health Guard</b><span class="tag t-free">Free</span></div><p>Catch detections that have silently stopped firing.</p></div>
       <div class="tool reveal"><div class="ttop"><b>Sigma Rule Validator</b><span class="tag t-free">Free</span></div><p>Lint and convert detection rules across formats.</p></div>
       <div class="tool reveal"><div class="ttop"><b>Log Field-Drift Checker</b><span class="tag t-free">Free</span></div><p>Spot telemetry changes that quietly break your rules.</p></div>
       <div class="tool reveal"><div class="ttop"><b>Connectors &amp; PSIL SDK</b><span class="tag t-oss">Apache 2.0</span></div><p>Plug Elastic, Suricata, Zeek, and Wazuh into one model.</p></div>
     </div>
 
-    <div class="grouplbl reveal" id="large-services"><span>SERVICES · PAID</span><span class="ln"></span></div>
+    <div class="grouplbl reveal" id="large-services"><span>SERVICES</span><span class="ln"></span></div>
     <div class="svc-grid">
       <div class="svc reveal"><span class="sk">Build</span><h4>Detection Engineering Program</h4><p>Stand up or sharpen your detection program and integrate it with your existing SOC.</p></div>
       <div class="svc reveal"><span class="sk">Validate</span><h4>Purple-Team Engagement</h4><p>Scored adversary emulation that proves exactly what you can and can't catch.</p></div>
@@ -495,7 +507,7 @@
       <div class="svc reveal"><span class="sk">Build</span><h4>Custom Engineering</h4><p>Bespoke security software shaped to your environment and workflows.</p></div>
     </div>
 
-    <div class="grouplbl reveal" id="large-platform"><span>THE PROFESSIONAL PLATFORM · PAID</span><span class="ln"></span></div>
+    <div class="grouplbl reveal" id="large-platform"><span>THE PROFESSIONAL PLATFORM</span><span class="ln"></span></div>
     <p class="sec-sub reveal" style="margin-top:0">Proof your defenses <b style="color:var(--ink)">actually work</b> — four engines, one platform that emulates attacks, contains them, tracks coverage over time, and signs it into a verifiable trust score.</p>
     <div class="products">
       <div class="pcard pila reveal"><div class="ptop"><span class="pname">PILA</span><span class="pteam">PURPLE TEAM</span></div><div class="pfull">Purple Intelligence &amp; Lifecycle Automation</div><div class="pdesc">Run, emulate, and score purple-team exercises against your live detection stack.</div><div class="pmods"><span>PSIL</span><span>LMEP</span><span>IRV</span><span>AESP</span></div></div>
@@ -507,6 +519,49 @@
     <div class="hero-cta reveal" style="margin-top:18px">
       <a href="mailto:bryant@byte-x-bit.com?subject=Professional%20Access%20Inquiry" class="btn btn-blue">Get Professional Access →</a>
       <a href="mailto:bryant@byte-x-bit.com?subject=Enterprise%20Inquiry" class="btn btn-outline">Talk to us about Enterprise</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== GOVERNMENT ===== -->
+<section class="view view-pad" id="view-gov">
+  <div class="wrap">
+    <div class="sec-tag reveal">// GOVERNMENT &amp; PUBLIC SECTOR</div>
+    <h2 class="sec-h reveal">Mission-grade security for the public sector.</h2>
+    <p class="lead reveal" style="max-width:60ch">ByTE X Bit brings Department of Defense and Intelligence Community-grade defensive practices to local, state, and federal agencies — and to the primes who serve them. Built on the same frameworks (NIST 800-53, RMF, CMMC) that govern federal systems. Software and services only.</p>
+
+    <div class="grouplbl reveal" id="gov-services"><span>SERVICES</span><span class="ln"></span></div>
+    <div class="svc-grid">
+      <div class="svc reveal"><span class="sk">Comply</span><h4>RMF &amp; CMMC Compliance</h4><p>NIST 800-53, RMF, and CMMC programs with audit-ready evidence — SSPs, POA&amp;Ms, and ATO support.</p></div>
+      <div class="svc reveal"><span class="sk">Validate</span><h4>Purple-Team Engagement</h4><p>Scored adversary emulation mapped to MITRE ATT&amp;CK that proves what your defenses actually catch.</p></div>
+      <div class="svc reveal"><span class="sk">Build</span><h4>Detection Engineering</h4><p>Stand up or sharpen detection content and integrate it with your existing SOC and SIEM.</p></div>
+      <div class="svc reveal"><span class="sk">Defend</span><h4>Monitoring &amp; CND</h4><p>Continuous monitoring and cyber network defense, tuned to your environment and threat model.</p></div>
+      <div class="svc reveal"><span class="sk">Advise</span><h4>Security Advisory</h4><p>Senior security guidance for programs, architecture, and assessments.</p></div>
+      <div class="svc reveal"><span class="sk">Build</span><h4>Custom Engineering</h4><p>Bespoke security tooling, automations, and analysis built to your mission requirements.</p></div>
+    </div>
+
+    <div class="grouplbl reveal" id="gov-contracting"><span>CONTRACTING READINESS</span><span class="ln"></span></div>
+    <div class="company-grid">
+      <div class="reveal">
+        <p>ByTE X Bit Technologies LLC is a Maryland-registered small business available for <b style="color:var(--ink)">subcontracting and teaming</b> with primes on federal, state, and local engagements. Our founder brings two decades of cleared-environment defensive cybersecurity experience and the framework fluency public-sector work demands.</p>
+        <p>A formal capability statement is available on request. Federal registrations (SAM.gov UEI, CAGE, and NAICS alignment) are being established — reach out and we'll share current status and our capability statement directly.</p>
+      </div>
+      <div class="facts reveal">
+        <div class="frow"><span class="fk">BUSINESS</span><span class="fv">Small business · Maryland, USA</span></div>
+        <div class="frow"><span class="fk">AVAILABILITY</span><span class="fv">Subcontracting · teaming · direct</span></div>
+        <div class="frow"><span class="fk">FRAMEWORKS</span><span class="fv">NIST 800-53 · RMF · CMMC · NIST CSF</span></div>
+        <div class="frow"><span class="fk">COMPETENCIES</span><span class="fv">CND · SIEM/SOC · detection eng · vuln mgmt · purple team</span></div>
+        <div class="frow"><span class="fk">DELIVERY</span><span class="fv">Software &amp; services · open core</span></div>
+        <div class="frow"><span class="fk">CONTACT</span><span class="fv">bryant@byte-x-bit.com</span></div>
+      </div>
+    </div>
+
+    <div class="ctaband reveal" style="margin-top:46px">
+      <h2>Serving a public-sector mission?</h2>
+      <p>Whether you're an agency that needs hands-on security help or a prime looking for a capable small-business partner, let's talk.</p>
+      <div class="hero-cta">
+        <a href="mailto:bryant@byte-x-bit.com?subject=Government%20%2F%20Public%20Sector%20Inquiry" class="btn btn-blue">Request our capability statement →</a>
+      </div>
     </div>
   </div>
 </section>
@@ -580,9 +635,27 @@
         <div class="frow"><span class="fk">ENTITY</span><span class="fv">ByTE X Bit Technologies LLC</span></div>
         <div class="frow"><span class="fk">FORMATION</span><span class="fv">Maryland, USA</span></div>
         <div class="frow"><span class="fk">MODEL</span><span class="fv">Software &amp; services · open core</span></div>
-        <div class="frow"><span class="fk">DELIVERY</span><span class="fv">Remote-first · no hardware</span></div>
+        <div class="frow"><span class="fk">DELIVERY</span><span class="fv">Software &amp; services · open core</span></div>
         <div class="frow"><span class="fk">IP</span><span class="fv">Patent pending</span></div>
         <div class="frow"><span class="fk">CONTACT</span><span class="fv">bryant@byte-x-bit.com</span></div>
+      </div>
+    </div>
+
+    <div class="sec-tag reveal" style="margin-top:54px">// THE FOUNDER</div>
+    <h2 class="sec-h reveal">Enterprise-grade rigor, at a small-business scale.</h2>
+    <div class="company-grid">
+      <div class="reveal">
+        <p>ByTE X Bit was founded by <b style="color:var(--ink)">Bryant Himmage</b>, a cybersecurity professional with over two decades of experience supporting U.S. Department of Defense and Intelligence Community missions in classified environments. His career spans the full breadth of defensive security — cyber network defense, security operations and SIEM engineering, vulnerability management, and information systems security engineering — built around the same risk-management frameworks (NIST 800-53, RMF) that govern the most security-conscious organizations in the country.</p>
+        <p>That background shapes how ByTE X Bit works: methodical, evidence-driven, and focused on real risk reduction rather than checkbox security. When he isn't working with clients, he's in his own security lab — building and testing the detection, monitoring, and analysis tooling that informs the services and free tools you'll find here.</p>
+        <p>The takeaway for you: enterprise-grade thinking applied at a small-business scale. The free tools on this site are a glimpse of that approach — practical, honest, built to actually help. When you're ready for hands-on help, you're working directly with someone who has defended networks where the stakes were genuinely high.</p>
+      </div>
+      <div class="facts reveal">
+        <div class="frow"><span class="fk">FOUNDER</span><span class="fv">Bryant Himmage</span></div>
+        <div class="frow"><span class="fk">EXPERIENCE</span><span class="fv">20+ yrs · DoD / IC, classified environments</span></div>
+        <div class="frow"><span class="fk">FOCUS</span><span class="fv">Cyber defense · SIEM/SOC · vuln mgmt · ISSE</span></div>
+        <div class="frow"><span class="fk">FRAMEWORKS</span><span class="fv">NIST 800-53 · RMF</span></div>
+        <div class="frow"><span class="fk">EDUCATION</span><span class="fv">B.S. Computer Networks &amp; Cybersecurity, UMGC</span></div>
+        <div class="frow"><span class="fk">CERTIFICATIONS</span><span class="fv">CompTIA CySA+ · Security+ · DoD IAT II</span></div>
       </div>
     </div>
   </div>
@@ -611,11 +684,12 @@
           <img src="bxb-logo.png" alt="ByTE X Bit Technologies LLC" class="logo-img">
           <span class="btxt"><b>ByTE&nbsp;X&nbsp;Bit</b><small>TECHNOLOGIES&nbsp;LLC</small></span>
         </a>
-        <p>Cybersecurity software &amp; services. We keep organizations safe, secure, and reliable — no hardware required.</p>
+        <p>Cybersecurity software &amp; services. We keep organizations safe, secure, and reliable.</p>
       </div>
       <div class="foot-cols">
         <div class="foot-col"><h5>SMALL BUSINESSES</h5><a data-view="smb" data-anchor="smb-free">Free tools</a><a data-view="smb" data-anchor="smb-paid">Services</a></div>
         <div class="foot-col"><h5>LARGE BUSINESSES</h5><a data-view="large" data-anchor="large-free">Free tools</a><a data-view="large" data-anchor="large-services">Services</a><a data-view="large" data-anchor="large-platform">Platform</a></div>
+        <div class="foot-col"><h5>GOVERNMENT</h5><a data-view="gov" data-anchor="gov-services">Services</a><a data-view="gov" data-anchor="gov-contracting">Contracting</a></div>
         <div class="foot-col"><h5>COMPANY</h5><a data-view="tools">Try the tools</a><a data-view="company">About</a><a data-view="contact">Contact</a></div>
       </div>
     </div>
@@ -653,7 +727,7 @@
   // mobile menu
   var mm=document.getElementById('mmenu');
   mm.innerHTML='<div style="display:flex;flex-direction:column;gap:2px;padding:10px 24px 18px;border-top:1px solid var(--line)">'+
-    [['smb','Small Businesses'],['large','Large Businesses'],['tools','Try the Tools'],['resources','Resources'],['company','Company'],['contact','Contact']]
+    [['smb','Small Businesses'],['large','Large Businesses'],['gov','Government'],['tools','Try the Tools'],['resources','Resources'],['company','Company'],['contact','Contact']]
     .map(function(p){return '<a data-mview="'+p[0]+'" style="padding:12px 0;color:var(--ink-dim);border-bottom:1px solid var(--line);font-size:15px;cursor:pointer">'+p[1]+'</a>';}).join('')+
     '<a href="https://github.com/nonducorduco311-cyber/pila-suite" target="_blank" rel="noopener" style="padding:12px 0;color:var(--blue);font-size:15px">GitHub ↗</a></div>';
   mm.querySelectorAll('[data-mview]').forEach(function(a){a.addEventListener('click',function(){showView(a.getAttribute('data-mview'));});});
