@@ -206,7 +206,11 @@ NET START WazuhSvc
     <!-- Self-hosted comment widget mounts here. Add the service embed <script> in the build step
          once the comment container is deployed. The security controls (input sanitization, XSS
          escaping on render, rate limiting, moderation) live in that service, not this page. -->
-    <div id="comments-thread" data-post="wazuh-endpoint-detection-home-lab">Comments load here once the comment service is connected.</div>
+    <script data-isso="https://comments.byte-x-bit.com/"
+        data-isso-require-author="true"
+        data-isso-reply-notifications-default-enabled="false"
+        src="https://comments.byte-x-bit.com/js/embed.min.js"></script>
+    <section id="isso-thread"></section>
   </section>
 </div>
 <footer><div class="wrap">
