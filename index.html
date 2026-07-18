@@ -817,6 +817,15 @@
   mm.querySelectorAll('[data-mview]').forEach(function(a){a.addEventListener('click',function(){showView(a.getAttribute('data-mview'));});});
   // initial reveal for home
   document.querySelectorAll('#view-home .reveal').forEach(function(r){r.classList.add('in');});
+  // hash routing: /#resources (etc.) opens that view on load + on hash change
+  (function(){
+    function applyHash(){
+      var h=location.hash.replace('#','');
+      if(h && document.getElementById('view-'+h)) showView(h);
+    }
+    window.addEventListener('hashchange', applyHash);
+    applyHash();
+  })();
 </script>
 </body>
 </html>
