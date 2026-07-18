@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>See What&#x27;s Really on Your Network: Elasticsearch, Kibana, and Zeek from Scratch</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0e14; --panel:#111823; --panel2:#0d141d; --line:#1d2735;
+  --ink:#e6edf3; --ink-dim:#8b98a9; --ink-faint:#5b6675;
+  --blue:#4c8dff; --blue-dim:#22375c; --green:#3fd18b;
+  --display:'Syne',system-ui,sans-serif; --mono:'Space Mono',ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--mono);font-size:15px;line-height:1.7;
+  background-image:radial-gradient(900px 500px at 82% -8%, #12233f22, transparent 60%)}
+a{color:var(--blue);text-decoration:none} a:hover{text-decoration:underline}
+.wrap{max-width:820px;margin:0 auto;padding:0 24px}
+.nav{border-bottom:1px solid var(--line);background:#0b0f16cc;backdrop-filter:blur(6px);position:sticky;top:0;z-index:5}
+.nav .wrap{max-width:1180px;display:flex;align-items:center;justify-content:space-between;height:60px}
+.nav .brand{display:flex;align-items:center;gap:11px;text-decoration:none}
+.nav .brand:hover{text-decoration:none}
+.nav .logo-img{height:30px;width:auto;display:block}
+.nav .btxt{font-family:var(--display);font-weight:800;font-size:17px;letter-spacing:-.01em;color:var(--ink);line-height:1}
+.nav .btxt small{display:block;font-family:var(--mono);font-weight:400;font-size:8.5px;letter-spacing:.18em;color:var(--ink-dim);margin-top:2px}
+.nav .back{font-family:var(--mono);font-size:12.5px;color:var(--ink-dim)} .nav .back:hover{color:var(--ink);text-decoration:none}
+@media(max-width:520px){.nav .btxt small{display:none}}
+footer{border-top:1px solid var(--line);margin-top:60px;padding:24px 0;color:var(--ink-faint);font-size:11.5px}
+footer .wrap{display:flex;gap:16px;flex-wrap:wrap;align-items:center;max-width:1180px}
+footer b{color:var(--ink-dim)}
+
+.hero{padding:44px 0 8px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--blue);margin:0 0 14px}
+h1{font-family:var(--display);font-weight:800;font-size:34px;line-height:1.12;letter-spacing:-.015em;margin:0 0 16px}
+.meta{color:var(--ink-faint);font-size:12.5px;display:flex;gap:14px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:22px}
+article{padding-top:26px}
+article h2{font-family:var(--display);font-weight:700;font-size:24px;letter-spacing:-.01em;margin:38px 0 12px;padding-top:8px}
+article h3{font-family:var(--display);font-weight:700;font-size:18px;margin:26px 0 8px;color:#cdd8e6}
+article p{margin:0 0 16px}
+article ul,article ol{margin:0 0 16px;padding-left:22px} article li{margin:6px 0}
+article strong{color:#fff;font-weight:700}
+article code{font-family:var(--mono);font-size:13px;background:#0e1621;border:1px solid var(--line);border-radius:4px;padding:1px 6px;color:#a9c7ff}
+article pre{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:16px;overflow-x:auto;margin:0 0 18px;line-height:1.55}
+article pre code{background:none;border:0;padding:0;font-size:12.5px;color:#cfe0f5}
+article blockquote{border-left:3px solid var(--blue-dim);background:#0e1621;margin:0 0 18px;padding:12px 16px;color:var(--ink-dim);border-radius:0 6px 6px 0}
+article blockquote p{margin:0}
+article hr{border:0;border-top:1px solid var(--line);margin:34px 0}
+article a{text-decoration:underline;text-underline-offset:2px}
+article em{color:var(--ink-dim)}
+.comments{border-top:1px solid var(--line);margin-top:48px;padding-top:28px}
+.comments h2{font-family:var(--display);font-weight:700;font-size:20px;margin:0 0 6px}
+.comments .note{color:var(--ink-faint);font-size:12.5px;margin:0 0 18px}
+#comments-thread{min-height:60px;color:var(--ink-faint);font-size:13px}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand" href="/">
+    <img src="/bxb-logo.png" alt="ByTE X Bit Technologies LLC" class="logo-img">
+    <span class="btxt">ByTE&nbsp;X&nbsp;Bit<small>TECHNOLOGIES&nbsp;LLC</small></span>
+  </a>
+  <a class="back" href="/blog.html">&larr; Back to Blog</a>
+</div></nav>
+<div class="wrap">
+  <div class="hero">
+    <p class="eyebrow">Part 1 &middot; ByTE X Bit Blog</p>
+    <h1>See What&#x27;s Really on Your Network: Elasticsearch, Kibana, and Zeek from Scratch</h1>
+    <div class="meta"><span>2026-07-18</span><span>20 min</span></div>
+  </div>
+  <article>
+<p>Most people have no idea what their network actually talks to. Your devices are making hundreds of connections an hour — DNS lookups, TLS handshakes, software phoning home, the occasional thing you'd rather know about. You can't defend what you can't see, and for a home lab or a small shop, the tooling to <em>see</em> it is free and runs on hardware you probably already have lying around.</p>
+<p>This is a full walkthrough. By the end you'll have three pieces working together:</p>
+<ul>
+<li><strong>Zeek</strong> — a network sensor that watches traffic and turns it into rich, structured logs (who talked to whom, what DNS names were resolved, which TLS certificates were presented, and much more). Zeek isn't an alarm system; it's a meticulous note-taker.</li>
+<li><strong>Elasticsearch</strong> — a search engine that stores those logs and lets you query millions of them in milliseconds.</li>
+<li><strong>Kibana</strong> — the web interface that turns all of that into searchable tables and dashboards.</li>
+</ul>
+<p>We'll wire them together with <strong>Filebeat</strong>, a lightweight shipper that carries Zeek's logs into Elasticsearch.</p>
+<p>There's one problem everyone hits and few guides address honestly: <strong>getting traffic to your sensor in the first place.</strong> If your switch can't do port mirroring, a lot of tutorials just leave you stuck. We'll spend real time on that — it has more good answers than you'd think.</p>
+<p>A note on scope: everything below uses example addresses like <code>10.0.0.0/24</code> and hostnames like <code>sensor</code>. Swap in your own. Nothing here is specific to any one network.</p>
+<hr />
+<h2>What you'll need</h2>
+<ul>
+<li><strong>A machine to be the sensor/server.</strong> A spare mini PC, an old desktop, or a VM. Elasticsearch and Kibana are the heavy parts — give the box at least <strong>8 GB of RAM</strong> (16 GB is comfortable) and a bit of disk headroom; network logs add up. You can split Zeek onto a separate low-power box later, but one machine is fine to start.</li>
+<li><strong>Ubuntu 24.04 LTS</strong> (these steps also work on Debian; adjust the Zeek repo line for your release). A clean install.</li>
+<li><strong>A way to see the traffic you care about</strong> — the whole of Part 6. Don't skip ahead and install Zeek before reading it, or it'll happily watch an interface that sees nothing.</li>
+<li><strong><code>sudo</code> access</strong> and about an hour.</li>
+</ul>
+<p>A quick reality check before you start: Elasticsearch is memory-hungry and will not enjoy 2 GB of RAM. If the service keeps dying on you later, RAM is the first suspect.</p>
+<hr />
+<h2>Part 1 — The shape of what we're building</h2>
+<p>Traffic flows past a point on your network. Zeek watches that point and writes logs. Filebeat reads those logs and ships them to Elasticsearch. Kibana reads Elasticsearch and shows you the results.</p>
+<pre><code>[ your network traffic ]
+          │
+          ▼
+   ┌──────────────┐     ┌───────────────┐     ┌──────────┐
+   │     Zeek     │ ──► │  Filebeat     │ ──► │ Elastic- │ ◄── Kibana (your browser)
+   │ (the sensor) │     │ (the shipper) │     │  search  │
+   └──────────────┘     └───────────────┘     └──────────┘
+</code></pre>
+<p>We'll build it back-to-front: get the store (Elasticsearch) and the view (Kibana) up first so we have somewhere for data to land, then set up the sensor (Zeek), then solve traffic visibility, then connect the pipe (Filebeat).</p>
+<hr />
+<h2>Part 2 — Update the box</h2>
+<pre><code class="language-bash">sudo apt update &amp;&amp; sudo apt upgrade -y
+sudo apt install -y curl wget gnupg apt-transport-https lsb-release
+</code></pre>
+<hr />
+<h2>Part 3 — Install Elasticsearch</h2>
+<p>Add Elastic's package repository and its signing key:</p>
+<pre><code class="language-bash">wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch \
+  | sudo gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg
+
+echo &quot;deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://artifacts.elastic.co/packages/8.x/apt stable main&quot; \
+  | sudo tee /etc/apt/sources.list.d/elastic-8.x.list
+
+sudo apt update
+sudo apt install -y elasticsearch
+</code></pre>
+<p><strong>Read the install output carefully.</strong> Modern Elasticsearch turns on security by default the first time it installs, and during that process it prints a block that looks like this:</p>
+<pre><code>--------------------------- Security autoconfiguration information ------------------------------
+Authentication and authorization are enabled.
+TLS for the transport and HTTP layers is enabled and configured.
+The generated password for the elastic built-in superuser is : &lt;A_LONG_RANDOM_PASSWORD&gt;
+</code></pre>
+<p><strong>Copy that password somewhere safe right now.</strong> It's the <code>elastic</code> superuser login, and because the service runs under systemd rather than in your terminal, you won't get a second chance to see it scroll by.</p>
+<p>Missed it? No problem — you can set a new one at any time:</p>
+<pre><code class="language-bash">sudo /usr/share/elasticsearch/bin/elasticsearch-reset-password -u elastic
+</code></pre>
+<p>Now start it and enable it on boot:</p>
+<pre><code class="language-bash">sudo systemctl daemon-reload
+sudo systemctl enable elasticsearch
+sudo systemctl start elasticsearch
+</code></pre>
+<p>Give it a minute, then confirm it's alive. Elasticsearch speaks HTTPS with a self-signed certificate, so we point curl at the certificate authority it generated and log in as <code>elastic</code>:</p>
+<pre><code class="language-bash">curl --cacert /etc/elasticsearch/certs/http_ca.crt \
+  -u elastic &quot;https://localhost:9200&quot;
+</code></pre>
+<p>Enter the password when prompted. You should get back a small blob of JSON with a cluster name and a version number. That's Elasticsearch running with encryption and authentication already on — a much better default than the wide-open installs of years past.</p>
+<hr />
+<h2>Part 4 — Install Kibana</h2>
+<p>Kibana comes from the same repository you already added, so it's a one-liner:</p>
+<pre><code class="language-bash">sudo apt install -y kibana
+sudo systemctl daemon-reload
+sudo systemctl enable kibana
+sudo systemctl start kibana
+</code></pre>
+<p>Kibana listens on <code>localhost:5601</code> by default. If you're setting this up on a headless box and want to reach it from your laptop, edit <code>/etc/kibana/kibana.yml</code> and set:</p>
+<pre><code class="language-yaml">server.host: &quot;0.0.0.0&quot;
+</code></pre>
+<p>then restart Kibana (<code>sudo systemctl restart kibana</code>). A word of caution: <code>0.0.0.0</code> means "listen on every interface," so only do this on a trusted network, and don't expose port 5601 to the internet.</p>
+<p>Now connect Kibana to Elasticsearch. On the Elasticsearch box, generate a short-lived enrollment token:</p>
+<pre><code class="language-bash">sudo /usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s kibana
+</code></pre>
+<p>That prints a long token. Open Kibana in your browser (<code>http://&lt;your-server-ip&gt;:5601</code>), paste the token when prompted, and click <strong>Configure Elastic</strong>. Kibana will ask for a verification code, which you generate on the box with:</p>
+<pre><code class="language-bash">sudo /usr/share/kibana/bin/kibana-verification-code
+</code></pre>
+<p>Enter the six-digit code, wait for setup to finish, and log in as <code>elastic</code> with the password from Part 3. You now have an empty but fully working search-and-dashboard platform. Time to give it something to look at.</p>
+<blockquote>
+<p>The token is valid for 30 minutes. If it expires before you finish, just generate another one.</p>
+</blockquote>
+<hr />
+<h2>Part 5 — Install Zeek</h2>
+<p>Zeek is distributed for Ubuntu and Debian through the openSUSE Build Service. Add its repository (this line is for <strong>Ubuntu 24.04</strong> — if you're on a different release, change the <code>xUbuntu_24.04</code> part to match, or check the Zeek install docs for your distro):</p>
+<pre><code class="language-bash">echo 'deb https://download.opensuse.org/repositories/security:/zeek/xUbuntu_24.04/ /' \
+  | sudo tee /etc/apt/sources.list.d/security:zeek.list
+
+curl -fsSL https://download.opensuse.org/repositories/security:zeek/xUbuntu_24.04/Release.key \
+  | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/security_zeek.gpg &gt; /dev/null
+
+sudo apt update
+sudo apt install -y zeek-8.0
+</code></pre>
+<p>We're installing the <strong>8.0 LTS</strong> line on purpose. Zeek ships a new feature release every few months, but the LTS lines get a year of maintenance and won't surprise you by jumping to a newer major version — exactly what you want for something that's supposed to sit quietly and run.</p>
+<p>Zeek installs into <code>/opt/zeek</code>. Add its tools to your <code>PATH</code> so you don't have to type the full path every time:</p>
+<pre><code class="language-bash">echo 'export PATH=$PATH:/opt/zeek/bin' &gt;&gt; ~/.bashrc
+source ~/.bashrc
+zeek --version
+</code></pre>
+<p>Zeek is installed. But right now it can't see anything — which brings us to the part that actually matters.</p>
+<hr />
+<h2>Part 6 — Getting traffic to your sensor (the part nobody explains)</h2>
+<p>Zeek can only analyze packets it can see. On a modern switched network, that's the catch: a switch is <em>designed</em> to send each device only the traffic meant for it. Plug your sensor into a normal switch port and Zeek will see its own traffic and almost nothing else.</p>
+<p>The classic answer is <strong>port mirroring</strong> (also called <strong>SPAN</strong>), where you tell a managed switch to copy all traffic from one or more ports over to the port your sensor is on. If you have a managed switch, do this — it's the clean solution. Log into the switch, create a mirror/SPAN session with your uplink (or the ports you care about) as the <em>source</em> and your sensor's port as the <em>destination</em>, and you're done.</p>
+<p>But plenty of home labs and small offices run <strong>unmanaged switches</strong> that can't mirror at all. If that's you, here are your real options, cheapest and simplest first.</p>
+<h3>Option A — Watch at the gateway (free, and often enough)</h3>
+<p>Here's the insight most guides miss: in a typical home or small-office network, <em>almost everything interesting leaves through one place</em> — the router/gateway. Every DNS lookup, every connection to the internet, every cloud service passes through it. If you capture there, you see all of that "north-south" traffic without spending a cent.</p>
+<p>If your gateway runs an open firewall OS (OPNsense, pfSense, OpenWrt, or plain Linux), you can either run Zeek directly on it or mirror its WAN/LAN interface to your sensor. On a Linux-based router you can even span an interface in software with <code>tc</code>:</p>
+<pre><code class="language-bash"># Illustrative: mirror everything ingress/egress on the LAN interface to a dummy
+# interface the sensor reads. Adjust interface names to your gateway.
+sudo tc qdisc add dev eth0 ingress
+sudo tc filter add dev eth0 parent ffff: matchall action mirred egress mirror dev mon0
+</code></pre>
+<p><strong>Trade-off:</strong> you'll see everything to and from the internet, but you generally <em>won't</em> see "east-west" traffic — two devices talking directly to each other on the same LAN segment. For most people, north-south is 90% of what they wanted anyway.</p>
+<h3>Option B — Buy a cheap managed switch (~$30–80)</h3>
+<p>The best bang-for-buck fix is simply to replace (or add) a small "smart managed" switch that <em>does</em> support port mirroring. Entry-level 5- and 8-port managed switches from the usual brands cost less than a nice dinner and do SPAN just fine. Put it inline where you want visibility, mirror the uplink to your sensor, and you have a permanent, reliable tap point. For most home labs, this is the answer I'd actually recommend.</p>
+<p><strong>Trade-off:</strong> a small cost, and one more device in the rack. That's it.</p>
+<h3>Option C — Use a network TAP (best fidelity, some cost)</h3>
+<p>A <strong>network TAP</strong> is a small hardware device you insert inline on a cable — say, between your router and switch — that copies every packet to a monitor port. Unlike a mirror, a TAP is passive and doesn't drop frames under load, which is why it's the professional choice.</p>
+<ul>
+<li>A <strong>passive TAP</strong> splits each direction of the link, so you may need two NICs on your sensor (one per direction) or an <strong>aggregating TAP</strong> that combines both directions onto one monitor port.</li>
+<li>Aggregating TAPs start around the low hundreds of dollars — more than a cheap switch, but rock-solid and completely invisible to the network.</li>
+</ul>
+<p><strong>Trade-off:</strong> cost, and it only sees the one link you insert it on.</p>
+<h3>Option D — Make the sensor an inline bridge (free-ish, DIY)</h3>
+<p>If your sensor has <strong>two network cards</strong>, you can put it <em>inline</em> — traffic goes in one NIC and out the other, and Zeek watches the bridge in the middle. It's essentially a do-it-yourself TAP:</p>
+<pre><code class="language-bash"># Create a transparent bridge from two interfaces; Zeek then listens on br0.
+sudo ip link add name br0 type bridge
+sudo ip link set eth0 master br0
+sudo ip link set eth1 master br0
+sudo ip link set eth0 up
+sudo ip link set eth1 up
+sudo ip link set br0 up
+</code></pre>
+<p>Place that box between two segments (for example, between your switch and your access point) and it sees everything crossing it.</p>
+<p><strong>Trade-off:</strong> because traffic now physically passes <em>through</em> your sensor, if that box goes down, so does the link. Only do this where a brief outage is acceptable, and use decent NICs.</p>
+<h3>One thing to avoid</h3>
+<p>You may run across guides suggesting <strong>ARP spoofing</strong> to trick a switch into sending you other devices' traffic. Don't. It's disruptive, fragile, degrades the network for everyone on it, and it's the kind of technique that belongs in an authorized penetration test, not a permanent monitoring setup. Every option above is more reliable and doesn't fight your own network.</p>
+<h3>Picking one</h3>
+<ul>
+<li><strong>Just want to start today, for free?</strong> Option A (watch at the gateway).</li>
+<li><strong>Want a clean, permanent, cheap setup?</strong> Option B (a small managed switch).</li>
+<li><strong>Care about not missing a single packet?</strong> Option C (a TAP).</li>
+<li><strong>Have a two-NIC box and a spot where a brief outage is fine?</strong> Option D (inline bridge).</li>
+</ul>
+<p>Whatever you choose, the outcome is the same: a network interface on your sensor that sees the traffic you care about. Note its name (<code>ip addr</code> will list them — something like <code>enp3s0</code> or <code>mon0</code>). That's what we point Zeek at next.</p>
+<hr />
+<h2>Part 7 — Point Zeek at your traffic and turn on JSON logs</h2>
+<p>First, tell Zeek which interface is your monitoring port. Edit <code>/opt/zeek/etc/node.cfg</code>:</p>
+<pre><code class="language-ini">[zeek]
+type=standalone
+host=localhost
+interface=mon0        # ← your capture interface from Part 6
+</code></pre>
+<p>Next, make Zeek write <strong>JSON</strong> logs. Zeek's default log format is fine, but JSON is what Filebeat and Elasticsearch ingest most cleanly. Add one line to <code>/opt/zeek/share/zeek/site/local.zeek</code>:</p>
+<pre><code>@load policy/tuning/json-logs.zeek
+</code></pre>
+<p>Now deploy Zeek using its control tool:</p>
+<pre><code class="language-bash">sudo /opt/zeek/bin/zeekctl deploy
+</code></pre>
+<p><code>zeekctl deploy</code> checks your config, installs it, and starts Zeek. Give it a moment, then confirm logs are being written:</p>
+<pre><code class="language-bash">ls -lh /opt/zeek/logs/current/
+tail /opt/zeek/logs/current/conn.log
+</code></pre>
+<p>If you see <code>conn.log</code>, <code>dns.log</code>, and friends filling up, Zeek is watching your traffic. If <code>conn.log</code> is empty or missing, Zeek isn't seeing packets — go back to Part 6; the interface almost certainly isn't getting mirrored traffic.</p>
+<hr />
+<h2>Part 8 — Ship Zeek's logs to Elasticsearch with Filebeat</h2>
+<p>Filebeat is the pipe. Install it from the same Elastic repo you already have:</p>
+<pre><code class="language-bash">sudo apt install -y filebeat
+</code></pre>
+<p>Filebeat has a built-in <strong>Zeek module</strong> that knows how to parse each of Zeek's log types. Enable it:</p>
+<pre><code class="language-bash">sudo filebeat modules enable zeek
+</code></pre>
+<p>Now tell the module where Zeek's logs live. Edit <code>/etc/filebeat/modules.d/zeek.yml</code> — for each log type you want (connection, DNS, HTTP, SSL, and so on), set <code>enabled: true</code> and point <code>var.paths</code> at Zeek's current log directory. For example:</p>
+<pre><code class="language-yaml">- module: zeek
+  connection:
+    enabled: true
+    var.paths: [&quot;/opt/zeek/logs/current/conn.log&quot;]
+  dns:
+    enabled: true
+    var.paths: [&quot;/opt/zeek/logs/current/dns.log&quot;]
+  ssl:
+    enabled: true
+    var.paths: [&quot;/opt/zeek/logs/current/ssl.log&quot;]
+  http:
+    enabled: true
+    var.paths: [&quot;/opt/zeek/logs/current/http.log&quot;]
+</code></pre>
+<p>Then point Filebeat at Elasticsearch. Edit <code>/etc/filebeat/filebeat.yml</code>. Because Elasticsearch uses that self-signed certificate, Filebeat needs to trust its CA:</p>
+<pre><code class="language-yaml">output.elasticsearch:
+  hosts: [&quot;https://localhost:9200&quot;]
+  username: &quot;elastic&quot;
+  password: &quot;&lt;the elastic password from Part 3&gt;&quot;
+  ssl.certificate_authorities: [&quot;/etc/elasticsearch/certs/http_ca.crt&quot;]
+</code></pre>
+<blockquote>
+<p><strong>Security note:</strong> a plaintext password in a config file is fine for a lab you control, but for anything beyond that, use the Filebeat keystore (<code>filebeat keystore add ES_PWD</code>) and reference it as <code>${ES_PWD}</code> instead. Better still, create a dedicated limited user rather than using the <code>elastic</code> superuser. Don't ship secrets you'd mind leaking.</p>
+</blockquote>
+<p>Load Filebeat's index templates and — the nice part — its prebuilt Zeek dashboards into Kibana:</p>
+<pre><code class="language-bash">sudo filebeat setup -e
+</code></pre>
+<p>This step talks to both Elasticsearch and Kibana and can take a minute. When it finishes, start Filebeat:</p>
+<pre><code class="language-bash">sudo systemctl enable filebeat
+sudo systemctl start filebeat
+</code></pre>
+<hr />
+<h2>Part 9 — See it in Kibana</h2>
+<p>Back in your browser, open Kibana and go to <strong>Discover</strong> (the menu is the ☰ on the left). Choose the Filebeat data view, and you should see Zeek events streaming in — one row per connection, DNS query, TLS handshake, and so on. Try a search:</p>
+<ul>
+<li><code>event.dataset : "zeek.dns"</code> — every DNS lookup on your network. You will be surprised what your devices ask for.</li>
+<li><code>event.dataset : "zeek.ssl"</code> — every TLS connection and the server names inside them.</li>
+<li><code>destination.port : 23</code> — anything still speaking Telnet (hopefully nothing).</li>
+</ul>
+<p>Because you ran <code>filebeat setup</code>, you also have ready-made dashboards. Open <strong>Dashboards</strong> and look for the Zeek/Filebeat set — overviews of connections, DNS, and more, with zero configuration.</p>
+<p>That's the whole loop: traffic → Zeek → Filebeat → Elasticsearch → your eyes.</p>
+<hr />
+<h2>Where to go next</h2>
+<p>You now have full network visibility for the price of some spare hardware. A few natural next steps:</p>
+<ul>
+<li><strong>Watch DNS first.</strong> It's the highest-signal, lowest-noise place to start. Odd domains, long random-looking subdomains, and lookups to countries you have no business talking to all show up here.</li>
+<li><strong>Add retention limits.</strong> Network logs grow fast. Set an index lifecycle policy in Kibana so old data ages out instead of filling your disk.</li>
+<li><strong>Tune what Zeek logs.</strong> You don't need every protocol. Trim <code>local.zeek</code> to what you'll actually look at.</li>
+<li><strong>Add the endpoint half.</strong> Network visibility tells you what crossed the wire; it doesn't tell you what happened <em>on</em> a machine. That's the next piece — endpoint detection with Wazuh — and it's the subject of the next post.</li>
+</ul>
+<p>Seeing your own traffic for the first time is genuinely eye-opening. Most networks are noisier and chattier than their owners assume, and you can't make good security decisions in the dark. Now you're not.</p>
+<hr />
+<p><em>ByTE X Bit Technologies LLC builds cybersecurity software and services. Our free tools run entirely in your browser — no account, no key. This guide describes a general, vendor-neutral setup; adapt it to your own environment.</em></p>
+  </article>
+  <section class="comments">
+    <h2>Comments</h2>
+    <p class="note">Join the discussion below.</p>
+    <!-- Self-hosted comment widget mounts here. Add the service embed <script> in the build step
+         once the comment container is deployed. The security controls (input sanitization, XSS
+         escaping on render, rate limiting, moderation) live in that service, not this page. -->
+    <div id="comments-thread" data-post="elasticsearch-kibana-zeek-home-network">Comments load here once the comment service is connected.</div>
+  </section>
+</div>
+<footer><div class="wrap">
+  <span><b>ByTE X Bit Technologies LLC</b> &middot; cybersecurity software &amp; services</span>
+  <a href="/blog.html">All posts</a>
+  <a href="/">byte-x-bit.com</a>
+</div></footer>
+</body>
+</html>

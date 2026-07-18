@@ -1,0 +1,35 @@
+[
+  {
+    "slug": "elasticsearch-kibana-zeek-home-network",
+    "title": "See What's Really on Your Network: Elasticsearch, Kibana, and Zeek from Scratch",
+    "date": "2026-07-18",
+    "summary": "A full, copy-paste walkthrough for standing up your own network-visibility stack \u2014 Zeek watching the wire, Elasticsearch storing what it sees, Kibana making it searchable. Includes the part most guides skip: what to do when your switch can't mirror traffic.",
+    "tags": [
+      "network-monitoring",
+      "zeek",
+      "elasticsearch",
+      "kibana",
+      "home-lab",
+      "detection"
+    ],
+    "readingtime": "20 min",
+    "part": 1
+  },
+  {
+    "slug": "wazuh-endpoint-detection-home-lab",
+    "title": "The Other Half of Visibility: Endpoint Detection with Wazuh",
+    "date": "2026-07-18",
+    "summary": "Network monitoring shows you what crossed the wire. It can't show you what happened on the machine. This is the endpoint half \u2014 a full, copy-paste walkthrough for standing up Wazuh and putting agents on your devices to watch files, logs, configurations, and vulnerabilities.",
+    "tags": [
+      "endpoint-detection",
+      "wazuh",
+      "edr",
+      "siem",
+      "home-lab",
+      "detection",
+      "file-integrity"
+    ],
+    "readingtime": "18 min",
+    "part": 2
+  }
+]

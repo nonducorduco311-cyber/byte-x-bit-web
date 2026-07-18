@@ -416,7 +416,7 @@
         <button>Resources <span class="caret">▾</span></button>
         <div class="dropdown">
           <div class="dhead">Resources</div>
-          <a data-view="resources" data-anchor="res-blog">Blog <small class="free" style="color:var(--amber)">SOON</small></a>
+          <a data-view="resources" data-anchor="res-blog">Blog</a>
           <a data-view="resources" data-anchor="res-news">Security news <small class="free" style="color:var(--amber)">SOON</small></a>
         </div>
       </div>
@@ -658,10 +658,27 @@
     <h2 class="sec-h reveal">Detection engineering, in the open.</h2>
     <p class="sec-sub reveal">Original research, detection-engineering write-ups, and a focused security-news feed &mdash; coming soon.</p>
     <div class="grouplbl reveal"><span>BLOG</span><span class="ln"></span></div>
-    <div class="cs-block reveal">
-      <div class="cs-badge">COMING SOON</div>
-      <p>In-the-open write-ups on detection engineering, purple-team scoring, and practical security for lean teams &mdash; grounded in real lab work, not theory. First posts are on the way.</p>
+    <div class="reveal" id="blog-list" style="display:flex;flex-direction:column;gap:14px;margin:10px 0 8px">
+      <p style="color:var(--ink-dim);font-size:13px">Loading posts&hellip;</p>
     </div>
+    <script>
+    (function(){
+      function esc(s){return String(s).replace(/[&<>"']/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];});}
+      fetch('/posts.json',{cache:'no-store'}).then(function(r){return r.json();}).then(function(posts){
+        posts.sort(function(a,b){return (b.date>a.date?1:b.date<a.date?-1:(b.part-a.part));});
+        var el=document.getElementById('blog-list');
+        if(!posts.length){el.innerHTML='<p style="color:var(--ink-dim);font-size:13px">No posts yet.</p>';return;}
+        el.innerHTML=posts.map(function(p){
+          return '<a href="/blog/'+encodeURIComponent(p.slug)+'.html" style="display:block;background:#111823;border:1px solid var(--line);border-radius:10px;padding:20px;text-decoration:none" onmouseover="this.style.borderColor=\'#2c4a72\'" onmouseout="this.style.borderColor=\'\'">'+
+            '<div style="font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--blue)">Part '+esc(p.part)+'</div>'+
+            '<div style="font-family:var(--display);font-weight:700;font-size:20px;line-height:1.2;color:var(--ink);margin:8px 0 8px">'+esc(p.title)+'</div>'+
+            '<div style="color:var(--ink-dim);font-size:13.5px;margin-bottom:12px">'+esc(p.summary)+'</div>'+
+            '<div style="color:var(--ink-faint);font-size:11.5px">'+esc(p.date)+' &middot; '+esc(p.readingtime)+'</div>'+
+          '</a>';
+        }).join('');
+      }).catch(function(){document.getElementById('blog-list').innerHTML='<p style="color:var(--ink-dim);font-size:13px">Posts list unavailable.</p>';});
+    })();
+    </script>
     <div class="grouplbl reveal" id="res-news"><span>SECURITY NEWS</span><span class="ln"></span></div>
     <div class="cs-block reveal">
       <div class="cs-badge">COMING SOON</div>

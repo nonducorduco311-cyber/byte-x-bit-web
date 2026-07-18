@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Other Half of Visibility: Endpoint Detection with Wazuh</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0e14; --panel:#111823; --panel2:#0d141d; --line:#1d2735;
+  --ink:#e6edf3; --ink-dim:#8b98a9; --ink-faint:#5b6675;
+  --blue:#4c8dff; --blue-dim:#22375c; --green:#3fd18b;
+  --display:'Syne',system-ui,sans-serif; --mono:'Space Mono',ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--mono);font-size:15px;line-height:1.7;
+  background-image:radial-gradient(900px 500px at 82% -8%, #12233f22, transparent 60%)}
+a{color:var(--blue);text-decoration:none} a:hover{text-decoration:underline}
+.wrap{max-width:820px;margin:0 auto;padding:0 24px}
+.nav{border-bottom:1px solid var(--line);background:#0b0f16cc;backdrop-filter:blur(6px);position:sticky;top:0;z-index:5}
+.nav .wrap{max-width:1180px;display:flex;align-items:center;justify-content:space-between;height:60px}
+.nav .brand{display:flex;align-items:center;gap:11px;text-decoration:none}
+.nav .brand:hover{text-decoration:none}
+.nav .logo-img{height:30px;width:auto;display:block}
+.nav .btxt{font-family:var(--display);font-weight:800;font-size:17px;letter-spacing:-.01em;color:var(--ink);line-height:1}
+.nav .btxt small{display:block;font-family:var(--mono);font-weight:400;font-size:8.5px;letter-spacing:.18em;color:var(--ink-dim);margin-top:2px}
+.nav .back{font-family:var(--mono);font-size:12.5px;color:var(--ink-dim)} .nav .back:hover{color:var(--ink);text-decoration:none}
+@media(max-width:520px){.nav .btxt small{display:none}}
+footer{border-top:1px solid var(--line);margin-top:60px;padding:24px 0;color:var(--ink-faint);font-size:11.5px}
+footer .wrap{display:flex;gap:16px;flex-wrap:wrap;align-items:center;max-width:1180px}
+footer b{color:var(--ink-dim)}
+
+.hero{padding:44px 0 8px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--blue);margin:0 0 14px}
+h1{font-family:var(--display);font-weight:800;font-size:34px;line-height:1.12;letter-spacing:-.015em;margin:0 0 16px}
+.meta{color:var(--ink-faint);font-size:12.5px;display:flex;gap:14px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:22px}
+article{padding-top:26px}
+article h2{font-family:var(--display);font-weight:700;font-size:24px;letter-spacing:-.01em;margin:38px 0 12px;padding-top:8px}
+article h3{font-family:var(--display);font-weight:700;font-size:18px;margin:26px 0 8px;color:#cdd8e6}
+article p{margin:0 0 16px}
+article ul,article ol{margin:0 0 16px;padding-left:22px} article li{margin:6px 0}
+article strong{color:#fff;font-weight:700}
+article code{font-family:var(--mono);font-size:13px;background:#0e1621;border:1px solid var(--line);border-radius:4px;padding:1px 6px;color:#a9c7ff}
+article pre{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:16px;overflow-x:auto;margin:0 0 18px;line-height:1.55}
+article pre code{background:none;border:0;padding:0;font-size:12.5px;color:#cfe0f5}
+article blockquote{border-left:3px solid var(--blue-dim);background:#0e1621;margin:0 0 18px;padding:12px 16px;color:var(--ink-dim);border-radius:0 6px 6px 0}
+article blockquote p{margin:0}
+article hr{border:0;border-top:1px solid var(--line);margin:34px 0}
+article a{text-decoration:underline;text-underline-offset:2px}
+article em{color:var(--ink-dim)}
+.comments{border-top:1px solid var(--line);margin-top:48px;padding-top:28px}
+.comments h2{font-family:var(--display);font-weight:700;font-size:20px;margin:0 0 6px}
+.comments .note{color:var(--ink-faint);font-size:12.5px;margin:0 0 18px}
+#comments-thread{min-height:60px;color:var(--ink-faint);font-size:13px}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a class="brand" href="/">
+    <img src="/bxb-logo.png" alt="ByTE X Bit Technologies LLC" class="logo-img">
+    <span class="btxt">ByTE&nbsp;X&nbsp;Bit<small>TECHNOLOGIES&nbsp;LLC</small></span>
+  </a>
+  <a class="back" href="/blog.html">&larr; Back to Blog</a>
+</div></nav>
+<div class="wrap">
+  <div class="hero">
+    <p class="eyebrow">Part 2 &middot; ByTE X Bit Blog</p>
+    <h1>The Other Half of Visibility: Endpoint Detection with Wazuh</h1>
+    <div class="meta"><span>2026-07-18</span><span>18 min</span></div>
+  </div>
+  <article>
+<p>In the <a href="/blog/elasticsearch-kibana-zeek-home-network.html">last post</a> we built network visibility — Zeek watching the wire, feeding Elasticsearch and Kibana. That tells you what <em>crossed the network</em>. What it can't tell you is what happened <em>on</em> a machine: a config file quietly edited, a new admin account created at 3 a.m., a program that started acting strange, a missing security patch. For that, you need eyes on the endpoint itself.</p>
+<p>That's what <strong>Wazuh</strong> does. It's a free, open-source security platform that puts a lightweight agent on each machine you care about — laptops, servers, VMs — and reports back on:</p>
+<ul>
+<li><strong>File integrity</strong> — tells you when important files change, and what changed.</li>
+<li><strong>Log analysis</strong> — reads the endpoint's own logs and raises alerts on suspicious events (failed logins, privilege escalation, and so on).</li>
+<li><strong>Security configuration assessment</strong> — scores each machine against hardening benchmarks and tells you exactly what's weak.</li>
+<li><strong>Vulnerability detection</strong> — cross-references installed software against known CVEs.</li>
+<li><strong>Active response</strong> — can react automatically to certain events (block an IP, kill a process) if you choose to enable it.</li>
+</ul>
+<p>Everything below is a full walkthrough. As with the network guide, it uses example addresses like <code>10.0.0.5</code> and generic hostnames — swap in your own. Nothing here is specific to any one environment.</p>
+<hr />
+<h2>How this relates to the last post</h2>
+<p>A fair question: didn't we just install Elasticsearch and Kibana? Does Wazuh reuse them?</p>
+<p>Not directly. Wazuh ships its <strong>own</strong> bundled storage and dashboard (built on the OpenSearch lineage, a cousin of Elasticsearch), so it's completely self-contained — you don't need the stack from the last post for it to work. You <em>can</em> wire Wazuh's alerts into an existing Elastic setup if you want everything in one pane later, but that's an advanced move. For a clean start, we'll use Wazuh's all-in-one install, which stands up the whole thing with a single command.</p>
+<p>Think of it as two complementary sensors: <strong>Zeek watches the network, Wazuh watches the machines.</strong> Together they cover the two places security problems show up.</p>
+<hr />
+<h2>What you'll need</h2>
+<ul>
+<li><strong>A server for the Wazuh central components.</strong> Like Elasticsearch, the indexer under Wazuh is memory-hungry — give it at least <strong>8 GB of RAM</strong>, 2+ CPU cores, and some disk. A separate box or VM from your network sensor is cleanest.</li>
+<li><strong>A 64-bit Linux host</strong> for that server — Ubuntu or a compatible distribution, freshly installed.</li>
+<li><strong>One or more endpoints to monitor</strong> — any Linux, Windows, or macOS machine you want eyes on. We'll cover Linux and Windows agents below.</li>
+<li><strong><code>sudo</code>/administrator access</strong> on everything, and about half an hour.</li>
+</ul>
+<hr />
+<h2>Part 1 — Install the Wazuh central stack</h2>
+<p>Wazuh provides an assisted installer that puts all three central components — the server (manager), the indexer, and the dashboard — on one host. On your server box:</p>
+<pre><code class="language-bash">curl -sO https://packages.wazuh.com/4.14/wazuh-install.sh
+sudo bash ./wazuh-install.sh -a
+</code></pre>
+<p>The <code>-a</code> flag means "all-in-one." The installer downloads the components, generates TLS certificates, sets everything up, and takes roughly 5–15 minutes depending on your connection and hardware.</p>
+<p><strong>When it finishes, it prints your credentials — capture them.</strong> The tail of the output looks like this:</p>
+<pre><code>INFO: --- Summary ---
+INFO: You can access the web interface https://&lt;YOUR_SERVER_IP&gt;
+    User: admin
+    Password: &lt;A_GENERATED_PASSWORD&gt;
+</code></pre>
+<p>Save that password. It's also written to an archive the installer leaves behind, in case you lose it:</p>
+<pre><code class="language-bash">sudo tar -O -xvf wazuh-install-files.tar wazuh-install-files/wazuh-passwords.txt
+</code></pre>
+<hr />
+<h2>Part 2 — Log into the dashboard</h2>
+<p>Open a browser and go to <code>https://&lt;YOUR_SERVER_IP&gt;</code>. The dashboard runs over HTTPS on the standard port with a self-signed certificate, so your browser will warn you the first time — that's expected on a fresh install; accept it and continue.</p>
+<p>Log in as <code>admin</code> with the generated password. You'll land on the Wazuh overview. It's empty right now because no machines are reporting yet. Let's fix that.</p>
+<blockquote>
+<p><strong>Security note:</strong> that self-signed certificate and the <code>admin</code> account are fine for a lab on a trusted network, but don't expose the dashboard to the internet, and change the default passwords for anything beyond experimentation. Wazuh documents a password-change tool for exactly this.</p>
+</blockquote>
+<hr />
+<h2>Part 3 — Deploy an agent to a Linux endpoint</h2>
+<p>Move to the machine you want to monitor. First add Wazuh's package repository and signing key:</p>
+<pre><code class="language-bash">curl -s https://packages.wazuh.com/key/GPG-KEY-WAZUH \
+  | sudo gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/wazuh.gpg --import
+sudo chmod 644 /usr/share/keyrings/wazuh.gpg
+
+echo &quot;deb [signed-by=/usr/share/keyrings/wazuh.gpg] https://packages.wazuh.com/4.x/apt/ stable main&quot; \
+  | sudo tee /etc/apt/sources.list.d/wazuh.list
+
+sudo apt update
+</code></pre>
+<p>Now install the agent, telling it where the manager lives. The <code>WAZUH_MANAGER</code> variable handles enrollment automatically — point it at your server's IP:</p>
+<pre><code class="language-bash">sudo WAZUH_MANAGER=&quot;10.0.0.5&quot; apt install -y wazuh-agent
+</code></pre>
+<p>Start it and enable it on boot:</p>
+<pre><code class="language-bash">sudo systemctl daemon-reload
+sudo systemctl enable wazuh-agent
+sudo systemctl start wazuh-agent
+</code></pre>
+<p>One good-practice step Wazuh recommends: after installing, disable the Wazuh repository on the endpoint so a routine <code>apt upgrade</code> doesn't accidentally jump the agent ahead of your manager's version (agents should be the same version as the manager or older):</p>
+<pre><code class="language-bash">sudo sed -i &quot;s/^deb /#deb /&quot; /etc/apt/sources.list.d/wazuh.list
+</code></pre>
+<p>That's it for a Linux endpoint. Within a minute it should appear in your dashboard.</p>
+<hr />
+<h2>Part 4 — Deploy an agent to a Windows endpoint</h2>
+<p>For a Windows machine, open <strong>PowerShell as Administrator</strong> and download then install the agent MSI, again pointing it at your manager:</p>
+<pre><code class="language-powershell">Invoke-WebRequest -Uri https://packages.wazuh.com/4.x/windows/wazuh-agent-4.14.4-1.msi -OutFile $env:tmp\wazuh-agent.msi
+
+msiexec.exe /i $env:tmp\wazuh-agent.msi /q WAZUH_MANAGER=&quot;10.0.0.5&quot;
+
+NET START WazuhSvc
+</code></pre>
+<p>The <code>/q</code> runs it quietly with no wizard; the <code>WAZUH_MANAGER</code> value enrolls it. <code>NET START WazuhSvc</code> starts the service. (Check Wazuh's download page for the current MSI filename if the version above has moved on.)</p>
+<p>macOS and other platforms follow the same pattern — install the package, set <code>WAZUH_MANAGER</code>, start the service. The Wazuh docs have per-OS instructions.</p>
+<hr />
+<h2>Part 5 — Confirm your agents are reporting</h2>
+<p>Back in the Wazuh dashboard, open the <strong>Agents</strong> view. Each machine you deployed should show up as <strong>Active</strong>, with its name, IP, and operating system. If an agent is stuck on <strong>Disconnected</strong> or <strong>Never connected</strong>, the usual culprits are:</p>
+<ul>
+<li>a firewall between the endpoint and the manager (Wazuh agents talk to the manager on TCP <strong>1514</strong> by default — make sure that's open),</li>
+<li>a wrong or unreachable <code>WAZUH_MANAGER</code> IP, or</li>
+<li>the agent service not running (<code>systemctl status wazuh-agent</code> on Linux; the service in <code>services.msc</code> on Windows).</li>
+</ul>
+<p>Once they're green, data starts flowing. Now the useful part: knowing what to look at.</p>
+<hr />
+<h2>Part 6 — What to actually look at first</h2>
+<p>Wazuh surfaces a <em>lot</em>. If you try to watch everything at once you'll drown. Here's a sane order of priorities for a home lab or small shop.</p>
+<h3>File Integrity Monitoring — your highest-signal starting point</h3>
+<p>Wazuh watches key directories and alerts when files are added, changed, or deleted. Out of the box it monitors sensitive locations (like <code>/etc</code> on Linux), and the alerts tell you <em>what</em> changed and <em>when</em>. This is where you'll catch an attacker (or a misconfiguration) modifying a config or dropping a file.</p>
+<p>To add your own path — say a directory of important scripts — edit the manager's config at <code>/var/ossec/etc/ossec.conf</code> and add it inside the <code>&lt;syscheck&gt;</code> block:</p>
+<pre><code class="language-xml">&lt;syscheck&gt;
+  &lt;directories check_all=&quot;yes&quot; realtime=&quot;yes&quot;&gt;/opt/important-scripts&lt;/directories&gt;
+&lt;/syscheck&gt;
+</code></pre>
+<p>Then restart the manager (<code>sudo systemctl restart wazuh-manager</code>). <code>realtime="yes"</code> means you get alerts the moment something changes, not just on the periodic scan. Open <strong>File Integrity Monitoring</strong> in the dashboard to see the results.</p>
+<h3>Security Configuration Assessment — free hardening advice</h3>
+<p>The <strong>SCA</strong> module scores each endpoint against hardening benchmarks and lists exactly which checks pass and fail — weak SSH settings, missing password policies, risky permissions. It's like a free audit of every machine. Start with the failed checks on your most important box and work down; each finding comes with the remediation.</p>
+<h3>Vulnerability Detection — what needs patching</h3>
+<p>Wazuh inventories installed software on each agent and cross-references it against known CVEs, so you get a per-machine list of vulnerable packages ranked by severity. For a home lab this is often a wake-up call about how much unpatched software is quietly running.</p>
+<h3>Authentication and MITRE ATT&amp;CK</h3>
+<p>Wazuh reads the endpoint's own logs and raises alerts on things like repeated failed logins, new user creation, and privilege escalation — and it maps many of these to <strong>MITRE ATT&amp;CK</strong> techniques, so you can see not just <em>that</em> something happened but <em>what kind of attacker behavior</em> it resembles. The <strong>MITRE ATT&amp;CK</strong> and <strong>Security events</strong> views are where this lives.</p>
+<hr />
+<h2>Part 7 — A concrete first win: catch a file change</h2>
+<p>Let's prove the whole thing works end to end. On a monitored Linux endpoint, touch a file in a watched directory:</p>
+<pre><code class="language-bash">echo &quot;test change $(date)&quot; | sudo tee -a /etc/hosts
+</code></pre>
+<p>Within a few seconds (realtime) or at the next scan, open the dashboard's <strong>File Integrity Monitoring</strong> view for that agent. You should see an event showing <code>/etc/hosts</code> was modified, with a before/after of what changed. Undo your test edit afterward.</p>
+<p>That small loop — change a file, watch the alert appear — is the entire value of endpoint monitoring in miniature. Now imagine it running on every machine you own, all the time, for changes you <em>didn't</em> make.</p>
+<hr />
+<h2>Where to go next</h2>
+<p>You now have eyes on your endpoints to go with the eyes on your network. A few sensible next steps:</p>
+<ul>
+<li><strong>Tune the noise.</strong> A fresh Wazuh install is chatty. Spend time in the rules to silence the alerts you don't care about, so the ones you do care about stand out. An alert nobody reads is worse than no alert.</li>
+<li><strong>Prioritize by machine.</strong> Your internet-facing box and your main workstation matter more than a test VM. Harden those first using the SCA findings.</li>
+<li><strong>Set retention.</strong> Like network logs, endpoint alerts pile up. Configure how long you keep them so you don't fill the disk.</li>
+<li><strong>Be cautious with active response.</strong> Wazuh can act automatically — blocking IPs, killing processes. It's powerful and occasionally a foot-gun (it can lock <em>you</em> out). Turn it on deliberately, one response at a time, once you trust your alerts.</li>
+</ul>
+<p>Between this and the network guide, you've built both halves of visibility on free software and spare hardware: Zeek and Elasticsearch watching the wire, Wazuh watching the machines. That combination — network plus endpoint — is the same shape a professional security operation is built on. You just run it at your own scale.</p>
+<hr />
+<p><em>ByTE X Bit Technologies LLC builds cybersecurity software and services. Our free tools run entirely in your browser — no account, no key. This guide describes a general, vendor-neutral setup; adapt it to your own environment.</em></p>
+  </article>
+  <section class="comments">
+    <h2>Comments</h2>
+    <p class="note">Join the discussion below.</p>
+    <!-- Self-hosted comment widget mounts here. Add the service embed <script> in the build step
+         once the comment container is deployed. The security controls (input sanitization, XSS
+         escaping on render, rate limiting, moderation) live in that service, not this page. -->
+    <div id="comments-thread" data-post="wazuh-endpoint-detection-home-lab">Comments load here once the comment service is connected.</div>
+  </section>
+</div>
+<footer><div class="wrap">
+  <span><b>ByTE X Bit Technologies LLC</b> &middot; cybersecurity software &amp; services</span>
+  <a href="/blog.html">All posts</a>
+  <a href="/">byte-x-bit.com</a>
+</div></footer>
+</body>
+</html>
