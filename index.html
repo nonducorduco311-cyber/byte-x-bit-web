@@ -384,7 +384,6 @@
         <button>For Small Businesses <span class="caret">▾</span></button>
         <div class="dropdown">
           <div class="dhead">Small Businesses</div>
-          <a data-view="tools">Free tools <small class="free">FREE</small></a>
           <a data-view="smb" data-anchor="smb-paid">Services</a>
           <div class="ddiv"></div>
           <a data-view="contact">Get started →</a>
@@ -394,7 +393,6 @@
         <button>For Large Businesses <span class="caret">▾</span></button>
         <div class="dropdown">
           <div class="dhead">Large Businesses &amp; Enterprise</div>
-          <a data-view="tools">Free tools <small class="free">FREE</small></a>
           <a data-view="large" data-anchor="large-services">Services</a>
           <a data-view="platform">BXB Platform</a>
           <div class="ddiv"></div>
@@ -404,7 +402,7 @@
       <div class="navitem" data-nav="gov"><a data-view="gov">For Government</a></div>
       <div class="navitem" data-nav="platform"><a data-view="platform">BXB Platform</a></div>
       <div class="navitem has-dd" data-nav="tools">
-        <button>Free Tools <span class="caret">▾</span></button>
+        <button>Try our tools <span class="caret">▾</span></button>
         <div class="dropdown">
           <div class="dhead">Free &amp; Open Source</div>
           <a data-view="tools">All free tools <small class="free">FREE</small></a>
@@ -604,8 +602,6 @@
         <div class="frow"><span class="fk">AVAILABILITY</span><span class="fv">Subcontracting · teaming · direct</span></div>
         <div class="frow"><span class="fk">FRAMEWORKS</span><span class="fv">NIST 800-53 · RMF · CMMC · NIST CSF</span></div>
         <div class="frow"><span class="fk">COMPETENCIES</span><span class="fv">CND · SIEM/SOC · detection eng · vuln mgmt · purple team</span></div>
-        <div class="frow"><span class="fk">DELIVERY</span><span class="fv">Software &amp; services · open core</span></div>
-        <div class="frow"><span class="fk">CONTACT</span><span class="fv">bryant@byte-x-bit.com</span></div>
       </div>
     </div>
 
@@ -704,8 +700,6 @@
       <div class="facts reveal">
         <div class="frow"><span class="fk">ENTITY</span><span class="fv">ByTE X Bit Technologies LLC</span></div>
         <div class="frow"><span class="fk">FORMATION</span><span class="fv">Maryland, USA</span></div>
-        <div class="frow"><span class="fk">MODEL</span><span class="fv">Software &amp; services · open core</span></div>
-        <div class="frow"><span class="fk">DELIVERY</span><span class="fv">Software &amp; services · open core</span></div>
         <div class="frow"><span class="fk">IP</span><span class="fv">Patent pending</span></div>
         <div class="frow"><span class="fk">CONTACT</span><span class="fv">bryant@byte-x-bit.com</span></div>
       </div>
@@ -722,8 +716,9 @@
       <div class="facts reveal">
         <div class="frow"><span class="fk">FOUNDER</span><span class="fv">Bryant Himmage</span></div>
         <div class="frow"><span class="fk">EXPERIENCE</span><span class="fv">20+ yrs · U.S. defense &amp; national-security missions</span></div>
-        <div class="frow"><span class="fk">FOCUS</span><span class="fv">Cyber defense · SIEM/SOC · vuln mgmt · ISSE</span></div>
+        <div class="frow"><span class="fk">FOCUS</span><span class="fv">Securing Your Assets &mdash; Cyber Defense · SIEM/SOC · Vulnerability Management · ISSE</span></div>
         <div class="frow"><span class="fk">FRAMEWORKS</span><span class="fv">NIST 800-53 · RMF</span></div>
+        <div class="frow"><span class="fk">CONTACT</span><span class="fv">bryant@byte-x-bit.com</span></div>
         <div class="frow"><span class="fk">EDUCATION</span><span class="fv">B.S. Computer Networks &amp; Cybersecurity, UMGC</span></div>
         <div class="frow"><span class="fk">CERTIFICATIONS</span><span class="fv">CompTIA CySA+ · Security+ · DoD IAT II</span></div>
       </div>
@@ -800,8 +795,8 @@
     if(anchor){var a=document.getElementById(anchor); if(a){setTimeout(function(){a.scrollIntoView({behavior:'smooth',block:'start'});},80);}}
   }
   // dropdown toggles
-  document.querySelectorAll('.navitem.has-dd > button').forEach(function(b){
-    b.addEventListener('click',function(e){e.stopPropagation();var p=b.parentElement;var open=p.classList.contains('open');closeDD();if(!open)p.classList.add('open');});
+  document.querySelectorAll('.navitem.has-dd').forEach(function(n){
+    n.addEventListener('mouseenter',function(){closeDD();});
   });
   document.addEventListener('click',closeDD);
   // view links
@@ -811,7 +806,7 @@
   // mobile menu
   var mm=document.getElementById('mmenu');
   mm.innerHTML='<div style="display:flex;flex-direction:column;gap:2px;padding:10px 24px 18px;border-top:1px solid var(--line)">'+
-    [['smb','Small Businesses'],['large','Large Businesses'],['gov','Government'],['platform','BXB Platform'],['tools','Free Tools'],['resources','Resources'],['company','Company'],['contact','Contact']]
+    [['smb','Small Businesses'],['large','Large Businesses'],['gov','Government'],['platform','BXB Platform'],['tools','Try our tools'],['resources','Resources'],['company','Company'],['contact','Contact']]
     .map(function(p){return '<a data-mview="'+p[0]+'" style="padding:12px 0;color:var(--ink-dim);border-bottom:1px solid var(--line);font-size:15px;cursor:pointer">'+p[1]+'</a>';}).join('')+
     '<a href="https://github.com/nonducorduco311-cyber/pila-suite" target="_blank" rel="noopener" style="padding:12px 0;color:var(--blue);font-size:15px">GitHub ↗</a></div>';
   mm.querySelectorAll('[data-mview]').forEach(function(a){a.addEventListener('click',function(){showView(a.getAttribute('data-mview'));});});
