@@ -26,6 +26,16 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--mono);font
 a{color:var(--blue);text-decoration:none}
 a:hover{text-decoration:underline}
 .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+.nav{border-bottom:1px solid var(--line);background:#0b0f16cc;backdrop-filter:blur(6px)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.nav .brand{display:flex;align-items:center;gap:11px;text-decoration:none}
+.nav .brand:hover{text-decoration:none}
+.nav .logo-img{height:30px;width:auto;display:block}
+.nav .btxt{font-family:var(--display);font-weight:800;font-size:17px;letter-spacing:-.01em;color:var(--ink);line-height:1}
+.nav .btxt small{display:block;font-family:var(--mono);font-weight:400;font-size:8.5px;letter-spacing:.18em;color:var(--ink-dim);margin-top:2px}
+.nav .back{font-family:var(--mono);font-size:12.5px;color:var(--ink-dim);text-decoration:none;transition:.12s}
+.nav .back:hover{color:var(--ink)}
+@media(max-width:520px){.nav .btxt small{display:none}.nav .back{font-size:11.5px}}
 
 header{border-bottom:1px solid var(--line);padding:26px 0 22px}
 .brandrow{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
@@ -114,6 +124,13 @@ footer b{color:var(--ink-dim)}
 </style>
 </head>
 <body>
+<nav class="nav"><div class="wrap">
+  <a class="brand" href="/">
+    <img src="bxb-logo.png" alt="ByTE X Bit Technologies LLC" class="logo-img">
+    <span class="btxt">ByTE&nbsp;X&nbsp;Bit<small>TECHNOLOGIES&nbsp;LLC</small></span>
+  </a>
+  <a class="back" href="/">&larr; Back to ByTE X Bit</a>
+</div></nav>
 <header><div class="wrap">
   <div class="brandrow">
     <span class="mark">&#9678;</span>

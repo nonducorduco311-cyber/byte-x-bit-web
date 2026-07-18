@@ -229,6 +229,24 @@
   .grouplbl .ln{flex:1;height:1px;background:var(--line)}
 
   .svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  #view-smb .svc-grid{grid-template-columns:repeat(2,1fr)}
+  #view-smb .svc-grid .svc:last-child{grid-column:1 / -1}
+  #view-large .svc-grid{grid-template-columns:repeat(2,1fr)}
+  #view-large .svc-grid .svc:last-child{grid-column:1 / -1}
+  .cmp-wrap{margin-top:8px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .cmp{width:100%;border-collapse:collapse;min-width:640px;font-size:14px}
+  .cmp th,.cmp td{padding:13px 16px;text-align:center;border-bottom:1px solid var(--line)}
+  .cmp thead th{font-family:var(--display);font-size:13px;font-weight:600;color:var(--ink);letter-spacing:.02em;border-bottom:1px solid var(--line-2)}
+  .cmp th.feat,.cmp td.feat{text-align:left;color:var(--ink-dim);font-weight:500}
+  .cmp tbody tr:nth-child(even){background:rgba(255,255,255,.015)}
+  .cmp .yes{color:var(--green);font-weight:700}
+  .cmp .no{color:var(--ink-faint)}
+  .cmp th.comm{color:var(--green)}
+  .cmp td.comm,.cmp th.comm{background:rgba(52,211,153,.05)}
+  .cmp .tier-sub{display:block;font-family:var(--mono);font-size:10px;color:var(--ink-faint);letter-spacing:.08em;margin-top:2px}
+  .cs-block{border:1px dashed var(--line-2);border-radius:14px;padding:26px;background:var(--panel);margin-top:14px}
+  .cs-badge{display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--amber);border:1px solid rgba(245,180,80,.4);border-radius:6px;padding:4px 10px;margin-bottom:12px}
+  .cs-block p{color:var(--ink-dim);max-width:70ch}
   .svc{border:1px solid var(--line);border-radius:14px;padding:22px;background:var(--panel);transition:all .25s}
   .svc:hover{border-color:var(--line-2);transform:translateY(-3px)}
   .svc .sk{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--purple);text-transform:uppercase;display:block;margin-bottom:10px}
@@ -236,6 +254,7 @@
   .svc p{color:var(--ink-dim);font-size:14px}
 
   .tools{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  #view-tools .tools{grid-template-columns:repeat(2,1fr)}
   .tool{border:1px solid var(--line);border-radius:12px;padding:18px 20px;background:var(--panel);transition:all .25s}
   .tool:hover{border-color:var(--line-2);transform:translateY(-2px)}
   a.tool{display:block;color:inherit;text-decoration:none;position:relative}
@@ -248,6 +267,7 @@
   .tool .tag{font-family:var(--mono);font-size:10px;letter-spacing:.05em;padding:3px 8px;border-radius:6px;white-space:nowrap;text-transform:uppercase}
   .tool .t-free{color:var(--green);border:1px solid rgba(52,211,153,.4)}
   .tool .t-oss{color:var(--ink-dim);border:1px solid var(--line-2)}
+  .tool .t-soon{color:var(--amber);border:1px solid rgba(245,180,80,.4)}
 
   @media(max-width:860px){.trio,.svc-grid,.tools{grid-template-columns:1fr}}
 
@@ -329,6 +349,8 @@
   .door3 p{color:var(--ink-dim);font-size:14.5px}
   .door3 .go{display:inline-block;margin-top:16px;color:var(--ink);font-weight:600;font-size:14px}
   @media(max-width:860px){.doors3{grid-template-columns:1fr}.nav-links{display:none}.menu-btn{display:block}}
+  #mmenu{display:none}
+  #mmenu.open{display:block;background:var(--panel);border-bottom:1px solid var(--line)}
 
   /* home assessment feature band */
   .assess{margin-top:54px;border:1px solid var(--line-2);border-radius:20px;padding:38px 40px;position:relative;overflow:hidden;
@@ -362,8 +384,7 @@
         <button>For Small Businesses <span class="caret">▾</span></button>
         <div class="dropdown">
           <div class="dhead">Small Businesses</div>
-          <a data-view="smb">Overview</a>
-          <a data-view="smb" data-anchor="smb-free">Free tools <small class="free">FREE</small></a>
+          <a data-view="tools">Free tools <small class="free">FREE</small></a>
           <a data-view="smb" data-anchor="smb-paid">Services</a>
           <div class="ddiv"></div>
           <a data-view="contact">Get started →</a>
@@ -373,26 +394,17 @@
         <button>For Large Businesses <span class="caret">▾</span></button>
         <div class="dropdown">
           <div class="dhead">Large Businesses &amp; Enterprise</div>
-          <a data-view="large">Overview</a>
-          <a data-view="large" data-anchor="large-free">Free tools <small class="free">FREE</small></a>
+          <a data-view="tools">Free tools <small class="free">FREE</small></a>
           <a data-view="large" data-anchor="large-services">Services</a>
-          <a data-view="large" data-anchor="large-platform">The platform</a>
+          <a data-view="platform">BXB Platform</a>
           <div class="ddiv"></div>
           <a data-view="contact">Talk to us →</a>
         </div>
       </div>
-      <div class="navitem has-dd" data-nav="gov">
-        <button>For Government <span class="caret">▾</span></button>
-        <div class="dropdown">
-          <div class="dhead">Government &amp; Public Sector</div>
-          <a data-view="gov">Overview</a>
-          <a data-view="gov" data-anchor="gov-services">Services</a>
-          <a data-view="gov" data-anchor="gov-contracting">Contracting readiness</a>
-          <div class="ddiv"></div>
-          <a data-view="contact">Talk to us →</a>
-        </div>
-      </div>
-        <button>Try the Tools <span class="caret">▾</span></button>
+      <div class="navitem" data-nav="gov"><a data-view="gov">For Government</a></div>
+      <div class="navitem" data-nav="platform"><a data-view="platform">BXB Platform</a></div>
+      <div class="navitem has-dd" data-nav="tools">
+        <button>Free Tools <span class="caret">▾</span></button>
         <div class="dropdown">
           <div class="dhead">Free &amp; Open Source</div>
           <a data-view="tools">All free tools <small class="free">FREE</small></a>
@@ -404,8 +416,8 @@
         <button>Resources <span class="caret">▾</span></button>
         <div class="dropdown">
           <div class="dhead">Resources</div>
-          <a data-view="resources" data-anchor="res-blog">Blog</a>
-          <a data-view="resources" data-anchor="res-news">Security news</a>
+          <a data-view="resources" data-anchor="res-blog">Blog <small class="free" style="color:var(--amber)">SOON</small></a>
+          <a data-view="resources" data-anchor="res-news">Security news <small class="free" style="color:var(--amber)">SOON</small></a>
         </div>
       </div>
       <div class="navitem" data-nav="company"><a data-view="company">Company</a></div>
@@ -413,7 +425,7 @@
     </nav>
     <button class="menu-btn" onclick="document.getElementById('mmenu').classList.toggle('open')">☰</button>
   </div>
-  <div id="mmenu" style="display:none"></div>
+  <div id="mmenu"></div>
 </header>
 
 <!-- ===== HOME ===== -->
@@ -457,23 +469,17 @@
   <div class="wrap">
     <div class="sec-tag reveal">// FOR SMALL BUSINESSES</div>
     <h2 class="sec-h reveal">Security without a security team.</h2>
-    <p class="sec-sub reveal">Done-for-you, fixed-scope. We set it up, tune it, and keep watch — and the free tools below are yours to use right now.</p>
+    <p class="sec-sub reveal">Done-for-you, fixed-scope. We set it up, tune it, and keep watch — so you get real protection without hiring a team.</p>
 
-    <div class="grouplbl reveal" id="smb-free"><span>FREE TOOLS</span><span class="ln"></span></div>
-    <div class="tools">
-      <a class="tool reveal" href="/email-checker.html"><div class="ttop"><b>Email Security Checker</b><span class="tag t-free">Free</span></div><p>Check SPF, DKIM, and DMARC — with plain-English fixes.</p><span class="live">Open the tool →</span></a>
-      <a class="tool reveal" href="/posture-scanner.html"><div class="ttop"><b>Posture Scanner</b><span class="tag t-free">Free · Download</span></div><p>A downloadable Windows/Linux scan of your system’s security — results stay on your machine.</p><span class="live">Get the scanner →</span></a>
-      <a class="tool reveal" href="/dns-checker.html"><div class="ttop"><b>DNS &amp; Domain Health Checker</b><span class="tag t-free">Free</span></div><p>Check your domain’s DNS, email security, and DNSSEC — in plain English.</p><span class="live">Open the tool →</span></a>
-      <a class="tool reveal" href="/phishing-spotter.html"><div class="ttop"><b>Phishing &amp; Scam Spotter</b><span class="tag t-free">Free</span></div><p>Paste a suspicious email or text and see the scam red flags explained.</p><span class="live">Open the tool →</span></a>
-    </div>
+
 
     <div class="grouplbl reveal" id="smb-paid"><span>SERVICES</span><span class="ln"></span></div>
     <div class="svc-grid">
-      <div class="svc reveal"><span class="sk">Assess</span><h4>Security Health Check</h4><p>A clear picture of where you stand and a prioritized list of what to fix first.</p></div>
-      <div class="svc reveal"><span class="sk">Operate</span><h4>Managed Monitoring</h4><p>We set up your detection and alerting, then keep the noise down so real threats stand out.</p></div>
-      <div class="svc reveal"><span class="sk">Respond</span><h4>Incident Readiness</h4><p>A response plan written for your business — and the readiness to actually use it.</p></div>
-      <div class="svc reveal"><span class="sk">Comply</span><h4>Compliance Readiness</h4><p>Get audit-ready for SOC 2 or HIPAA without drowning in paperwork.</p></div>
-      <div class="svc reveal"><span class="sk">Advise</span><h4>Fractional Security Advisor</h4><p>On-call security leadership without the cost of a full-time hire.</p></div>
+      <div class="svc reveal"><span class="sk">Assess</span><h4>Security Health Check</h4><p>A clear-eyed look at where your security actually stands &mdash; network, endpoints, email, patching, and configuration. You get a prioritized findings report: the real risks, ranked by what to fix first. From there you decide &mdash; fix it in-house, or bring me in to remediate. No pressure, your call.</p></div>
+      <div class="svc reveal"><span class="sk">Operate</span><h4>Managed Monitoring</h4><p>Detection and alerting, built right. I&rsquo;ll stand up and tune a SOC or SIEM around your environment so real threats stand out and the noise doesn&rsquo;t &mdash; then hand you the keys to run it yourself. Prefer ongoing eyes on your network? That&rsquo;s available as a scoped engagement.</p></div>
+      <div class="svc reveal"><span class="sk">Respond</span><h4>Incident Readiness</h4><p>When something goes wrong, improvising is the worst plan. I&rsquo;ll build a custom incident-response playbook that fits how your business actually works &mdash; then run tabletop exercises so your team has practiced it before they need it.</p></div>
+      <div class="svc reveal"><span class="sk">Comply</span><h4>Compliance Readiness</h4><p>Get audit-ready without drowning in paperwork. Built around the same rigor that governs federal systems &mdash; NIST 800-53, RMF, and government-adjacent frameworks &mdash; I&rsquo;ll map the requirements, find the gaps, and give you a clear path to close them.</p></div>
+      <div class="svc reveal"><span class="sk">Advise</span><h4>Fractional Security Advisor</h4><p>Senior security leadership without the full-time cost. On-call guidance for the decisions that matter &mdash; roadmap, vendors, priorities, risk calls &mdash; so you&rsquo;ve got an experienced defender in your corner when you need one.</p></div>
     </div>
     <div class="hero-cta reveal" style="margin-top:30px">
       <a data-view="contact" class="btn btn-blue" style="cursor:pointer">Get started →</a>
@@ -489,36 +495,83 @@
     <h2 class="sec-h reveal">Deepen your program.</h2>
     <p class="sec-sub reveal">Done-with-you engagements, the professional platform, and custom builds that fit your existing SOC.</p>
 
-    <div class="grouplbl reveal" id="large-free"><span>FREE TOOLS FOR SECURITY TEAMS</span><span class="ln"></span></div>
-    <div class="tools">
-      <div class="tool reveal"><div class="ttop"><b>ATT&amp;CK Coverage Viewer</b><span class="tag t-free">Free</span></div><p>Visualize what your stack detects. The scoring engine is the professional part.</p></div>
-      <div class="tool reveal"><div class="ttop"><b>Detection Health Guard</b><span class="tag t-free">Free</span></div><p>Catch detections that have silently stopped firing.</p></div>
-      <a class="tool reveal" href="/sigma-validator.html"><div class="ttop"><b>Sigma Rule Validator</b><span class="tag t-free">Free</span></div><p>Lint and convert detection rules across formats.</p><span class="live">Open the tool →</span></a>
-      <div class="tool reveal"><div class="ttop"><b>Log Field-Drift Checker</b><span class="tag t-free">Free</span></div><p>Spot telemetry changes that quietly break your rules.</p></div>
-      <div class="tool reveal"><div class="ttop"><b>Connectors &amp; PSIL SDK</b><span class="tag t-oss">Apache 2.0</span></div><p>Plug Elastic, Suricata, Zeek, and Wazuh into one model.</p></div>
-    </div>
+
 
     <div class="grouplbl reveal" id="large-services"><span>SERVICES</span><span class="ln"></span></div>
     <div class="svc-grid">
-      <div class="svc reveal"><span class="sk">Build</span><h4>Detection Engineering Program</h4><p>Stand up or sharpen your detection program and integrate it with your existing SOC.</p></div>
-      <div class="svc reveal"><span class="sk">Validate</span><h4>Purple-Team Engagement</h4><p>Scored adversary emulation that proves exactly what you can and can't catch.</p></div>
-      <div class="svc reveal"><span class="sk">Comply</span><h4>Compliance Program</h4><p>CMMC and NIST CSF programs with evidence that holds up to an auditor.</p></div>
-      <div class="svc reveal"><span class="sk">Advise</span><h4>Embedded Security Advisory</h4><p>Senior security guidance working alongside your team, on your priorities.</p></div>
-      <div class="svc reveal"><span class="sk">Build</span><h4>Custom Engineering</h4><p>Bespoke security software shaped to your environment and workflows.</p></div>
+      <div class="svc reveal"><span class="sk">Build</span><h4>Detection Engineering Program</h4><p>Stand up or sharpen a detection program that actually holds. I&rsquo;ll build ATT&amp;CK-mapped detections against your real telemetry, tune out the noise, and integrate it with your existing SOC &mdash; so your coverage is measured, not assumed.</p></div>
+      <div class="svc reveal"><span class="sk">Validate</span><h4>Purple-Team Engagement</h4><p>Proof, not guesswork. I run real adversary techniques against your live detection stack and hand you a scored report of exactly what you caught, what you missed, and where the gaps are &mdash; the same emulate-and-score methodology built into the BXB Platform.</p></div>
+      <div class="svc reveal"><span class="sk">Comply</span><h4>Compliance Program</h4><p>Compliance that survives an audit. Built on federal-grade rigor &mdash; NIST 800-53, RMF, NIST CSF, and CMMC &mdash; I&rsquo;ll map your requirements to real controls, document the evidence, and give you a program that holds up when someone checks.</p></div>
+      <div class="svc reveal"><span class="sk">Advise</span><h4>Embedded Security Advisory</h4><p>Senior security expertise working alongside your team, on your priorities. Roadmap, architecture calls, detection strategy, risk decisions &mdash; an experienced defender embedded where it matters, without adding headcount.</p></div>
+      <div class="svc reveal"><span class="sk">Build</span><h4>Custom Engineering</h4><p>Bespoke security tooling shaped to your environment &mdash; connectors, detection content, automation, or purpose-built tools. If the off-the-shelf option doesn&rsquo;t fit how you actually operate, I&rsquo;ll build what does.</p></div>
     </div>
 
-    <div class="grouplbl reveal" id="large-platform"><span>THE PROFESSIONAL PLATFORM</span><span class="ln"></span></div>
-    <p class="sec-sub reveal" style="margin-top:0">Proof your defenses <b style="color:var(--ink)">actually work</b> — four engines, one platform that emulates attacks, contains them, tracks coverage over time, and signs it into a verifiable trust score.</p>
-    <div class="products">
-      <div class="pcard pila reveal"><div class="ptop"><span class="pname">PILA</span><span class="pteam">PURPLE TEAM</span></div><div class="pfull">Purple Intelligence &amp; Lifecycle Automation</div><div class="pdesc">Run, emulate, and score purple-team exercises against your live detection stack.</div><div class="pmods"><span>PSIL</span><span>LMEP</span><span>IRV</span><span>AESP</span></div></div>
-      <div class="pcard code reveal"><div class="ptop"><span class="pname">CODE</span><span class="pteam">BLUE TEAM</span></div><div class="pfull">Collective Operational Defense Engine</div><div class="pdesc">Rule-health monitoring, alert enrichment, containment scoring, and IR evidence.</div><div class="pmods"><span>DRIFT</span><span>OBSERVER</span><span>CHAIN</span><span>EVIDENCE</span></div></div>
-      <div class="pcard ghost reveal"><div class="ptop"><span class="pname">GHOST</span><span class="pteam">COVERAGE</span></div><div class="pfull">Gap Heatmap &amp; Operational Simulation Tracker</div><div class="pdesc">Tracks ATT&amp;CK coverage as it drifts. Detection Debt Score and Coverage Maturity Level.</div><div class="pmods"><span>COVERAGE</span><span>REGRESSION</span><span>DDS&nbsp;/&nbsp;CML</span></div></div>
-      <div class="pcard sentinel reveal"><div class="ptop"><span class="pname">SENTINEL</span><span class="pteam">RISK &amp; TRUST</span></div><div class="pfull">Security Evidence &amp; Network Threat Intelligence</div><div class="pdesc">Turns validation evidence into a cryptographically-attested trust score.</div><div class="pmods"><span>SCORE</span><span>EVIDENCE&nbsp;LEDGER</span><span>TRUST</span></div></div>
-    </div>
-    <p class="sub reveal" style="margin-top:24px;font-family:var(--mono);font-size:13px;color:var(--ink-faint)">Community (free, Apache 2.0) &nbsp;·&nbsp; Professional $149/mo &nbsp;·&nbsp; Team $399/mo &nbsp;·&nbsp; Enterprise custom (on-prem, MSSP, white-label)</p>
+    <div class="grouplbl reveal" id="large-platform"><span>THE BXB PLATFORM</span><span class="ln"></span></div>
+    <p class="sec-sub reveal" style="margin-top:0">Proof your defenses <b style="color:var(--ink)">actually work</b> &mdash; four engines that emulate attacks, contain them, track coverage over time, and score it. Community through Enterprise, with twice-yearly ATT&amp;CK-alignment updates.</p>
     <div class="hero-cta reveal" style="margin-top:18px">
-      <a href="mailto:bryant@byte-x-bit.com?subject=Professional%20Access%20Inquiry" class="btn btn-blue">Get Professional Access →</a>
+      <a data-view="platform" class="btn btn-blue" style="cursor:pointer">See the BXB Platform &amp; plans &rarr;</a>
+      <a data-view="tools" class="btn btn-outline" style="cursor:pointer">Free tools for your team &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PLATFORM ===== -->
+<section class="view view-pad" id="view-platform">
+  <div class="wrap">
+    <div class="sec-tag reveal">// BXB PLATFORM</div>
+    <h2 class="sec-h reveal">Know whether your defenses actually work.</h2>
+    <p class="sec-sub reveal">One platform, four engines. Emulate real adversary techniques safely, see exactly what your detection stack caught and missed, get a score you can track over time and a report you can hand to your board &mdash; kept current with the adversary playbook.</p>
+
+    <div class="grouplbl reveal" id="platform-engines"><span>FOUR ENGINES, ONE PLATFORM</span><span class="ln"></span></div>
+    <div class="products">
+      <div class="pcard pila reveal"><div class="ptop"><span class="pname">PILA</span><span class="pteam">PURPLE TEAM</span></div><div class="pfull">Purple Intelligence &amp; Lifecycle Automation</div><div class="pdesc">The core purple-team engine. Run real ATT&amp;CK-mapped adversary techniques safely against your live environment, then score exactly how your defenses responded &mdash; what was detected, what was missed, and how fast. PSIL plans the engagement, LMEP emulates the techniques, IRV validates remediation, and AESP turns it all into a trackable effectiveness score.</div><div class="pmods"><span>PSIL</span><span>LMEP</span><span>IRV</span><span>AESP</span></div></div>
+      <div class="pcard code reveal"><div class="ptop"><span class="pname">CODE</span><span class="pteam">BLUE TEAM</span></div><div class="pfull">Collective Operational Defense Engine</div><div class="pdesc">The defensive counterpart. CODE watches the health of your detection rules, enriches alerts with context, scores how well incidents were contained, and captures the evidence trail &mdash; so your blue team knows what&rsquo;s working and can prove it.</div><div class="pmods"><span>DRIFT</span><span>OBSERVER</span><span>CHAIN</span><span>EVIDENCE</span></div></div>
+      <div class="pcard ghost reveal"><div class="ptop"><span class="pname">GHOST</span><span class="pteam">COVERAGE</span></div><div class="pfull">Gap Heatmap &amp; Operational Simulation Tracker</div><div class="pdesc">Coverage that doesn&rsquo;t lie to you. GHOST maps your detection coverage against MITRE ATT&amp;CK and tracks how it drifts over time &mdash; surfacing a Detection Debt Score and Coverage Maturity Level so you can see at a glance where your blind spots are growing.</div><div class="pmods"><span>COVERAGE</span><span>REGRESSION</span><span>DDS&nbsp;/&nbsp;CML</span></div></div>
+      <div class="pcard sentinel reveal"><div class="ptop"><span class="pname">SENTINEL</span><span class="pteam">RISK &amp; TRUST</span></div><div class="pfull">Security Evidence &amp; Network Threat Intelligence</div><div class="pdesc">Turns all that validation evidence into a single, trackable trust score &mdash; a defensible measure of security posture you can show a board, a client, or an auditor, backed by an evidence ledger rather than assertions.</div><div class="pmods"><span>SCORE</span><span>EVIDENCE&nbsp;LEDGER</span><span>TRUST</span></div></div>
+    </div>
+
+    <div class="grouplbl reveal" id="platform-tiers"><span>PLANS</span><span class="ln"></span></div>
+    <p class="sec-sub reveal" style="margin-top:0">Coverage packages, not per-technique pricing. Each tier is a superset of the one below &mdash; start where you are, upgrade with a key when you want broader coverage.</p>
+    <div class="products">
+      <div class="pcard reveal" style="border-color:var(--green);background:rgba(52,211,153,.06)"><div class="ptop"><span class="pname" style="font-size:20px">Community</span><span class="pteam" style="color:var(--green);border-color:rgba(52,211,153,.5)">FREE &middot; APACHE 2.0</span></div><div class="pdesc" style="margin-top:10px">Read your own detection data, run basic scoring, and self-host the open core. Verify and extend it yourself &mdash; <b style="color:var(--ink)">no cost, no license</b>.</div><div class="pmods"><span>SELF-HOSTED</span><span>ES&nbsp;READ</span><span>BASIC&nbsp;SCORING</span></div><a href="https://github.com/nonducorduco311-cyber/pila-suite" target="_blank" rel="noopener" style="display:inline-block;margin-top:14px;color:var(--green);font-family:var(--mono);font-size:13px">⬡ View on GitHub ↗</a></div>
+      <div class="pcard reveal"><div class="ptop"><span class="pname" style="font-size:20px">Essentials</span><span class="pteam">SUBSCRIPTION</span></div><div class="pdesc" style="margin-top:10px">The core adversary techniques &mdash; lateral movement and credential access &mdash; with full scoring &amp; history, branded engagement reports, and live detection-source connectors.</div><div class="pmods"><span>CORE&nbsp;TECHNIQUES</span><span>REPORTING</span><span>CONNECTORS</span></div></div>
+      <div class="pcard reveal"><div class="ptop"><span class="pname" style="font-size:20px">Full</span><span class="pteam">SUBSCRIPTION</span></div><div class="pdesc" style="margin-top:10px">The complete technique library across all eight core ATT&amp;CK tactics, plus incident remediation validation. Comprehensive coverage for mature SOCs.</div><div class="pmods"><span>ALL&nbsp;TACTICS</span><span>IRV</span><span>FULL&nbsp;COVERAGE</span></div></div>
+      <div class="pcard reveal"><div class="ptop"><span class="pname" style="font-size:20px">Enterprise</span><span class="pteam">CUSTOM</span></div><div class="pdesc" style="margin-top:10px">Everything in Full, plus OT/ICS coverage, on-prem and MSSP options, and priority support. Scoped to your environment.</div><div class="pmods"><span>OT&nbsp;/&nbsp;ICS</span><span>ON-PREM</span><span>PRIORITY&nbsp;SUPPORT</span></div></div>
+    </div>
+    <div class="grouplbl reveal" id="platform-compare"><span>COMPARE PLANS</span><span class="ln"></span></div>
+    <div class="cmp-wrap reveal">
+      <table class="cmp">
+        <thead>
+          <tr>
+            <th class="feat">Feature</th>
+            <th class="comm">Community<span class="tier-sub">FREE</span></th>
+            <th>Essentials<span class="tier-sub">SUB</span></th>
+            <th>Full<span class="tier-sub">SUB</span></th>
+            <th>Enterprise<span class="tier-sub">CUSTOM</span></th>
+          </tr>
+        </thead>
+        <tbody>
+      <tr><td class="feat">Self-host the open core</td><td class="yes comm">&check;</td><td class="yes">&check;</td><td class="yes">&check;</td><td class="yes">&check;</td></tr>
+      <tr><td class="feat">Read your own detection data</td><td class="yes comm">&check;</td><td class="yes">&check;</td><td class="yes">&check;</td><td class="yes">&check;</td></tr>
+      <tr><td class="feat">Basic scoring</td><td class="yes comm">&check;</td><td class="yes">&check;</td><td class="yes">&check;</td><td class="yes">&check;</td></tr>
+      <tr><td class="feat">Core adversary techniques</td><td class="no comm">&ndash;</td><td class="yes">&check;</td><td class="yes">&check;</td><td class="yes">&check;</td></tr>
+      <tr><td class="feat">Full technique library (all 8 tactics)</td><td class="no comm">&ndash;</td><td class="no">&ndash;</td><td class="yes">&check;</td><td class="yes">&check;</td></tr>
+      <tr><td class="feat">Full scoring &amp; history</td><td class="no comm">&ndash;</td><td class="yes">&check;</td><td class="yes">&check;</td><td class="yes">&check;</td></tr>
+      <tr><td class="feat">Branded engagement reports</td><td class="no comm">&ndash;</td><td class="yes">&check;</td><td class="yes">&check;</td><td class="yes">&check;</td></tr>
+      <tr><td class="feat">Live detection-source connectors</td><td class="no comm">&ndash;</td><td class="yes">&check;</td><td class="yes">&check;</td><td class="yes">&check;</td></tr>
+      <tr><td class="feat">Incident remediation validation</td><td class="no comm">&ndash;</td><td class="no">&ndash;</td><td class="yes">&check;</td><td class="yes">&check;</td></tr>
+      <tr><td class="feat">Twice-yearly ATT&amp;CK updates</td><td class="no comm">&ndash;</td><td class="yes">&check;</td><td class="yes">&check;</td><td class="yes">&check;</td></tr>
+      <tr><td class="feat">OT / ICS coverage</td><td class="no comm">&ndash;</td><td class="no">&ndash;</td><td class="no">&ndash;</td><td class="yes">&check;</td></tr>
+      <tr><td class="feat">On-prem / MSSP options</td><td class="no comm">&ndash;</td><td class="no">&ndash;</td><td class="no">&ndash;</td><td class="yes">&check;</td></tr>
+      <tr><td class="feat">Priority support</td><td class="no comm">&ndash;</td><td class="no">&ndash;</td><td class="no">&ndash;</td><td class="yes">&check;</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="sub reveal" style="margin-top:24px;font-family:var(--mono);font-size:13px;color:var(--ink-faint)">Subscription plans with twice-yearly ATT&amp;CK-alignment updates. &nbsp;Contact for current pricing.</p>
+    <div class="hero-cta reveal" style="margin-top:18px">
+      <a href="mailto:bryant@byte-x-bit.com?subject=Platform%20Access%20Inquiry" class="btn btn-blue">Get Platform Access →</a>
       <a href="mailto:bryant@byte-x-bit.com?subject=Enterprise%20Inquiry" class="btn btn-outline">Talk to us about Enterprise</a>
+      <a href="https://github.com/nonducorduco311-cyber/pila-suite" target="_blank" rel="noopener" class="btn btn-outline">⬡ View on GitHub</a>
     </div>
   </div>
 </section>
@@ -528,7 +581,7 @@
   <div class="wrap">
     <div class="sec-tag reveal">// GOVERNMENT &amp; PUBLIC SECTOR</div>
     <h2 class="sec-h reveal">Mission-grade security for the public sector.</h2>
-    <p class="lead reveal" style="max-width:60ch">ByTE X Bit brings Department of Defense and Intelligence Community-grade defensive practices to local, state, and federal agencies — and to the primes who serve them. Built on the same frameworks (NIST 800-53, RMF, CMMC) that govern federal systems. Software and services only.</p>
+    <p class="lead reveal" style="max-width:60ch">ByTE X Bit brings U.S. defense-grade defensive practices to local, state, and federal agencies — and to the primes who serve them. Built on the same frameworks (NIST 800-53, RMF, CMMC) that govern federal systems. Software and services only.</p>
 
     <div class="grouplbl reveal" id="gov-services"><span>SERVICES</span><span class="ln"></span></div>
     <div class="svc-grid">
@@ -543,7 +596,7 @@
     <div class="grouplbl reveal" id="gov-contracting"><span>CONTRACTING READINESS</span><span class="ln"></span></div>
     <div class="company-grid">
       <div class="reveal">
-        <p>ByTE X Bit Technologies LLC is a Maryland-registered small business available for <b style="color:var(--ink)">subcontracting and teaming</b> with primes on federal, state, and local engagements. Our founder brings two decades of cleared-environment defensive cybersecurity experience and the framework fluency public-sector work demands.</p>
+        <p>ByTE X Bit Technologies LLC is a Maryland-registered small business available for <b style="color:var(--ink)">subcontracting and teaming</b> with primes on federal, state, and local engagements. Our founder brings two decades of defensive cybersecurity experience supporting U.S. defense and national-security missions, and the framework fluency public-sector work demands.</p>
         <p>A formal capability statement is available on request. Federal registrations (SAM.gov UEI, CAGE, and NAICS alignment) are being established — reach out and we'll share current status and our capability statement directly.</p>
       </div>
       <div class="facts reveal">
@@ -569,33 +622,31 @@
 <!-- ===== TRY THE TOOLS ===== -->
 <section class="view view-pad" id="view-tools">
   <div class="wrap">
-    <div class="sec-tag reveal">// TRY THE TOOLS</div>
-    <h2 class="sec-h reveal">Kick the tires. No commitment.</h2>
-    <p class="sec-sub reveal">Everything here is free to run. Grab a single tool, or clone the whole community edition. When you're ready, see what we offer small and large businesses.</p>
-
+    <div class="sec-tag reveal">// FREE TOOLS</div>
+    <h2 class="sec-h reveal">Free tools for a clearer view of your security.</h2>
+    <p class="sec-sub reveal">Everything here is free to run &mdash; no account, no key. Start with a quick tool, then see the open-core platform that powers the paid tiers.</p>
     <div class="grouplbl reveal"><span>EVERYDAY SECURITY</span><span class="ln"></span></div>
     <div class="tools">
-      <a class="tool reveal" href="/email-checker.html"><div class="ttop"><b>Email Security Checker</b><span class="tag t-free">Free</span></div><p>Check SPF, DKIM, and DMARC — with plain-English fixes.</p><span class="live">Open the tool →</span></a>
-      <a class="tool reveal" href="/posture-scanner.html"><div class="ttop"><b>Posture Scanner</b><span class="tag t-free">Free · Download</span></div><p>A downloadable Windows/Linux scan of your system’s security — results stay on your machine.</p><span class="live">Get the scanner →</span></a>
-      <a class="tool reveal" href="/dns-checker.html"><div class="ttop"><b>DNS &amp; Domain Health Checker</b><span class="tag t-free">Free</span></div><p>Check your domain’s DNS, email security, and DNSSEC — in plain English.</p><span class="live">Open the tool →</span></a>
-      <a class="tool reveal" href="/phishing-spotter.html"><div class="ttop"><b>Phishing &amp; Scam Spotter</b><span class="tag t-free">Free</span></div><p>Paste a suspicious email or text and see the scam red flags explained.</p><span class="live">Open the tool →</span></a>
+      <a class="tool reveal" href="/email-checker.html"><div class="ttop"><b>Email Security Checker</b><span class="tag t-free">Free</span></div><p>Check SPF, DKIM, and DMARC &mdash; with plain-English fixes.</p><span class="live">Open the tool &rarr;</span></a>
+      <a class="tool reveal" href="/posture-scanner.html"><div class="ttop"><b>Posture Scanner</b><span class="tag t-free">Free &middot; Download</span></div><p>A downloadable Windows/Linux scan of your system&rsquo;s security &mdash; results stay on your machine.</p><span class="live">Get the scanner &rarr;</span></a>
+      <a class="tool reveal" href="/dns-checker.html"><div class="ttop"><b>DNS &amp; Domain Health Checker</b><span class="tag t-free">Free</span></div><p>Check your domain&rsquo;s DNS, email security, and DNSSEC &mdash; in plain English.</p><span class="live">Open the tool &rarr;</span></a>
+      <a class="tool reveal" href="/phishing-spotter.html"><div class="ttop"><b>Phishing &amp; Scam Spotter</b><span class="tag t-free">Free</span></div><p>Paste a suspicious email or text and see the scam red flags explained.</p><span class="live">Open the tool &rarr;</span></a>
     </div>
-
     <div class="grouplbl reveal"><span>FOR SECURITY TEAMS</span><span class="ln"></span></div>
     <div class="tools">
-      <div class="tool reveal"><div class="ttop"><b>ATT&amp;CK Coverage Viewer</b><span class="tag t-free">Free</span></div><p>Visualize what your stack detects.</p></div>
-      <div class="tool reveal"><div class="ttop"><b>Detection Health Guard</b><span class="tag t-free">Free</span></div><p>Catch detections that have silently stopped firing.</p></div>
+      <div class="tool reveal"><div class="ttop"><b>ATT&amp;CK Coverage Viewer</b><span class="tag t-soon">Soon</span></div><p>Visualize what your stack detects.</p></div>
+      <div class="tool reveal"><div class="ttop"><b>Detection Health Guard</b><span class="tag t-soon">Soon</span></div><p>Catch detections that have silently stopped firing.</p></div>
       <a class="tool reveal" href="/sigma-validator.html"><div class="ttop"><b>Sigma Rule Validator</b><span class="tag t-free">Free</span></div><p>Lint and convert detection rules across formats.</p><span class="live">Open the tool →</span></a>
-      <div class="tool reveal"><div class="ttop"><b>Log Field-Drift Checker</b><span class="tag t-free">Free</span></div><p>Spot telemetry changes that quietly break your rules.</p></div>
-      <div class="tool reveal"><div class="ttop"><b>Connectors &amp; PSIL SDK</b><span class="tag t-oss">Apache 2.0</span></div><p>Plug Elastic, Suricata, Zeek, and Wazuh into one model.</p></div>
+      <div class="tool reveal"><div class="ttop"><b>Log Field-Drift Checker</b><span class="tag t-soon">Soon</span></div><p>Spot telemetry changes that quietly break your rules.</p></div>
     </div>
-
-    <div class="grouplbl reveal" id="tools-how"><span>HOW IT WORKS</span><span class="ln"></span></div>
-    <p class="sec-sub reveal" style="margin-top:0">Each tool runs on its own — no account, no key. For the full platform, clone the community edition (Apache 2.0) and run it from a clean checkout; upgrade to Professional when you want live correlation and the scoring engines.</p>
+    <div class="grouplbl reveal"><span>THE OPEN-CORE PLATFORM</span><span class="ln"></span></div>
+    <div class="tools">
+      <a class="tool reveal" href="https://github.com/nonducorduco311-cyber/pila-suite" target="_blank" rel="noopener" style="border-color:var(--blue);background:rgba(59,158,255,.06)"><div class="ttop"><b>PILA Community Edition</b><span class="tag t-oss">Apache 2.0</span></div><p>Clone and run the free open-core platform yourself &mdash; connectors, PSIL SDK, and basic scoring. The paid tiers add the full technique library, live correlation, reporting, and the scoring engines.</p><span class="live">Clone on GitHub &rarr;</span></a>
+    </div>
     <div class="hero-cta reveal" style="margin-top:22px">
-      <a href="https://github.com/nonducorduco311-cyber/pila-suite" target="_blank" rel="noopener" class="btn btn-blue">⬡ Clone the Community Edition</a>
-      <a data-view="smb" class="btn btn-outline" style="cursor:pointer">Run a small business? →</a>
-      <a data-view="large" class="btn btn-outline" style="cursor:pointer">Enterprise? →</a>
+      <a data-view="platform" class="btn btn-blue" style="cursor:pointer">See the platform &amp; plans &rarr;</a>
+      <a data-view="smb" class="btn btn-outline" style="cursor:pointer">Run a small business? &rarr;</a>
+      <a data-view="large" class="btn btn-outline" style="cursor:pointer">Enterprise? &rarr;</a>
     </div>
   </div>
 </section>
@@ -603,19 +654,21 @@
 <!-- ===== RESOURCES ===== -->
 <section class="view view-pad" id="view-resources">
   <div class="wrap">
-    <div class="sec-tag reveal" id="res-blog">// FROM THE BLOG</div>
+    <div class="sec-tag reveal" id="res-blog">// RESOURCES</div>
     <h2 class="sec-h reveal">Detection engineering, in the open.</h2>
-    <div class="svc-grid" style="margin-top:30px">
-      <div class="svc reveal"><span class="sk">Detection</span><h4>Why a green status light isn't proof your alerting works</h4><p>Verifying detections by real output, not what the dashboard claims.</p></div>
-      <div class="svc reveal"><span class="sk">Purple team</span><h4>Scoring a detection stack instead of writing another PDF</h4><p>Turning emulation results into a number you can track over time.</p></div>
-      <div class="svc reveal"><span class="sk">Small business</span><h4>Security for teams without a security team</h4><p>The handful of controls that buy the most protection for the least overhead.</p></div>
+    <p class="sec-sub reveal">Original research, detection-engineering write-ups, and a focused security-news feed &mdash; coming soon.</p>
+    <div class="grouplbl reveal"><span>BLOG</span><span class="ln"></span></div>
+    <div class="cs-block reveal">
+      <div class="cs-badge">COMING SOON</div>
+      <p>In-the-open write-ups on detection engineering, purple-team scoring, and practical security for lean teams &mdash; grounded in real lab work, not theory. First posts are on the way.</p>
     </div>
     <div class="grouplbl reveal" id="res-news"><span>SECURITY NEWS</span><span class="ln"></span></div>
-    <p class="sec-sub reveal" style="margin-top:0">A focused feed, auto-updated from CISA, NVD, and trusted vendor sources — headlines and links out, no noise.</p>
-    <div class="svc-grid" style="margin-top:22px">
-      <div class="svc reveal"><span class="sk">CISA KEV</span><h4>New actively-exploited vulnerability added</h4><p>Added to the Known Exploited Vulnerabilities catalog.</p></div>
-      <div class="svc reveal"><span class="sk">NVD</span><h4>Critical CVE rated 9.8 in a common framework</h4><p>Patch guidance and affected versions.</p></div>
-      <div class="svc reveal"><span class="sk">The Hacker News</span><h4>Ransomware crew shifts to living-off-the-land</h4><p>Tradecraft moves away from custom malware.</p></div>
+    <div class="cs-block reveal">
+      <div class="cs-badge">COMING SOON</div>
+      <p>A focused feed of what actually matters &mdash; actively-exploited vulnerabilities, critical CVEs, and adversary tradecraft &mdash; headlines and links out, no noise. Wiring it up now.</p>
+    </div>
+    <div class="hero-cta reveal" style="margin-top:30px">
+      <a data-view="contact" class="btn btn-outline" style="cursor:pointer">Want a heads-up when it's live? &rarr;</a>
     </div>
   </div>
 </section>
@@ -645,17 +698,31 @@
     <h2 class="sec-h reveal">Enterprise-grade rigor, at a small-business scale.</h2>
     <div class="company-grid">
       <div class="reveal">
-        <p>ByTE X Bit was founded by <b style="color:var(--ink)">Bryant Himmage</b>, a cybersecurity professional with over two decades of experience supporting U.S. Department of Defense and Intelligence Community missions in classified environments. His career spans the full breadth of defensive security — cyber network defense, security operations and SIEM engineering, vulnerability management, and information systems security engineering — built around the same risk-management frameworks (NIST 800-53, RMF) that govern the most security-conscious organizations in the country.</p>
+        <p>ByTE X Bit was founded by <b style="color:var(--ink)">Bryant Himmage</b>, a cybersecurity professional with over two decades of experience supporting U.S. defense and national-security missions. His career spans the full breadth of defensive security — cyber network defense, security operations and SIEM engineering, vulnerability management, and information systems security engineering — built around the same risk-management frameworks (NIST 800-53, RMF) that govern the most security-conscious organizations in the country.</p>
         <p>That background shapes how ByTE X Bit works: methodical, evidence-driven, and focused on real risk reduction rather than checkbox security. When he isn't working with clients, he's in his own security lab — building and testing the detection, monitoring, and analysis tooling that informs the services and free tools you'll find here.</p>
-        <p>The takeaway for you: enterprise-grade thinking applied at a small-business scale. The free tools on this site are a glimpse of that approach — practical, honest, built to actually help. When you're ready for hands-on help, you're working directly with someone who has defended networks where the stakes were genuinely high.</p>
+        <p>The result is enterprise-grade rigor at a small-business scale. The free tools on this site are a glimpse of that approach — practical, honest, built to actually help. When you're ready for hands-on help, you're working directly with someone who has defended networks where the stakes were genuinely high.</p>
       </div>
       <div class="facts reveal">
         <div class="frow"><span class="fk">FOUNDER</span><span class="fv">Bryant Himmage</span></div>
-        <div class="frow"><span class="fk">EXPERIENCE</span><span class="fv">20+ yrs · DoD / IC, classified environments</span></div>
+        <div class="frow"><span class="fk">EXPERIENCE</span><span class="fv">20+ yrs · U.S. defense &amp; national-security missions</span></div>
         <div class="frow"><span class="fk">FOCUS</span><span class="fv">Cyber defense · SIEM/SOC · vuln mgmt · ISSE</span></div>
         <div class="frow"><span class="fk">FRAMEWORKS</span><span class="fv">NIST 800-53 · RMF</span></div>
         <div class="frow"><span class="fk">EDUCATION</span><span class="fv">B.S. Computer Networks &amp; Cybersecurity, UMGC</span></div>
         <div class="frow"><span class="fk">CERTIFICATIONS</span><span class="fv">CompTIA CySA+ · Security+ · DoD IAT II</span></div>
+      </div>
+    </div>
+<div class="sec-tag reveal" style="margin-top:54px">// HOW WE WORK</div>
+    <h2 class="sec-h reveal">Evidence first. Always.</h2>
+    <div class="company-grid">
+      <div class="reveal">
+        <p>Every capability ByTE X Bit ships is proven before it&#39;s promised. Detection content is validated against live attack traffic in a real security lab &mdash; not demonstrated on slides. Assessments follow a documented, reproducible methodology, so findings can be verified, not just trusted.</p>
+        <p>Where we automate, the human expert stays the authority &mdash; the tooling handles the mechanical work so judgment goes where it matters. That discipline comes straight from the frameworks that govern high-assurance environments: map the requirement, test the control, document the evidence, and reduce the real risk &mdash; not the paperwork.</p>
+      </div>
+      <div class="facts reveal">
+        <div class="frow"><span class="fk">PROVEN</span><span class="fv">Validated against live attack traffic</span></div>
+        <div class="frow"><span class="fk">REPRODUCIBLE</span><span class="fv">Documented, verifiable methodology</span></div>
+        <div class="frow"><span class="fk">HUMAN-LED</span><span class="fv">Automation assists; the expert decides</span></div>
+        <div class="frow"><span class="fk">FRAMEWORK-DRIVEN</span><span class="fv">NIST 800-53 · RMF · evidence-based</span></div>
       </div>
     </div>
   </div>
@@ -687,10 +754,10 @@
         <p>Cybersecurity software &amp; services. We keep organizations safe, secure, and reliable.</p>
       </div>
       <div class="foot-cols">
-        <div class="foot-col"><h5>SMALL BUSINESSES</h5><a data-view="smb" data-anchor="smb-free">Free tools</a><a data-view="smb" data-anchor="smb-paid">Services</a></div>
-        <div class="foot-col"><h5>LARGE BUSINESSES</h5><a data-view="large" data-anchor="large-free">Free tools</a><a data-view="large" data-anchor="large-services">Services</a><a data-view="large" data-anchor="large-platform">Platform</a></div>
+        <div class="foot-col"><h5>SMALL BUSINESSES</h5><a data-view="tools">Free tools</a><a data-view="smb" data-anchor="smb-paid">Services</a></div>
+        <div class="foot-col"><h5>LARGE BUSINESSES</h5><a data-view="tools">Free tools</a><a data-view="large" data-anchor="large-services">Services</a><a data-view="platform">BXB Platform</a></div>
         <div class="foot-col"><h5>GOVERNMENT</h5><a data-view="gov" data-anchor="gov-services">Services</a><a data-view="gov" data-anchor="gov-contracting">Contracting</a></div>
-        <div class="foot-col"><h5>COMPANY</h5><a data-view="tools">Try the tools</a><a data-view="company">About</a><a data-view="contact">Contact</a></div>
+        <div class="foot-col"><h5>COMPANY</h5><a data-view="company">About</a><a data-view="contact">Contact</a></div>
       </div>
     </div>
     <div class="foot-bottom">
@@ -727,7 +794,7 @@
   // mobile menu
   var mm=document.getElementById('mmenu');
   mm.innerHTML='<div style="display:flex;flex-direction:column;gap:2px;padding:10px 24px 18px;border-top:1px solid var(--line)">'+
-    [['smb','Small Businesses'],['large','Large Businesses'],['gov','Government'],['tools','Try the Tools'],['resources','Resources'],['company','Company'],['contact','Contact']]
+    [['smb','Small Businesses'],['large','Large Businesses'],['gov','Government'],['platform','BXB Platform'],['tools','Free Tools'],['resources','Resources'],['company','Company'],['contact','Contact']]
     .map(function(p){return '<a data-mview="'+p[0]+'" style="padding:12px 0;color:var(--ink-dim);border-bottom:1px solid var(--line);font-size:15px;cursor:pointer">'+p[1]+'</a>';}).join('')+
     '<a href="https://github.com/nonducorduco311-cyber/pila-suite" target="_blank" rel="noopener" style="padding:12px 0;color:var(--blue);font-size:15px">GitHub ↗</a></div>';
   mm.querySelectorAll('[data-mview]').forEach(function(a){a.addEventListener('click',function(){showView(a.getAttribute('data-mview'));});});
