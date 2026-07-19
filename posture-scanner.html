@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Posture Scanner — ByTE X Bit Technologies LLC</title>
+<meta name="description" content="A free, downloadable security posture scanner for Windows and Linux. It checks your computer's security settings and explains, in plain English, what to fix. Everything runs locally — results stay on your machine and nothing is transmitted.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" href="/favicon.ico">
+<style>
+  :root{
+    --bg:#0a0e14;--bg-2:#0f1520;--panel:#121a26;--panel-2:#16202e;
+    --line:#1f2b3a;--line-2:#2a3a4f;
+    --ink:#e8eef5;--ink-dim:#9fb0c3;--ink-faint:#6b7d92;
+    --blue:#3b9eff;--blue-2:#1f6fd6;--purple:#a06bff;
+    --green:#34d399;--amber:#f6c453;--red:#ff6b6b;
+    --display:'Syne',sans-serif;--mono:'Space Mono',monospace;--maxw:880px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--display);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  ::selection{background:var(--blue);color:#02060c}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(900px 500px at 80% -10%,rgba(59,158,255,.10),transparent 60%),radial-gradient(700px 500px at -10% 20%,rgba(160,107,255,.08),transparent 60%)}
+  .grid-bg{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+    background-image:linear-gradient(rgba(31,43,58,.35) 1px,transparent 1px),linear-gradient(90deg,rgba(31,43,58,.35) 1px,transparent 1px);
+    background-size:54px 54px;mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,#000 30%,transparent 75%)}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;position:relative;z-index:2}
+
+  header.nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(12px);background:rgba(10,14,20,.72);border-bottom:1px solid var(--line)}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px;max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:-.02em;font-size:18px}
+  .brand img{height:32px;width:auto;filter:drop-shadow(0 0 14px rgba(59,158,255,.22))}
+  .brand .btxt{display:flex;flex-direction:column;line-height:1}
+  .brand small{font-family:var(--mono);font-size:9px;color:var(--ink-faint);letter-spacing:.18em;margin-top:2px;font-weight:400}
+  .back{font-size:13.5px;color:var(--ink-dim);font-family:var(--mono);transition:color .2s}
+  .back:hover{color:var(--blue)}
+
+  main{padding:54px 0 70px}
+  .eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;color:var(--blue);border:1px solid var(--line-2);border-radius:100px;padding:6px 14px;margin-bottom:22px;background:rgba(59,158,255,.05);text-transform:uppercase}
+  h1{font-size:clamp(32px,5vw,52px);font-weight:800;letter-spacing:-.03em;line-height:1.04}
+  h1 .grad{background:linear-gradient(120deg,var(--blue),var(--purple));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .lead{color:var(--ink-dim);font-size:clamp(15px,2vw,18px);max-width:62ch;margin:18px 0 0}
+
+  .promise{margin-top:30px;border:1px solid rgba(52,211,153,.35);background:rgba(52,211,153,.06);border-radius:14px;padding:18px 22px;font-size:15px;color:var(--ink)}
+  .promise b{color:var(--green)}
+
+  .dl-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:30px}
+  @media(max-width:600px){.dl-grid{grid-template-columns:1fr}}
+  .dl{border:1px solid var(--line-2);border-radius:16px;padding:24px;background:var(--panel);transition:all .25s;display:block}
+  .dl:hover{border-color:var(--blue);transform:translateY(-3px);box-shadow:0 16px 38px -20px rgba(59,158,255,.55)}
+  .dl-os{font-size:20px;font-weight:800}
+  .dl-sub{font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin-top:5px}
+  code{font-family:var(--mono);font-size:.92em;background:rgba(255,255,255,.06);padding:1px 5px;border-radius:4px}
+  .dl-go{color:var(--blue);font-weight:700;font-size:14px;margin-top:16px}
+  .dl-note{font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin-top:16px;line-height:1.6}
+
+  .sec-h{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin:40px 0 16px}
+  .run-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:600px){.run-grid{grid-template-columns:1fr}}
+  .run{border:1px solid var(--line);border-radius:12px;padding:18px 20px;background:var(--panel)}
+  .run h4{font-size:14px;font-weight:700;margin-bottom:10px}
+  .run pre{font-family:var(--mono);font-size:12.5px;color:var(--ink-dim);background:var(--bg-2);border:1px solid var(--line);border-radius:8px;padding:12px 14px;white-space:pre-wrap;line-height:1.6}
+
+  .checks{display:grid;grid-template-columns:1fr 1fr;gap:10px 24px;margin-top:4px}
+  @media(max-width:600px){.checks{grid-template-columns:1fr}}
+  .check{display:flex;gap:10px;align-items:flex-start;font-size:14.5px;color:var(--ink-dim);padding:7px 0;border-bottom:1px solid var(--line)}
+  .check .tick{color:var(--green);font-weight:700;flex-shrink:0}
+  .check b{color:var(--ink);font-weight:600}
+
+  .note{font-size:14px;color:var(--ink-dim);background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--amber);border-radius:10px;padding:14px 16px;margin-top:18px;line-height:1.6}
+
+  .cta-box{margin-top:40px;border-top:1px solid var(--line);padding-top:28px;text-align:center}
+  .cta-box h3{font-size:21px;font-weight:800;margin-bottom:8px}
+  .cta-box p{color:var(--ink-dim);max-width:52ch;margin:0 auto 18px}
+  .btn{display:inline-flex;align-items:center;gap:9px;font-family:var(--display);font-weight:700;font-size:15px;padding:13px 26px;border-radius:11px;cursor:pointer;border:1px solid transparent;background:linear-gradient(135deg,var(--blue),var(--blue-2));color:#02060c;box-shadow:0 8px 24px rgba(59,158,255,.25);transition:all .2s}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(59,158,255,.38)}
+  .privacy{font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);margin-top:28px;line-height:1.5;text-align:center}
+  .privacy b{color:var(--ink-dim)}
+
+  footer{border-top:1px solid var(--line);padding:30px 0;position:relative;z-index:2}
+  .foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:12px;color:var(--ink-faint)}
+  .foot a:hover{color:var(--blue)}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/">
+      <img src="/bxb-logo.png" alt="ByTE X Bit Technologies LLC">
+      <span class="btxt"><b>ByTE&nbsp;X&nbsp;Bit</b><small>TECHNOLOGIES&nbsp;LLC</small></span>
+    </a>
+    <a class="back" href="/">← Back to ByTE X Bit</a>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="eyebrow">● Free download · Windows &amp; Linux</div>
+    <h1>Posture <span class="grad">Scanner</span></h1>
+    <p class="lead">A small program you download and run on your own computer. It checks your machine's security settings — firewall, disk encryption, updates, accounts, and more — and tells you, in plain English, what's solid and what to fix.</p>
+
+    <div class="promise">🔒 <b>Everything stays on your machine.</b> The scan runs locally and the results are shown to you only. Nothing — no findings, no inventory, no telemetry — is ever sent to ByTE X Bit or anyone else. No account, no cloud, no phone-home.</div>
+
+    <div class="dl-grid">
+      <a class="dl" href="/downloads/bxb-scan-0.2.2.exe">
+        <div class="dl-os">Windows</div>
+        <div class="dl-sub">bxb-scan-0.2.2.exe · 64-bit</div>
+        <div class="dl-go">Download →</div>
+      </a>
+      <a class="dl" href="/downloads/bxb-scan-0.2.2">
+        <div class="dl-os">Linux</div>
+        <div class="dl-sub">bxb-scan-0.2.2 · 64-bit (amd64)</div>
+        <div class="dl-go">Download →</div>
+      </a>
+    </div>
+    <p class="dl-note">Signed releases are on the way. Until then, a fresh download may trigger a Windows SmartScreen prompt — that's expected for new, unsigned software. A SHA-256 checksum (SHA256SUMS-0.2.2.txt) accompanies each release so you can verify it. macOS support is coming.</p>
+
+    <div class="sec-h">How to run it</div>
+    <div class="run-grid">
+      <div class="run">
+        <h4>Windows</h4>
+        <pre>Double-click the downloaded
+bxb-scan-0.2.2.exe
+A menu lets you pick:
+  1) this computer only
+  2) computer + local network
+then offers to save a report.</pre>
+      </div>
+      <div class="run">
+        <h4>Linux</h4>
+        <pre>chmod +x bxb-scan-0.2.2
+./bxb-scan-0.2.2
+(shows the same menu; or use
+ --host-only / --network / --html)</pre>
+      </div>
+    </div>
+    <p class="dl-note">The menu offers to save an HTML report you can keep or print (or pass <b style="color:var(--ink-dim)">--html report.html</b> directly). It runs fine as a normal user; on Windows, a few checks (like BitLocker) show more detail when run as Administrator.</p>
+
+    <div class="sec-h">What it checks</div>
+    <div class="checks">
+      <div class="check"><span class="tick">✓</span><div><b>Host firewall</b> — on or off</div></div>
+      <div class="check"><span class="tick">✓</span><div><b>Disk encryption</b> — BitLocker / LUKS</div></div>
+      <div class="check"><span class="tick">✓</span><div><b>Endpoint protection</b> — antivirus active</div></div>
+      <div class="check"><span class="tick">✓</span><div><b>Updates</b> — auto-update &amp; pending patches</div></div>
+      <div class="check"><span class="tick">✓</span><div><b>Admin accounts</b> — how many have admin</div></div>
+      <div class="check"><span class="tick">✓</span><div><b>Risky settings</b> — SMBv1, SSH root login</div></div>
+      <div class="check"><span class="tick">✓</span><div><b>Installed software</b> — inventory</div></div>
+      <div class="check"><span class="tick">✓</span><div><b>Local network</b> — passive device discovery (opt-in)</div></div>
+      <div class="check"><span class="tick">✓</span><div><b>Plain-language fixes</b> — for every gap</div></div>
+    </div>
+
+    <div class="note"><b>By default it checks the computer it runs on.</b> Add <code>--network</code> for passive local-network discovery: it lists devices using your computer's ARP cache and standard service-discovery (SSDP/UPnP) — it never scans ports and stays on your local subnet. Active port scanning is a separate, opt-in step coming later, and it will always ask you to confirm it's a network you're authorized to scan.</div>
+
+    <div class="cta-box">
+      <h3>Want us to run this across your whole business?</h3>
+      <p>We do done-for-you posture assessments and remediation for small businesses — no security team required.</p>
+      <a class="btn" href="mailto:bryant@byte-x-bit.com?subject=Posture%20Assessment%20Inquiry">Talk to us →</a>
+    </div>
+
+    <p class="privacy">🔒 Read-only and local-only. The scanner inspects settings and never changes anything. By default it makes no network connections; the opt-in <code>--network</code> mode only does passive discovery (no port scanning). Open source under the Apache License 2.0.</p>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span>© 2026 ByTE X Bit Technologies LLC · software &amp; services, no hardware</span>
+    <a href="/">byte-x-bit.com</a>
+  </div>
+</footer>
+</body>
+</html>
