@@ -181,6 +181,23 @@
   }
   function txtClean(s){ return String(s).replace(/^"|"$/g,"").replace(/""/g,""); }
 
+  // Walk up the label tree until NS records appear. NS live at the zone apex,
+  // so subdomains inherit from the parent zone.
+  async function nsClimb(name){
+    var labels=String(name).replace(/\.$/,"").split(".");
+    for(var i=0;i<labels.length-1;i++){
+      var rest=labels.slice(i);
+      if(rest.length<2) break;
+      var cand=rest.join(".");
+      var j=await doh(cand,T.NS);
+      if(j==="UNREACHABLE") return {ns:[],from:cand,unreachable:true};
+      var got=answers(j,T.NS);
+      if(got.length) return {ns:got,from:cand,unreachable:false};
+    }
+    return {ns:[],from:name,unreachable:false};
+  }
+
+
   var findings=[]; // {cat,status,title,detail,meta,why,fix}
   function add(f){ findings.push(f); }
 
@@ -240,7 +257,8 @@
 
       var aRec=answers(aj,T.A);
       var aaaaRec=answers(await aaaaQ,T.AAAA);
-      var nsRec=answers(await nsQ,T.NS);
+      var nsRec=answers(await nsQ,T.NS), nsFrom=domain, nsUnreachable=false;
+      if(!nsRec.length){ var _c=await nsClimb(domain); nsRec=_c.ns; nsFrom=_c.from; nsUnreachable=_c.unreachable; }
       var wwwj=await wwwQ; var wwwHas=(answers(wwwj,T.A).length>0)||(wwwj&&wwwj.Answer&&wwwj.Answer.some(function(a){return a.type===T.CNAME;}));
       var mxRec=answers(await mxQ,T.MX);
       var txtRec=answers(await txtQ,T.TXT).map(txtClean);
@@ -271,12 +289,17 @@
           detail:"No IPv6 (AAAA) record.",
           why:"Optional, but IPv6 is increasingly common and some networks prefer it."});
       }
-      if(nsRec.length>=2){
+      var nsSuffix=(nsFrom&&nsFrom!==domain)?" Inherited from "+esc(nsFrom)+" (subdomains don\u2019t publish their own).":"";
+      if(nsUnreachable){
+        add({cat:"Resolution & reachability",status:"info",title:"Nameservers",
+          detail:"Couldn\u2019t check \u2014 DNS lookups appear blocked on this network.",
+          why:"Both public resolvers were unreachable, so this is inconclusive rather than a fault with the domain."});
+      }else if(nsRec.length>=2){
         add({cat:"Resolution & reachability",status:"pass",title:"Nameservers",
-          detail:nsRec.length+" nameservers (good redundancy).",meta:nsRec.join(", ")});
+          detail:nsRec.length+" nameservers (good redundancy)."+nsSuffix,meta:nsRec.join(", ")});
       }else if(nsRec.length===1){
         add({cat:"Resolution & reachability",status:"warn",title:"Nameservers",
-          detail:"Only one nameserver.",meta:nsRec.join(", "),
+          detail:"Only one nameserver."+nsSuffix,meta:nsRec.join(", "),
           why:"A single nameserver is a single point of failure — if it goes down, your whole domain becomes unreachable.",
           fix:"Use at least two nameservers (most DNS hosts provide several by default)."});
       }else{
