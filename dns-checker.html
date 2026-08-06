@@ -131,10 +131,10 @@
       <div class="summary" id="summary"></div>
       <div id="findings"></div>
 
-      <div class="cta-box">
-        <h3>Want these gaps fixed — and kept fixed?</h3>
-        <p>ByTE X Bit helps small businesses lock down DNS, email authentication, and domain security as part of a managed security service. We can set this up correctly and watch it for you.</p>
-        <a class="btn" href="mailto:bryant@byte-x-bit.com?subject=DNS%20%26%20Domain%20Security%20Help">Talk to us →</a>
+      <div class="cta-box" id="dns-offer" style="display:none">
+        <h3>Found gaps worth fixing?</h3>
+        <p>I'm a security professional in Maryland — I can lock down your DNS, email authentication, and domain security properly. A short paid triage confirms exactly what's needed, and the fee credits toward the fix. For a closer look at email spoofing specifically, run the <a href="/email-checker.html" style="color:var(--blue)">Email Security Checker</a>.</p>
+        <a class="btn" href="mailto:bryant@byte-x-bit.com?subject=DNS%20%26%20Domain%20Security%20Help">Get help securing your domain →</a>
       </div>
     </div>
 
@@ -388,6 +388,8 @@
     $("status").style.display="none";
     var counts={pass:0,warn:0,fail:0,info:0};
     findings.forEach(function(f){counts[f.status]++;});
+    var _dnsOffer=document.getElementById('dns-offer');
+    if(_dnsOffer) _dnsOffer.style.display=(counts.fail>0||counts.warn>0)?'block':'none';
 
     var sum='';
     if(counts.fail) sum+='<span class="pillc fail">'+counts.fail+' to fix</span>';
