@@ -132,6 +132,11 @@
 
     <div id="summary"></div>
     <div class="results" id="results">
+      <div id="bxb-offer" style="display:none;background:rgba(59,158,255,.06);border:1px solid var(--line-2);border-radius:12px;padding:16px 18px;margin-bottom:4px">
+        <div style="font-size:15px;font-weight:600;color:var(--ink);margin-bottom:6px">Found issues with your email security</div>
+        <div style="font-size:14px;color:var(--ink);line-height:1.6;margin-bottom:13px">Until these are fixed, someone can send email that looks like it comes from your domain — a common path for phishing and fraud. The fixes above are yours to use. If you'd rather have it handled, I'm a security professional in Maryland and can set up SPF, DKIM, and DMARC correctly and confirm it's locked down.</div>
+        <a id="bxb-offer-link" href="mailto:bryant@byte-x-bit.com?subject=Email%20Security%20Help" style="display:inline-block;background:#3b9eff;color:#fff;font-size:14px;font-weight:600;padding:10px 18px;border-radius:8px;text-decoration:none">Get help securing your domain →</a>
+      </div>
       <div class="rcard" id="card-spf">
         <div class="rtop"><div><h3>SPF</h3><div class="sub">Who's allowed to send</div></div><span class="badge">—</span></div>
         <div class="rec"></div><div class="explain"></div><div class="fix"></div>
@@ -280,9 +285,18 @@
         doh(selector+'._domainkey.'+domain,'TXT'),
         doh('_dmarc.'+domain,'TXT')
       ]);
-      render('spf',analyzeSPF(txtValues(res[0])));
-      render('dkim',analyzeDKIM(txtValues(res[1]),selector,domain));
-      render('dmarc',analyzeDMARC(txtValues(res[2])));
+      var _spf=analyzeSPF(txtValues(res[0]));
+      var _dkim=analyzeDKIM(txtValues(res[1]),selector,domain);
+      var _dmarc=analyzeDMARC(txtValues(res[2]));
+      render('spf',_spf); render('dkim',_dkim); render('dmarc',_dmarc);
+      var _bad=[_spf,_dkim,_dmarc].some(function(r){return r.status==='fail'||r.status==='warn';});
+      var _off=document.getElementById('bxb-offer');
+      if(_off){
+        if(_bad){
+          document.getElementById('bxb-offer-link').href='mailto:bryant@byte-x-bit.com?subject='+encodeURIComponent('Email Security Help - '+domain);
+          _off.style.display='block';
+        } else { _off.style.display='none'; }
+      }
       $('#summary').textContent='Checked '+domain+'  ·  DKIM selector: '+selector+'  ·  via Cloudflare 1.1.1.1';
       $('#summary').style.display='block';
       $('#results').style.display='flex';
