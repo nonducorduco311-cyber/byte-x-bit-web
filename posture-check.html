@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Security Posture Self-Check — ByTE X Bit Technologies LLC</title>
+<meta name="description" content="Free tool: a quick security self-check for your home or business. Answer a few plain-English questions and get a posture score plus a prioritized list of what to fix first. Runs entirely in your browser — nothing is sent or stored.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" href="/favicon.ico">
+<style>
+  :root{
+    --bg:#0a0e14;--bg-2:#0f1520;--panel:#121a26;--panel-2:#16202e;
+    --line:#1f2b3a;--line-2:#2a3a4f;
+    --ink:#e8eef5;--ink-dim:#9fb0c3;--ink-faint:#6b7d92;
+    --blue:#3b9eff;--blue-2:#1f6fd6;--purple:#a06bff;
+    --green:#34d399;--amber:#f6c453;--red:#ff6b6b;
+    --display:'Syne',sans-serif;--mono:'Space Mono',monospace;--maxw:880px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--display);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  ::selection{background:var(--blue);color:#02060c}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(900px 500px at 80% -10%,rgba(59,158,255,.10),transparent 60%),radial-gradient(700px 500px at -10% 20%,rgba(160,107,255,.08),transparent 60%)}
+  .grid-bg{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+    background-image:linear-gradient(rgba(31,43,58,.35) 1px,transparent 1px),linear-gradient(90deg,rgba(31,43,58,.35) 1px,transparent 1px);
+    background-size:54px 54px;mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,#000 30%,transparent 75%)}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;position:relative;z-index:2}
+
+  header.nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(12px);background:rgba(10,14,20,.72);border-bottom:1px solid var(--line)}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px;max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:-.02em;font-size:18px}
+  .brand img{height:32px;width:auto;filter:drop-shadow(0 0 14px rgba(59,158,255,.22))}
+  .brand .btxt{display:flex;flex-direction:column;line-height:1}
+  .brand small{font-family:var(--mono);font-size:9px;color:var(--ink-faint);letter-spacing:.18em;margin-top:2px;font-weight:400}
+  .back{font-size:13.5px;color:var(--ink-dim);font-family:var(--mono);transition:color .2s}
+  .back:hover{color:var(--blue)}
+
+  main{padding:54px 0 70px}
+  .eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;color:var(--blue);border:1px solid var(--line-2);border-radius:100px;padding:6px 14px;margin-bottom:22px;background:rgba(59,158,255,.05);text-transform:uppercase}
+  h1{font-size:clamp(32px,5vw,52px);font-weight:800;letter-spacing:-.03em;line-height:1.04}
+  h1 .grad{background:linear-gradient(120deg,var(--blue),var(--purple));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .lead{color:var(--ink-dim);font-size:clamp(15px,2vw,18px);max-width:62ch;margin:18px 0 0}
+
+  .qcat{margin-top:30px}
+  .qcat h3{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:4px}
+  .qrow{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:15px 0;border-bottom:1px solid var(--line)}
+  .qtext{font-size:15px;color:var(--ink);max-width:54ch}
+  .seg{display:inline-flex;border:1px solid var(--line-2);border-radius:10px;overflow:hidden;flex-shrink:0}
+  .seg button{background:var(--bg-2);color:var(--ink-dim);border:0;padding:9px 15px;font-family:var(--display);font-size:13.5px;cursor:pointer;border-right:1px solid var(--line-2);transition:all .15s;white-space:nowrap}
+  .seg button:last-child{border-right:0}
+  .seg button:hover{background:var(--panel-2);color:var(--ink)}
+  .seg button.on{background:var(--blue);color:#02060c;font-weight:700}
+  @media(max-width:620px){.qrow{flex-direction:column;align-items:flex-start;gap:11px}.seg{width:100%}.seg button{flex:1}}
+
+  .actions{position:sticky;bottom:0;background:linear-gradient(transparent,var(--bg) 45%);padding:22px 0 6px;margin-top:14px}
+  .pwrap{height:7px;background:var(--bg-2);border:1px solid var(--line);border-radius:100px;overflow:hidden;margin-bottom:11px}
+  #pbar{height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--purple));transition:width .3s}
+  .prow{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .pcount{font-family:var(--mono);font-size:12px;color:var(--ink-faint)}
+  .btn{display:inline-flex;align-items:center;gap:9px;font-family:var(--display);font-weight:700;font-size:15px;padding:13px 26px;border-radius:11px;cursor:pointer;border:1px solid transparent;background:linear-gradient(135deg,var(--blue),var(--blue-2));color:#02060c;box-shadow:0 8px 24px rgba(59,158,255,.25);transition:all .2s}
+  .btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 12px 30px rgba(59,158,255,.38)}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+  .btn-ghost{background:none;border:1px solid var(--line-2);color:var(--ink-dim);font-family:var(--display);font-weight:600;font-size:14px;padding:11px 22px;border-radius:11px;cursor:pointer;transition:all .2s;margin-top:30px}
+  .btn-ghost:hover{border-color:var(--blue);color:var(--ink)}
+
+  .results{display:none;margin-top:20px;padding-top:10px}
+  .score-wrap{position:relative;width:170px;height:170px;margin:8px auto 0}
+  .gauge{width:170px;height:170px}
+  .g-bg{fill:none;stroke:var(--line);stroke-width:12}
+  .g-fg{fill:none;stroke:var(--blue);stroke-width:12;stroke-linecap:round;stroke-dasharray:440;stroke-dashoffset:440;transform:rotate(-90deg);transform-origin:85px 85px;transition:stroke-dashoffset 1.1s ease,stroke .5s}
+  .score-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .score-num{font-size:46px;font-weight:800;line-height:1}
+  .score-of{font-family:var(--mono);font-size:11px;color:var(--ink-faint);margin-top:2px}
+  .tier{text-align:center;font-size:23px;font-weight:800;margin-top:18px}
+  .tier-msg{text-align:center;color:var(--ink-dim);max-width:52ch;margin:7px auto 0;font-size:15px}
+
+  .sec-h{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin:36px 0 14px}
+  .fix-item{border:1px solid var(--line);border-left-width:3px;border-radius:14px;padding:18px 20px;margin-bottom:13px;background:var(--panel)}
+  .fix-item.gap{border-left-color:var(--red)} .fix-item.partial{border-left-color:var(--amber)}
+  .fi-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}
+  .fi-cat{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--ink-faint);text-transform:uppercase}
+  .fi-badge{font-family:var(--mono);font-size:10px;font-weight:700;padding:4px 11px;border-radius:100px;white-space:nowrap}
+  .gap .fi-badge{background:rgba(255,107,107,.16);color:var(--red)}
+  .partial .fi-badge{background:rgba(246,196,83,.16);color:var(--amber)}
+  .fix-item h4{font-size:17px;font-weight:700;margin-bottom:6px}
+  .fi-why{color:var(--ink-dim);font-size:14px;line-height:1.55}
+  .fi-fix{font-size:14px;color:var(--ink);background:rgba(59,158,255,.07);border:1px solid var(--line-2);border-radius:9px;padding:11px 13px;margin-top:11px;line-height:1.55}
+  .fi-fix a{color:var(--blue);font-weight:600}
+  .chips{display:flex;flex-wrap:wrap;gap:9px}
+  .chip{font-size:13px;color:var(--green);border:1px solid rgba(52,211,153,.35);background:rgba(52,211,153,.07);border-radius:100px;padding:6px 13px}
+  .fi-help{font-size:13.5px;color:var(--ink-dim);margin-top:10px;padding-left:12px;border-left:2px solid var(--purple)}
+  .fi-help b{color:var(--purple)}
+  .fi-help .svc-ref{font-family:var(--mono);font-size:11px;color:var(--purple);opacity:.85;margin-left:4px}
+  .summary-box{background:linear-gradient(135deg,rgba(59,158,255,.09),rgba(160,107,255,.09));border:1px solid var(--line-2);border-radius:16px;padding:22px 24px;margin-bottom:6px}
+  .summary-box h3{font-size:18px;font-weight:800;margin-bottom:8px}
+  .summary-box p{color:var(--ink-dim);font-size:14.5px}
+  .summary-box .svcs{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+  .summary-box .svc-chip{font-family:var(--mono);font-size:12px;color:var(--blue);border:1px solid var(--line-2);background:var(--bg-2);border-radius:100px;padding:7px 14px}
+  .cta-box{margin-top:36px;border-top:1px solid var(--line);padding-top:28px;text-align:center}
+  .cta-box h3{font-size:21px;font-weight:800;margin-bottom:8px}
+  .cta-box p{color:var(--ink-dim);max-width:50ch;margin:0 auto 18px}
+  .privacy{font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);margin-top:26px;line-height:1.5;text-align:center}
+  .privacy b{color:var(--ink-dim)}
+
+  footer{border-top:1px solid var(--line);padding:30px 0;position:relative;z-index:2}
+  .foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:12px;color:var(--ink-faint)}
+  .foot a:hover{color:var(--blue)}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/">
+      <img src="/bxb-logo.png" alt="ByTE X Bit Technologies LLC">
+      <span class="btxt"><b>ByTE&nbsp;X&nbsp;Bit</b><small>TECHNOLOGIES&nbsp;LLC</small></span>
+    </a>
+    <a class="back" href="/">← Back to ByTE X Bit</a>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="eyebrow">● Free self-assessment</div>
+    <h1>Security Posture <span class="grad">Self-Check</span></h1>
+    <p class="lead">A few plain-English questions about your home or business setup. You'll get a posture score, the gaps that matter most, and a clear picture of where ByTE X Bit can step in to help. Takes about two minutes — nothing is installed, and nothing leaves your browser.</p>
+
+    <div id="form"></div>
+
+    <div class="actions">
+      <div class="pwrap"><div id="pbar"></div></div>
+      <div class="prow">
+        <span class="pcount" id="pcount">0 / 12 answered</span>
+        <button class="btn" id="see" disabled>See my results →</button>
+      </div>
+    </div>
+
+    <div class="results" id="results">
+      <div class="score-wrap">
+        <svg class="gauge" viewBox="0 0 170 170">
+          <circle class="g-bg" cx="85" cy="85" r="70"/>
+          <circle class="g-fg" id="gfg" cx="85" cy="85" r="70"/>
+        </svg>
+        <div class="score-center"><div class="score-num" id="scoreNum">0</div><div class="score-of">/ 100</div></div>
+      </div>
+      <div class="tier" id="tierLabel"></div>
+      <p class="tier-msg" id="tierMsg"></p>
+
+      <div id="fixes"></div>
+      <div id="well"></div>
+
+      <div class="cta-box">
+        <h3>Want help closing these gaps?</h3>
+        <p>Your score shows where you stand — now someone can help you fix it. Whether it&rsquo;s your home setup or your business, I&rsquo;m a security professional in Maryland who can work through these findings with you. A short paid triage confirms the priorities, and the fee credits toward the work.</p>
+        <a class="btn" href="mailto:bryant@byte-x-bit.com?subject=Security%20Posture%20Help">Get help with your security →</a>
+      </div>
+      <button class="btn-ghost" onclick="resetAll()">↺ Start over</button>
+      <p class="privacy">🔒 <b>Private by design.</b> Your answers are scored entirely in your browser. Nothing is sent to a server, and nothing is saved.</p>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span>© 2026 ByTE X Bit Technologies LLC · software &amp; services, no hardware</span>
+    <a href="/">byte-x-bit.com</a>
+  </div>
+</footer>
+
+<script>
+  var QUESTIONS = [
+    {id:'mfa', cat:'Accounts & Access', w:10, title:'Multi-factor authentication',
+     q:'Is MFA (two-factor) required on email, banking, and admin accounts?',
+     why:'Most break-ins start with a stolen or guessed password. MFA blocks the large majority of account takeovers even when a password leaks.',
+     fix:'Turn on MFA for email, banking, and any admin accounts — start in your email provider\u2019s security settings, then your other critical logins.'},
+    {id:'pw', cat:'Accounts & Access', w:7, title:'Unique, managed passwords',
+     q:'Does everyone use unique, strong passwords (ideally via a password manager)?',
+     why:'Reused passwords mean a single breach somewhere else can unlock your business accounts.',
+     fix:'Adopt a password manager (e.g. Bitwarden or 1Password) so every account gets a unique, strong password nobody has to memorize.'},
+    {id:'access', cat:'Accounts & Access', w:7, title:'Limited admin & clean accounts',
+     q:'Are admin rights limited, and are ex-employee or unused accounts removed promptly?',
+     why:'Extra admin access widens the blast radius of any compromise, and lingering old accounts are easy, unwatched entry points.',
+     fix:'Give people only the access they need, and disable accounts the same day someone leaves or a service is retired.'},
+
+    {id:'backup', cat:'Data & Recovery', w:10, title:'Isolated backups',
+     q:'Do you have automatic backups stored offline or in the cloud, separate from your main systems?',
+     why:'Backups are your safety net against ransomware and hardware failure \u2014 but only if attackers can\u2019t reach and encrypt them too.',
+     fix:'Set up automatic backups kept offline or in a separate cloud account, isolated from your everyday network.'},
+    {id:'restore', cat:'Data & Recovery', w:6, title:'Tested recovery',
+     q:'Have you actually tested restoring from a backup?',
+     why:'A backup you\u2019ve never restored is a guess. Plenty of businesses discover their backups were broken only during a real disaster.',
+     fix:'Do a test restore now and then, so you know the backups work and roughly how long recovery takes.'},
+    {id:'crypt', cat:'Data & Recovery', w:5, title:'Device encryption',
+     q:'Are laptops and drives encrypted (BitLocker / FileVault)?',
+     why:'A lost or stolen laptop without encryption hands over every file on it.',
+     fix:'Turn on BitLocker (Windows) or FileVault (Mac) on every laptop \u2014 it\u2019s built in and free.'},
+
+    {id:'patch', cat:'Devices & Updates', w:8, title:'Updates & patching',
+     q:'Are operating systems and software kept up to date (auto-updates or a regular routine)?',
+     why:'Attackers exploit known, already-patched holes within days of disclosure. Out-of-date software is the easiest way in.',
+     fix:'Enable automatic updates for operating systems and key apps, or set a standing monthly patch routine.'},
+    {id:'edr', cat:'Devices & Updates', w:6, title:'Endpoint protection',
+     q:'Does every computer have active, reputable antivirus / endpoint protection?',
+     why:'Endpoint protection catches the malware that slips past everything else \u2014 but only on machines where it\u2019s actually turned on.',
+     fix:'Confirm every computer has reputable, active endpoint protection. Microsoft Defender counts \u2014 just make sure it\u2019s enabled and updating.'},
+
+    {id:'email', cat:'Email & Network', w:7, title:'Email anti-spoofing',
+     q:'Are SPF, DKIM, and DMARC set up on your email domain?',
+     why:'Without these records, attackers can spoof your domain to phish your own customers and staff in your name.',
+     fix:'Set up SPF, DKIM, and DMARC. Not sure where you stand? <a href="/email-checker.html">Check yours with our free Email Security Checker \u2192</a>'},
+    {id:'phish', cat:'Email & Network', w:6, title:'Phishing awareness',
+     q:'Has your team been briefed on spotting phishing emails?',
+     why:'Phishing is the number-one way attackers get in, and your people are the front line that technology can\u2019t fully cover.',
+     fix:'Brief your team on spotting phishing, and repeat it occasionally \u2014 even a short quarterly reminder measurably reduces clicks.'},
+    {id:'remote', cat:'Email & Network', w:6, title:'Secure access & Wi-Fi',
+     q:'Is remote access behind a VPN (not exposed RDP), and is Wi-Fi on WPA2/WPA3?',
+     why:'Remote desktop exposed to the internet and weak Wi-Fi are two of the most common ways small businesses get breached.',
+     fix:'Never expose RDP directly \u2014 put remote access behind a VPN \u2014 and use WPA2 or WPA3 with a strong passphrase on Wi-Fi.'},
+
+    {id:'ir', cat:'Preparedness', w:5, title:'Incident plan',
+     q:'Do you have a basic plan for who to call and what to do in a breach?',
+     why:'In an incident, fumbling for who to call burns the critical first hours when fast action matters most.',
+     fix:'Write down who to contact and the first few steps for a suspected breach, and keep it somewhere you can reach offline. (A free IR Plan Generator is coming to our tools.)'}
+  ];
+
+  var SVC = {
+    mfa:'Security Health Check', pw:'Security Health Check', access:'Fractional Security Advisor',
+    backup:'Incident Readiness', restore:'Incident Readiness', crypt:'Security Health Check',
+    patch:'Managed Monitoring', edr:'Managed Monitoring', email:'Security Health Check',
+    phish:'Fractional Security Advisor', remote:'Security Health Check', ir:'Incident Readiness'
+  };
+  var HELP = {
+    mfa:'We roll out MFA across your critical accounts and confirm it is actually enforced.',
+    pw:'We set up a password manager and move your team onto unique credentials.',
+    access:'We right-size admin access and put a clean joiner and leaver process in place.',
+    backup:'We design isolated, automated backups built to survive ransomware.',
+    restore:'We run a real restore test so recovery is proven, not assumed.',
+    crypt:'We enable and verify full-disk encryption across your devices.',
+    patch:'We stand up patching and watch for anything that falls behind.',
+    edr:'We deploy and monitor endpoint protection so coverage never lapses.',
+    email:'We configure SPF, DKIM, and DMARC and confirm spoofing is blocked.',
+    phish:'We run phishing awareness and keep your team sharp over time.',
+    remote:'We lock down remote access and harden your Wi-Fi.',
+    ir:'We write your incident plan and make sure you know who to call.'
+  };
+
+  var answers = {};
+  var $ = function(s){return document.querySelector(s);};
+
+  function renderForm(){
+    var byCat = {}, order = [];
+    QUESTIONS.forEach(function(q){ if(!byCat[q.cat]){byCat[q.cat]=[];order.push(q.cat);} byCat[q.cat].push(q); });
+    var html = '';
+    order.forEach(function(cat){
+      html += '<div class="qcat"><h3>'+cat+'</h3>';
+      byCat[cat].forEach(function(q){
+        html += '<div class="qrow" id="row-'+q.id+'">'
+          + '<div class="qtext">'+q.q+'</div>'
+          + '<div class="seg" data-id="'+q.id+'">'
+          + '<button data-v="1">Yes</button>'
+          + '<button data-v="0.5">Somewhat</button>'
+          + '<button data-v="0">No</button>'
+          + '</div></div>';
+      });
+      html += '</div>';
+    });
+    $('#form').innerHTML = html;
+    document.querySelectorAll('.seg button').forEach(function(b){
+      b.addEventListener('click', function(){
+        var seg = b.parentElement, id = seg.getAttribute('data-id');
+        answers[id] = parseFloat(b.getAttribute('data-v'));
+        seg.querySelectorAll('button').forEach(function(x){x.classList.remove('on');});
+        b.classList.add('on');
+        updateProgress();
+      });
+    });
+  }
+
+  function updateProgress(){
+    var done = Object.keys(answers).length, total = QUESTIONS.length;
+    $('#pbar').style.width = (done/total*100)+'%';
+    $('#pcount').textContent = done+' / '+total+' answered';
+    $('#see').disabled = done < total;
+  }
+
+  function compute(){
+    var got=0, max=0;
+    QUESTIONS.forEach(function(q){ max += q.w; got += (answers[q.id]||0)*q.w; });
+    return Math.round(got/max*100);
+  }
+  function tier(s){
+    if(s>=85) return {label:'Strong posture', color:'var(--green)', msg:"You're ahead of most small businesses. Keep it maintained and revisit after any big change."};
+    if(s>=60) return {label:'Solid, with gaps', color:'var(--blue)', msg:"A good foundation. Close the items below to move into strong territory."};
+    if(s>=35) return {label:'Developing', color:'var(--amber)', msg:"Some basics are in place, but there are important gaps. Start at the top of the list."};
+    return {label:'Needs attention', color:'var(--red)', msg:"Several high-impact basics are missing. The top items below are where to begin."};
+  }
+
+  function renderResults(){
+    var score = compute(), t = tier(score);
+    var fg = $('#gfg');
+    fg.style.stroke = t.color;
+    fg.style.strokeDashoffset = 440 * (1 - score/100);
+    // count up the number
+    var n = 0, target = score, step = Math.max(1, Math.round(target/30));
+    var iv = setInterval(function(){ n += step; if(n>=target){n=target;clearInterval(iv);} $('#scoreNum').textContent = n; }, 28);
+    $('#tierLabel').textContent = t.label;
+    $('#tierLabel').style.color = t.color;
+    $('#tierMsg').textContent = t.msg;
+
+    var gaps = QUESTIONS.filter(function(q){ return (answers[q.id]||0) < 1; })
+      .sort(function(a,b){ return (b.w - a.w) || ((answers[a.id]||0) - (answers[b.id]||0)); });
+    var svcWeight = {};
+    gaps.forEach(function(q){ var sv=SVC[q.id]; svcWeight[sv]=(svcWeight[sv]||0)+q.w; });
+    var topSvcs = Object.keys(svcWeight).sort(function(a,b){return svcWeight[b]-svcWeight[a];}).slice(0,3);
+    var summaryHtml = '';
+    if(gaps.length){
+      summaryHtml = '<div class="summary-box"><h3>Where ByTE X Bit would focus with you</h3>'
+        + '<p>Based on your answers, these are the areas where we would make the biggest difference for your organization:</p>'
+        + '<div class="svcs">' + topSvcs.map(function(sv){return '<span class="svc-chip">'+sv+'</span>';}).join('') + '</div>'
+        + '</div>';
+    }
+    var fixesHtml = '';
+    if(gaps.length){
+      fixesHtml += '<div class="sec-h">Fix these first \u2014 ordered by impact</div>';
+      gaps.forEach(function(q){
+        var partial = (answers[q.id]||0) === 0.5;
+        fixesHtml += '<div class="fix-item '+(partial?'partial':'gap')+'">'
+          + '<div class="fi-top"><span class="fi-cat">'+q.cat+'</span>'
+          + '<span class="fi-badge">'+(partial?'PARTIAL':'GAP')+'</span></div>'
+          + '<h4>'+q.title+'</h4>'
+          + '<p class="fi-why">'+q.why+'</p>'
+          + '<div class="fi-fix"><b>Do this:</b> '+q.fix+'</div>'
+          + '<div class="fi-help"><b>How we help:</b> '+HELP[q.id]+' <span class="svc-ref">'+SVC[q.id]+'</span></div>'
+          + '</div>';
+      });
+    } else {
+      fixesHtml += '<div class="sec-h">Nothing urgent flagged</div><div class="fix-item" style="border-left-color:var(--green)"><p class="fi-why">You answered yes to every item \u2014 strong work. Keep these maintained and re-check after staff or system changes.</p></div>';
+    }
+    $('#fixes').innerHTML = summaryHtml + fixesHtml;
+
+    var well = QUESTIONS.filter(function(q){ return (answers[q.id]||0) === 1; });
+    var wellHtml = '';
+    if(well.length && gaps.length){
+      wellHtml = '<div class="sec-h">What you\u2019re already doing well</div><div class="chips">'
+        + well.map(function(q){ return '<span class="chip">\u2713 '+q.title+'</span>'; }).join('') + '</div>';
+    }
+    $('#well').innerHTML = wellHtml;
+
+    $('#results').style.display = 'block';
+    $('#results').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  function resetAll(){
+    answers = {};
+    document.querySelectorAll('.seg button.on').forEach(function(b){b.classList.remove('on');});
+    $('#results').style.display = 'none';
+    $('#gfg').style.strokeDashoffset = 440;
+    $('#scoreNum').textContent = '0';
+    updateProgress();
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  $('#see').addEventListener('click', renderResults);
+  renderForm();
+  updateProgress();
+</script>
+</body>
+</html>
