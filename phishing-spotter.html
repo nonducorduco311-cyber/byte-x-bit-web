@@ -94,6 +94,44 @@
   footer{border-top:1px solid var(--line);padding:30px 0;position:relative;z-index:2;margin-top:48px}
   .foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:12px;color:var(--ink-faint)}
   .foot a:hover{color:var(--blue)}
+  /* ── File & Link check (Phase 1: client-side hash + heuristics) ───────────── */
+  .section-div{margin:40px 0 0;border-top:1px solid var(--line);padding-top:34px}
+  .section-div .cap{font-family:var(--mono);font-size:12px;letter-spacing:.12em;color:var(--blue);text-transform:uppercase;margin-bottom:6px}
+  .section-div h2.sh{font-size:clamp(22px,3.4vw,30px);font-weight:800;letter-spacing:-.02em;line-height:1.1}
+  .section-div .sub{color:var(--ink-dim);font-size:14.5px;margin-top:10px;max-width:62ch}
+
+  .drop{margin-top:20px;border:1.5px dashed var(--line-2);border-radius:14px;background:var(--bg-2);
+    padding:34px 22px;text-align:center;cursor:pointer;transition:border-color .18s,background .18s}
+  .drop:hover{border-color:var(--blue);background:rgba(59,158,255,.03)}
+  .drop.over{border-color:var(--blue);background:rgba(59,158,255,.07);border-style:solid}
+  .drop .di{font-size:26px;margin-bottom:8px;opacity:.85}
+  .drop .dt{font-weight:700;font-size:15.5px}
+  .drop .ds{font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin-top:7px;line-height:1.6}
+  .drop input[type=file]{display:none}
+
+  .fres{display:none;margin-top:18px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 18px 16px}
+  .fres .fname{font-weight:700;font-size:15px;word-break:break-all}
+  .fres .fmeta{font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin-top:3px}
+  .fres .hlabel{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;color:var(--ink-dim);text-transform:uppercase;margin-top:15px}
+  .fres .hval{font-family:var(--mono);font-size:12.5px;color:var(--ink);background:var(--bg-2);border:1px solid var(--line-2);border-radius:9px;padding:11px 13px;margin-top:6px;word-break:break-all;line-height:1.5;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .fres .hval code{flex:1}
+  .copybtn{font-family:var(--mono);font-size:11px;color:var(--blue);background:transparent;border:1px solid var(--line-2);border-radius:7px;padding:5px 10px;cursor:pointer;white-space:nowrap;transition:all .15s}
+  .copybtn:hover{border-color:var(--blue);background:rgba(59,158,255,.08)}
+  .vtline{margin-top:16px;display:flex;gap:11px;flex-wrap:wrap;align-items:center}
+  .vtbtn{display:inline-flex;align-items:center;gap:8px;font-family:var(--display);font-weight:700;font-size:14px;padding:11px 20px;border-radius:10px;cursor:pointer;border:1px solid transparent;background:linear-gradient(135deg,var(--blue),var(--blue-2));color:#02060c;box-shadow:0 6px 18px rgba(59,158,255,.22);transition:all .2s}
+  .vtbtn:hover{transform:translateY(-1px)}
+  .vtnote{font-family:var(--mono);font-size:11px;color:var(--ink-faint);line-height:1.6}
+
+  .lrow{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
+  .lrow input[type=url]{flex:1;min-width:240px;font-family:var(--mono);font-size:13.5px;color:var(--ink);background:var(--bg-2);border:1px solid var(--line-2);border-radius:11px;padding:13px 15px;transition:border-color .15s,box-shadow .15s}
+  .lrow input[type=url]:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(59,158,255,.12)}
+  .lres{display:none;margin-top:16px}
+  .lflag{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--amber);border-radius:10px;padding:12px 15px;margin-top:9px;font-size:14px;color:var(--ink-dim)}
+  .lflag.clean{border-left-color:var(--green)}
+  .lflag b{color:var(--ink)}
+  .disclose{font-family:var(--mono);font-size:11.5px;color:var(--ink-dim);background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--blue);border-radius:10px;padding:12px 15px;margin-top:18px;line-height:1.65}
+  .disclose b{color:var(--blue)}
+
 </style>
 </head>
 <body>
@@ -158,6 +196,44 @@
     </div>
 
     <p class="privacy">🔒 100% client-side. Analysis happens in your browser; nothing is uploaded or stored. This is a guide, not a guarantee — a clean-looking message can still be a scam. When in doubt, verify through a channel you trust.</p>
+    <!-- ── File & Link check section (Phase 1: client-side) ──────────────────── -->
+    <div class="section-div">
+      <div class="cap">Also check a file or link</div>
+      <h2 class="sh">Got a suspicious attachment or link?</h2>
+      <p class="sub">Drop a file to get its unique fingerprint, or paste a link to scan it for common red flags. Then check either one against VirusTotal — a free service that scans against 70+ antivirus engines.</p>
+
+      <div class="drop" id="drop" role="button" tabindex="0" aria-label="Drop a file or click to browse">
+        <div class="di">📄</div>
+        <div class="dt">Drop a file here, or click to browse</div>
+        <div class="ds">Your file stays on your device — we only read it to compute a fingerprint. Nothing is uploaded.</div>
+        <input type="file" id="file" />
+      </div>
+
+      <div class="fres" id="fres">
+        <div class="fname" id="fname"></div>
+        <div class="fmeta" id="fmeta"></div>
+        <div class="hlabel">SHA-256 fingerprint</div>
+        <div class="hval"><code id="hval"></code><button class="copybtn" id="copyhash">Copy</button></div>
+        <div class="vtline">
+          <a class="vtbtn" id="vtfile" target="_blank" rel="noopener noreferrer">Check this file on VirusTotal →</a>
+          <span class="vtnote">Opens VirusTotal with this fingerprint — tells you if it's <em>known</em> malware.</span>
+        </div>
+      </div>
+
+      <div class="field" style="margin-top:26px">
+        <label for="url">Or paste a suspicious link</label>
+        <div class="lrow">
+          <input type="url" id="url" placeholder="https://example.com/suspicious-link" autocomplete="off" spellcheck="false" />
+          <button class="btn" id="urlgo">Scan link →</button>
+        </div>
+      </div>
+      <div class="lres" id="lres"></div>
+
+      <div class="disclose">
+        <b>🔒 What happens to your data:</b> file fingerprinting and link checks run entirely in your browser — ByTE X Bit never receives your file, link, or any personal information. If you click a "Check on VirusTotal" button, only the fingerprint or link you chose is sent to VirusTotal (a third-party service) so it can check its threat database. That's the only time anything leaves your browser, and only when you choose to.
+      </div>
+    </div>
+
   </div>
 </main>
 
@@ -352,6 +428,116 @@
   $("clear").addEventListener("click",function(){$("msg").value="";$("results").style.display="none";$("err").style.display="none";$("msg").focus();});
   $("ex1").addEventListener("click",function(){$("msg").value=EX1;analyze();});
   $("ex2").addEventListener("click",function(){$("msg").value=EX2;analyze();});
+  /* ── File & Link check (Phase 1: client-side hashing + link heuristics) ───── */
+  var fileHash = "";
+
+  function fmtBytes(n){
+    if(n<1024) return n+" B";
+    if(n<1048576) return (n/1024).toFixed(1)+" KB";
+    if(n<1073741824) return (n/1048576).toFixed(1)+" MB";
+    return (n/1073741824).toFixed(2)+" GB";
+  }
+
+  async function hashFile(file){
+    var buf = await file.arrayBuffer();
+    var digest = await crypto.subtle.digest("SHA-256", buf);
+    var bytes = new Uint8Array(digest);
+    var hex = "";
+    for(var i=0;i<bytes.length;i++){ hex += bytes[i].toString(16).padStart(2,"0"); }
+    return hex;
+  }
+
+  async function onFile(file){
+    if(!file) return;
+    $("fname").textContent = file.name || "(unnamed file)";
+    $("fmeta").textContent = fmtBytes(file.size) + (file.type ? " · " + file.type : "");
+    $("hval").textContent = "computing fingerprint…";
+    $("fres").style.display = "block";
+    try{
+      fileHash = await hashFile(file);
+      $("hval").textContent = fileHash;
+      $("vtfile").href = "https://www.virustotal.com/gui/file/" + fileHash;
+    }catch(e){
+      $("hval").textContent = "Could not read this file in your browser.";
+      $("vtfile").removeAttribute("href");
+    }
+  }
+
+  var drop = $("drop"), fileInput = $("file");
+  drop.addEventListener("click", function(){ fileInput.click(); });
+  drop.addEventListener("keydown", function(e){ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); fileInput.click(); } });
+  fileInput.addEventListener("change", function(e){ if(e.target.files && e.target.files[0]) onFile(e.target.files[0]); });
+  ["dragenter","dragover"].forEach(function(ev){
+    drop.addEventListener(ev, function(e){ e.preventDefault(); e.stopPropagation(); drop.classList.add("over"); });
+  });
+  ["dragleave","drop"].forEach(function(ev){
+    drop.addEventListener(ev, function(e){ e.preventDefault(); e.stopPropagation(); drop.classList.remove("over"); });
+  });
+  drop.addEventListener("drop", function(e){
+    var dt = e.dataTransfer;
+    if(dt && dt.files && dt.files[0]) onFile(dt.files[0]);
+  });
+
+  $("copyhash").addEventListener("click", function(){
+    if(!fileHash) return;
+    navigator.clipboard.writeText(fileHash).then(function(){
+      var b=$("copyhash"); var old=b.textContent; b.textContent="Copied ✓";
+      setTimeout(function(){ b.textContent=old; }, 1400);
+    });
+  });
+
+  /* Link heuristics — reuses the same signals as the message scanner */
+  function scanUrl(raw){
+    var issues = [];
+    var s = raw.trim();
+    if(!s) return null;
+    if(!/^https?:\/\//i.test(s)) s = "http://" + s; // tolerate pasted bare domains
+    var host="", full=s;
+    try{ var u=new URL(s); host=u.hostname.toLowerCase(); }
+    catch(e){ return [{bad:true, r:"This doesn't look like a valid web link."}]; }
+
+    if(/^http:\/\//i.test(raw.trim())) issues.push({bad:true, r:"Uses insecure <b>http://</b> (no encryption) — legitimate sites use https://."});
+    if(/^\d{1,3}(\.\d{1,3}){3}$/.test(host)) issues.push({bad:true, r:"Points to a <b>raw IP address</b> instead of a real domain name — a common trick to hide where a link really goes."});
+    var shorteners=["bit.ly","tinyurl.com","goo.gl","t.co","ow.ly","is.gd","buff.ly","rebrand.ly","cutt.ly","rb.gy","shorturl.at"];
+    shorteners.forEach(function(sh){ if(host===sh||host.endsWith("."+sh)) issues.push({bad:true, r:"Uses a <b>link shortener</b> ("+sh+") that hides the real destination — you can't see where it actually goes."}); });
+    if(/xn--/.test(host)) issues.push({bad:true, r:"Contains <b>punycode</b> (xn--) — often used to make a fake domain look like a real one using lookalike characters."});
+    if((host.match(/-/g)||[]).length>=3) issues.push({bad:true, r:"Domain has <b>many hyphens</b> — a pattern common in throwaway phishing domains."});
+    if(host.split(".").length>=5) issues.push({bad:true, r:"Unusually <b>many subdomains</b> — scammers pad domains to bury the real one (e.g. paypal.com.secure-login.xyz)."});
+    var brands=["paypal","apple","amazon","microsoft","google","netflix","facebook","instagram","chase","wellsfargo","bankofamerica","usps","fedex","dhl","coinbase"];
+    brands.forEach(function(b){
+      if(host.indexOf(b)>-1){
+        var reExact=new RegExp("(^|\\.)"+b+"\\.(com|net|org)$","i");
+        if(!reExact.test(host)) issues.push({bad:true, r:"Mentions <b>"+b+"</b> but isn't "+b+"'s real domain — a lookalike used to impersonate the brand."});
+      }
+    });
+    var badTld=[".zip",".mov",".xyz",".top",".click",".link",".gq",".tk",".ml",".cf",".work",".country",".kim"];
+    badTld.forEach(function(t){ if(host.endsWith(t)) issues.push({bad:false, r:"Uses the <b>"+t+"</b> domain ending — not automatically bad, but disproportionately used by scams."}); });
+    if(/@/.test(full.replace(/^https?:\/\//,""))) issues.push({bad:true, r:"Contains an <b>@</b> in the link — everything before it is ignored by browsers, a classic trick to disguise the real destination."});
+
+    return issues;
+  }
+
+  function renderUrl(){
+    var raw=$("url").value;
+    var issues=scanUrl(raw);
+    var box=$("lres");
+    if(issues===null){ box.style.display="none"; return; }
+    box.style.display="block";
+    var vtUrl="https://www.virustotal.com/gui/search/"+encodeURIComponent(raw.trim());
+    if(issues.length===0){
+      box.innerHTML='<div class="lflag clean"><b>No obvious red flags</b> in the link\u2019s structure. That\u2019s reassuring \u2014 but not a guarantee. A clean-looking link can still be malicious.</div>'
+        + '<div class="vtline"><a class="vtbtn" target="_blank" rel="noopener noreferrer" href="'+vtUrl+'">Check this link on VirusTotal \u2192</a><span class="vtnote">Checks the link against VirusTotal\u2019s threat database.</span></div>';
+      return;
+    }
+    var html = issues.map(function(x){
+      return '<div class="lflag'+(x.bad?"":" clean")+'">'+x.r+'</div>';
+    }).join("");
+    html += '<div class="vtline"><a class="vtbtn" target="_blank" rel="noopener noreferrer" href="'+vtUrl+'">Check this link on VirusTotal \u2192</a><span class="vtnote">Sends only this link to VirusTotal to check its threat database.</span></div>';
+    box.innerHTML = html;
+  }
+  $("urlgo").addEventListener("click", renderUrl);
+  $("url").addEventListener("keydown", function(e){ if(e.key==="Enter"){ e.preventDefault(); renderUrl(); } });
+
 })();
 </script>
 </body>
