@@ -200,7 +200,7 @@
     <div class="section-div">
       <div class="cap">Also check a file or link</div>
       <h2 class="sh">Got a suspicious attachment or link?</h2>
-      <p class="sub">Drop a file to get its unique fingerprint, or paste a link to scan it for common red flags. Then check either one against VirusTotal — a free service that scans against 70+ antivirus engines.</p>
+      <p class="sub">Drop a file to get its unique fingerprint, or paste a link to scan it for common red flags — all computed right here in your browser.</p>
 
       <div class="drop" id="drop" role="button" tabindex="0" aria-label="Drop a file or click to browse">
         <div class="di">📄</div>
@@ -214,10 +214,6 @@
         <div class="fmeta" id="fmeta"></div>
         <div class="hlabel">SHA-256 fingerprint</div>
         <div class="hval"><code id="hval"></code><button class="copybtn" id="copyhash">Copy</button></div>
-        <div class="vtline">
-          <a class="vtbtn" id="vtfile" target="_blank" rel="noopener noreferrer">Check this file on VirusTotal →</a>
-          <span class="vtnote">Opens VirusTotal with this fingerprint — tells you if it's <em>known</em> malware.</span>
-        </div>
       </div>
 
       <div class="field" style="margin-top:26px">
@@ -230,7 +226,7 @@
       <div class="lres" id="lres"></div>
 
       <div class="disclose">
-        <b>🔒 What happens to your data:</b> file fingerprinting and link checks run entirely in your browser — ByTE X Bit never receives your file, link, or any personal information. If you click a "Check on VirusTotal" button, only the fingerprint or link you chose is sent to VirusTotal (a third-party service) so it can check its threat database. That's the only time anything leaves your browser, and only when you choose to.
+        <b>🔒 What happens to your data:</b> everything here runs entirely in your browser — the file fingerprint and link checks are computed on your device. ByTE X Bit never receives your file, your link, or any personal information. Nothing is uploaded, logged, or stored.
       </div>
     </div>
 
@@ -456,10 +452,8 @@
     try{
       fileHash = await hashFile(file);
       $("hval").textContent = fileHash;
-      $("vtfile").href = "https://www.virustotal.com/gui/file/" + fileHash;
     }catch(e){
       $("hval").textContent = "Could not read this file in your browser.";
-      $("vtfile").removeAttribute("href");
     }
   }
 
@@ -525,16 +519,13 @@
     var box=$("lres");
     if(issues===null){ box.style.display="none"; return; }
     box.style.display="block";
-    var vtUrl="https://www.virustotal.com/gui/search/"+encodeURIComponent(raw.trim());
     if(issues.length===0){
-      box.innerHTML='<div class="lflag clean"><b>No obvious red flags</b> in the link\u2019s structure. That\u2019s reassuring \u2014 but not a guarantee. A clean-looking link can still be malicious.</div>'
-        + '<div class="vtline"><a class="vtbtn" target="_blank" rel="noopener noreferrer" href="'+vtUrl+'">Check this link on VirusTotal \u2192</a><span class="vtnote">Checks the link against VirusTotal\u2019s threat database.</span></div>';
+      box.innerHTML='<div class="lflag clean"><b>No obvious red flags</b> in the link\u2019s structure. That\u2019s reassuring \u2014 but not a guarantee. A clean-looking link can still be malicious.</div>';
       return;
     }
     var html = issues.map(function(x){
       return '<div class="lflag'+(x.bad?"":" clean")+'">'+x.r+'</div>';
     }).join("");
-    html += '<div class="vtline"><a class="vtbtn" target="_blank" rel="noopener noreferrer" href="'+vtUrl+'">Check this link on VirusTotal \u2192</a><span class="vtnote">Sends only this link to VirusTotal to check its threat database.</span></div>';
     box.innerHTML = html;
   }
   $("urlgo").addEventListener("click", renderUrl);
