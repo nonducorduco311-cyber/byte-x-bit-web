@@ -470,12 +470,14 @@
   ["dragenter","dragover"].forEach(function(ev){
     drop.addEventListener(ev, function(e){ e.preventDefault(); e.stopPropagation(); drop.classList.add("over"); });
   });
-  ["dragleave","drop"].forEach(function(ev){
-    drop.addEventListener(ev, function(e){ e.preventDefault(); e.stopPropagation(); drop.classList.remove("over"); });
+  drop.addEventListener("dragleave", function(e){
+    e.preventDefault(); e.stopPropagation(); drop.classList.remove("over");
   });
   drop.addEventListener("drop", function(e){
+    e.preventDefault(); e.stopPropagation();
+    drop.classList.remove("over");
     var dt = e.dataTransfer;
-    if(dt && dt.files && dt.files[0]) onFile(dt.files[0]);
+    if(dt && dt.files && dt.files.length && dt.files[0]) onFile(dt.files[0]);
   });
 
   $("copyhash").addEventListener("click", function(){
