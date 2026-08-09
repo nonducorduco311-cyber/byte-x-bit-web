@@ -132,6 +132,15 @@
   .disclose{font-family:var(--mono);font-size:11.5px;color:var(--ink-dim);background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--blue);border-radius:10px;padding:12px 15px;margin-top:18px;line-height:1.65}
   .disclose b{color:var(--blue)}
 
+  /* ── Phase 2: threat verdict boxes ────────────────────────────────────────── */
+  .vres{border-radius:10px;padding:13px 16px;margin-top:14px;font-size:14px;line-height:1.55;border:1px solid var(--line);border-left:3px solid var(--line-2)}
+  .vres b{color:var(--ink)}
+  .vres em{font-style:italic;color:var(--ink)}
+  .vres-load{color:var(--ink-dim);border-left-color:var(--blue)}
+  .vres-good{border-left-color:var(--green);color:var(--ink-dim)}
+  .vres-warn{border-left-color:var(--amber);color:var(--ink-dim)}
+  .vres-bad{border-left-color:var(--red);color:var(--ink-dim);background:rgba(255,107,107,.05)}
+  .vres-unknown{border-left-color:var(--ink-faint);color:var(--ink-dim)}
 </style>
 </head>
 <body>
@@ -205,7 +214,7 @@
       <div class="drop" id="drop" role="button" tabindex="0" aria-label="Drop a file or click to browse">
         <div class="di">📄</div>
         <div class="dt">Drop a file here, or click to browse</div>
-        <div class="ds">Your file stays on your device — we only read it to compute a fingerprint. Nothing is uploaded.</div>
+        <div class="ds">Your file stays on your device — we only read it to compute a fingerprint. Email attachment? Download it to your computer first — browsers can't read files dragged straight from email.</div>
         <input type="file" id="file" />
       </div>
 
@@ -214,6 +223,11 @@
         <div class="fmeta" id="fmeta"></div>
         <div class="hlabel">SHA-256 fingerprint</div>
         <div class="hval"><code id="hval"></code><button class="copybtn" id="copyhash">Copy</button></div>
+        <div class="vtline">
+          <button class="vtbtn" id="scanfile">Scan for threats →</button>
+          <span class="vtnote">Checks this fingerprint against VirusTotal's 70+ engines — the result shows here; you stay on this page.</span>
+        </div>
+        <div id="fverdict" style="display:none"></div>
       </div>
 
       <div class="field" style="margin-top:26px">
@@ -531,6 +545,76 @@
   $("urlgo").addEventListener("click", renderUrl);
   $("url").addEventListener("keydown", function(e){ if(e.key==="Enter"){ e.preventDefault(); renderUrl(); } });
 
+
+  /* ── Phase 2: inline threat verdicts via the bxb-threat-check Worker ───────── */
+  var WORKER_URL = "https://bxb-threat-check.nonducorduco311.workers.dev";
+
+  function verdictHtml(d){
+    if(d.error){
+      if(d.error==="rate_limited") return '<div class="vres vres-warn"><b>Too many checks right now.</b> The free threat lookup is rate-limited \u2014 wait a minute and try again.</div>';
+      return '<div class="vres vres-warn"><b>Couldn\u2019t complete the threat check.</b> Please try again in a moment.</div>';
+    }
+    if(d.status==="unknown"){
+      return '<div class="vres vres-unknown"><b>Not in the threat database.</b> VirusTotal has no record of this '+(d.type==="hash"?"file":"link")+' \u2014 which is <em>not</em> the same as safe. Brand-new or targeted threats often aren\u2019t known yet, so stay cautious.</div>';
+    }
+    var m=d.malicious||0, s=d.suspicious||0, tot=d.total||0;
+    if(d.verdict==="malicious"){
+      return '<div class="vres vres-bad"><b>\u26a0 Flagged as malicious.</b> '+m+' of '+tot+' security engines flagged this '+(d.type==="hash"?"file":"link")+' as dangerous'+(d.name?' ('+esc(d.name)+')':'')+'. Do not open or click it.</div>';
+    }
+    if(d.verdict==="suspicious"){
+      return '<div class="vres vres-warn"><b>\u26a0 Flagged as suspicious.</b> '+s+' of '+tot+' engines flagged this '+(d.type==="hash"?"file":"link")+' as suspicious. Treat it as risky \u2014 verify before acting.</div>';
+    }
+    return '<div class="vres vres-good"><b>\u2713 Clean.</b> None of the '+tot+' security engines flagged this '+(d.type==="hash"?"file":"link")+'. Reassuring \u2014 but a brand-new threat can still be unrated, so stay alert.</div>';
+  }
+
+  async function scanThreat(type, value, btn, outEl){
+    if(!value) return;
+    btn.disabled = true;
+    var old = btn.textContent;
+    btn.textContent = "Scanning\u2026";
+    outEl.innerHTML = '<div class="vres vres-load">Checking against VirusTotal\u2019s threat database\u2026</div>';
+    outEl.style.display = "block";
+    try{
+      var r = await fetch(WORKER_URL, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({type:type, value:value}) });
+      var d = await r.json();
+      outEl.innerHTML = verdictHtml(d);
+    }catch(e){
+      outEl.innerHTML = '<div class="vres vres-warn"><b>Couldn\u2019t reach the threat checker.</b> Check your connection and try again.</div>';
+    }finally{
+      btn.disabled = false;
+      btn.textContent = old;
+    }
+  }
+
+  var _sf = $("scanfile");
+  if(_sf){ _sf.addEventListener("click", function(){ if(fileHash) scanThreat("hash", fileHash, _sf, $("fverdict")); }); }
+
+  // Link scan: after renderUrl draws results, append a "Scan for threats" button + verdict area
+  var _origRenderUrl = renderUrl;
+  renderUrl = function(){
+    _origRenderUrl();
+    var box = $("lres");
+    if(box && box.style.display !== "none" && !$("scanlink")){
+      var raw = $("url").value.trim();
+      if(raw){
+        var wrap = document.createElement("div");
+        wrap.innerHTML = '<div class="vtline"><button class="vtbtn" id="scanlink">Scan for threats →</button><span class="vtnote">Checks this link against VirusTotal — result shows here.</span></div><div id="lverdict" style="display:none"></div>';
+        box.appendChild(wrap);
+      }
+    }
+    var sl = $("scanlink");
+    if(sl && !sl._wired){
+      sl._wired = true;
+      sl.addEventListener("click", function(){
+        var raw = $("url").value.trim();
+        if(raw && !/^https?:\/\//i.test(raw)) raw = "http://"+raw;
+        if(raw) scanThreat("url", raw, sl, $("lverdict"));
+      });
+    }
+  };
+  // rebind the button/enter to the new renderUrl
+  $("urlgo").removeEventListener("click", _origRenderUrl);
+  $("urlgo").addEventListener("click", renderUrl);
 })();
 </script>
 </body>
