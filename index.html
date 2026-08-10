@@ -43,6 +43,7 @@
     --display:'Syne',sans-serif;
     --mono:'Space Mono',monospace;
     --maxw:1140px;
+    --grid:rgba(31,43,58,.35);--navbg:rgba(10,14,20,.72);
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
@@ -67,8 +68,8 @@
   .grid-bg{
     position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
     background-image:
-      linear-gradient(rgba(31,43,58,.35) 1px,transparent 1px),
-      linear-gradient(90deg,rgba(31,43,58,.35) 1px,transparent 1px);
+      linear-gradient(var(--grid) 1px,transparent 1px),
+      linear-gradient(90deg,var(--grid) 1px,transparent 1px);
     background-size:54px 54px;
     mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,#000 30%,transparent 75%);
   }
@@ -78,7 +79,7 @@
   header.nav{
     position:sticky;top:0;z-index:50;
     backdrop-filter:blur(12px);
-    background:rgba(10,14,20,.72);
+    background:var(--navbg);
     border-bottom:1px solid var(--line);
   }
   .nav-inner{display:flex;align-items:center;justify-content:space-between;height:66px}
@@ -378,6 +379,19 @@
 
   /* page intro spacing for inner views */
   .view-pad{padding-top:64px}
+  /* ── LIGHT THEME ─────────────────────────────────────────────────────────── */
+  body.light{
+    --bg:#f7f9fc;--bg-2:#eef2f7;--panel:#ffffff;--panel-2:#f2f5f9;
+    --line:#dde4ec;--line-2:#c4cfdb;
+    --ink:#101823;--ink-dim:#4a5a6d;--ink-faint:#78899c;
+    --blue:#1f6fd6;--blue-2:#1858ad;--purple:#7d3fe0;
+    --green:#0f9d6b;--amber:#c98a00;--red:#d93838;
+    --grid:rgba(31,111,214,.10);--navbg:rgba(247,249,252,.80);
+  }
+  body{transition:background .25s,color .25s}
+  .theme-toggle{display:inline-flex;align-items:center;gap:7px;cursor:pointer;background:var(--panel);border:1px solid var(--line-2);border-radius:100px;padding:6px 12px;font-family:var(--mono);font-size:12px;color:var(--ink-dim);transition:all .2s;user-select:none;white-space:nowrap}
+  .theme-toggle:hover{border-color:var(--blue);color:var(--ink)}
+  .theme-toggle .ticon{font-size:14px;line-height:1}
 </style>
 </head>
 <body>
@@ -424,6 +438,7 @@
       <div class="navitem" data-nav="company"><a data-view="company">Company</a></div>
       <div class="navitem"><a data-view="contact" class="nav-cta">Contact</a></div>
     </nav>
+    <div class="theme-toggle" id="themeToggle" role="button" tabindex="0" aria-label="Toggle light or dark theme"><span class="ticon" id="themeIcon">🌙</span><span id="themeLabel">Dark</span></div>
     <button class="menu-btn" onclick="document.getElementById('mmenu').classList.toggle('open')">☰</button>
   </div>
   <div id="mmenu"></div>
@@ -910,6 +925,26 @@
     document.addEventListener('click',function(ev){
       if(pop.style.display==='flex' && !pop.contains(ev.target) && ev.target!==b){pop.style.display='none';}
     });
+  }
+})();
+</script>
+<script>
+(function(){
+  var KEY="bxb-theme", body=document.body;
+  var tog=document.getElementById("themeToggle"), icon=document.getElementById("themeIcon"), label=document.getElementById("themeLabel");
+  function apply(mode){
+    if(mode==="light"){ body.classList.add("light"); if(icon)icon.textContent="☀️"; if(label)label.textContent="Light"; }
+    else { body.classList.remove("light"); if(icon)icon.textContent="🌙"; if(label)label.textContent="Dark"; }
+  }
+  var saved=null; try{ saved=localStorage.getItem(KEY); }catch(e){}
+  var mode = saved || ((window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) ? "light" : "dark");
+  apply(mode);
+  if(tog){
+    tog.addEventListener("click", function(){
+      mode = body.classList.contains("light") ? "dark" : "light";
+      apply(mode); try{ localStorage.setItem(KEY, mode); }catch(e){}
+    });
+    tog.addEventListener("keydown", function(e){ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); tog.click(); } });
   }
 })();
 </script>

@@ -18,15 +18,16 @@
   --green:#3fd18b; --green-dim:#123028;
   --display:'Syne',system-ui,sans-serif;
   --mono:'Space Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  --navbg:#0b0f16cc; --bodyglow:#12233f22;
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--mono);font-size:14px;line-height:1.5;
-  background-image:radial-gradient(900px 500px at 82% -8%, #12233f22, transparent 60%);}
+  background-image:radial-gradient(900px 500px at 82% -8%, var(--bodyglow), transparent 60%);}
 a{color:var(--blue);text-decoration:none}
 a:hover{text-decoration:underline}
 .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
-.nav{border-bottom:1px solid var(--line);background:#0b0f16cc;backdrop-filter:blur(6px)}
+.nav{border-bottom:1px solid var(--line);background:var(--navbg);backdrop-filter:blur(6px)}
 .nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
 .nav .brand{display:flex;align-items:center;gap:11px;text-decoration:none}
 .nav .brand:hover{text-decoration:none}
@@ -121,6 +122,21 @@ textarea::placeholder{color:var(--ink-faint)}
 footer{border-top:1px solid var(--line);padding:22px 0;color:var(--ink-faint);font-size:11.5px}
 footer .wrap{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
 footer b{color:var(--ink-dim)}
+  /* ── LIGHT THEME ─────────────────────────────────────────────────────────── */
+  body.light{
+    --bg:#f7f9fc; --panel:#ffffff; --panel2:#f2f5f9; --line:#dde4ec;
+    --ink:#101823; --ink-dim:#4a5a6d; --ink-faint:#78899c;
+    --blue:#1f6fd6; --blue-dim:#d6e4f7;
+    --red:#d93838; --red-dim:#fbe3e3;
+    --amber:#c98a00; --amber-dim:#f7edd6;
+    --green:#0f9d6b; --green-dim:#d9f2e8;
+    --navbg:#f7f9fccc; --bodyglow:#1f6fd612;
+  }
+  body{transition:background .25s,color .25s}
+  .theme-toggle{display:inline-flex;align-items:center;gap:7px;cursor:pointer;background:var(--panel);border:1px solid var(--line);border-radius:100px;padding:5px 11px;font-family:var(--mono);font-size:12px;color:var(--ink-dim);transition:all .15s;user-select:none}
+  .theme-toggle:hover{border-color:var(--blue);color:var(--ink)}
+  .theme-toggle .ticon{font-size:14px;line-height:1}
+  .nav-right{display:flex;align-items:center;gap:14px}
 </style>
 </head>
 <body>
@@ -129,7 +145,10 @@ footer b{color:var(--ink-dim)}
     <img src="bxb-logo.png" alt="ByTE X Bit Technologies LLC" class="logo-img">
     <span class="btxt">ByTE&nbsp;X&nbsp;Bit<small>TECHNOLOGIES&nbsp;LLC</small></span>
   </a>
-  <a class="back" href="/">&larr; Back to ByTE X Bit</a>
+  <div class="nav-right">
+    <div class="theme-toggle" id="themeToggle" role="button" tabindex="0" aria-label="Toggle light or dark theme"><span class="ticon" id="themeIcon">&#127769;</span><span id="themeLabel">Dark</span></div>
+    <a class="back" href="/">&larr; Back to ByTE X Bit</a>
+  </div>
 </div></nav>
 <header><div class="wrap">
   <div class="brandrow">
@@ -409,6 +428,26 @@ $('#sampleValid').addEventListener('click',()=>{input.value=VALID;render();});
 $('#sampleBad').addEventListener('click',()=>{input.value=BAD;render();});
 $('#clear').addEventListener('click',()=>{input.value='';input.focus();render();});
 render();
+})();
+</script>
+<script>
+(function(){
+  var KEY="bxb-theme", body=document.body;
+  var tog=document.getElementById("themeToggle"), icon=document.getElementById("themeIcon"), label=document.getElementById("themeLabel");
+  function apply(mode){
+    if(mode==="light"){ body.classList.add("light"); if(icon)icon.textContent="\u2600\ufe0f"; if(label)label.textContent="Light"; }
+    else { body.classList.remove("light"); if(icon)icon.textContent="\ud83c\udf19"; if(label)label.textContent="Dark"; }
+  }
+  var saved=null; try{ saved=localStorage.getItem(KEY); }catch(e){}
+  var mode = saved || ((window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) ? "light" : "dark");
+  apply(mode);
+  if(tog){
+    tog.addEventListener("click", function(){
+      mode = body.classList.contains("light") ? "dark" : "light";
+      apply(mode); try{ localStorage.setItem(KEY, mode); }catch(e){}
+    });
+    tog.addEventListener("keydown", function(e){ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); tog.click(); } });
+  }
 })();
 </script>
 </body>
