@@ -846,6 +846,7 @@
 
 <script>
   function closeDD(){document.querySelectorAll('.navitem.open').forEach(function(n){n.classList.remove('open');});}
+  var pendingAnchor=null;  // shared: click handler sets it, applyHash consumes it (for anchor scroll on hash nav)
   function showView(view, anchor){
     document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active');});
     var el=document.getElementById('view-'+view);
@@ -864,9 +865,15 @@
     n.addEventListener('mouseenter',function(){closeDD();});
   });
   document.addEventListener('click',closeDD);
-  // view links
+  // view links — set the hash (creates browser history) so Back/Forward work; applyHash() does the switch.
   document.querySelectorAll('[data-view]').forEach(function(el){
-    el.addEventListener('click',function(e){e.preventDefault();showView(el.getAttribute('data-view'),el.getAttribute('data-anchor'));});
+    el.addEventListener('click',function(e){
+      e.preventDefault();
+      var view=el.getAttribute('data-view');
+      pendingAnchor=el.getAttribute('data-anchor')||null;
+      if(('#'+view)===location.hash){ showView(view, pendingAnchor); pendingAnchor=null; } // same hash: no hashchange fires
+      else { location.hash=view; } // triggers hashchange -> applyHash
+    });
   });
   // mobile menu
   var mm=document.getElementById('mmenu');
@@ -881,7 +888,9 @@
   (function(){
     function applyHash(){
       var h=location.hash.replace('#','');
-      if(h && document.getElementById('view-'+h)) showView(h);
+      if(h && document.getElementById('view-'+h)){ showView(h, pendingAnchor); }
+      else if(!h){ showView('home'); }
+      pendingAnchor=null;
     }
     window.addEventListener('hashchange', applyHash);
     applyHash();
