@@ -18,7 +18,7 @@
 <meta name="twitter:image" content="https://byte-x-bit.com/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
 <link rel="icon" href="favicon.ico">
@@ -40,7 +40,9 @@
     --green:#34d399;
     --amber:#f6c453;
     --red:#ff6b6b;
-    --display:'Syne',sans-serif;
+    --display:'Space Grotesk',sans-serif;
+    --body:'Inter',sans-serif;
+    --brand:'Syne',sans-serif;
     --mono:'Space Mono',monospace;
     --maxw:1140px;
     --grid:rgba(31,43,58,.35);--navbg:rgba(10,14,20,.72);
@@ -52,12 +54,14 @@
   body{
     background:var(--bg);
     color:var(--ink);
-    font-family:var(--display);
+    font-family:var(--body);
     line-height:1.6;
     -webkit-font-smoothing:antialiased;
     overflow-x:hidden;
   }
   a{color:inherit;text-decoration:none}
+  h1,h2,h3,h4,h5,.pname,.price{font-family:var(--display)}
+  .brand{font-family:var(--brand)}
   ::selection{background:var(--blue);color:#02060c}
 
   /* atmosphere */
@@ -458,13 +462,6 @@
     </div>
     <div class="hero-logo reveal"><img src="bxb-lockup.png" alt="ByTE X Bit Technologies LLC"></div>
    </div>
-    <div class="doors3">
-      <div class="door3 reveal" data-view="consumer"><div class="dk">FOR HOME &amp; INDIVIDUALS</div><h3>Security help for your home</h3><p>Personal, plain-English help securing your devices, home network, email, and accounts — I fix what the free tools turn up.</p><span class="go">See home services →</span></div>
-      <div class="door3 reveal" data-view="smb"><div class="dk">FOR SMALL BUSINESSES</div><h3>Stay protected, lean</h3><p>Done-for-you security without hiring a team — real protection, fixed scope.</p><span class="go">See small-business offerings →</span></div>
-      <div class="door3 reveal" data-view="large"><div class="dk">FOR LARGE BUSINESSES</div><h3>Deepen your program</h3><p>Detection engineering, compliance, the professional platform, and custom builds.</p><span class="go">See enterprise offerings →</span></div>
-      <div class="door3 reveal" data-view="gov"><div class="dk">GOVERNMENT &amp; PUBLIC SECTOR</div><h3>Mission-grade security</h3><p>Compliance, validation, and engineering for agencies — available for subcontracting and partnership.</p><span class="go">See public-sector offerings →</span></div>
-    </div>
-
     <div class="assess toolsband reveal" style="border-color:rgba(52,211,153,.35);background:linear-gradient(135deg,rgba(52,211,153,.06),rgba(59,158,255,.05))">
       <div class="assess-grid">
         <div>
@@ -502,6 +499,13 @@
         </div>
       </div>
     </div>
+    <div class="doors3">
+      <div class="door3 reveal" data-view="consumer"><div class="dk">FOR HOME &amp; INDIVIDUALS</div><h3>Security help for your home</h3><p>Personal, plain-English help securing your devices, home network, email, and accounts — I fix what the free tools turn up.</p><span class="go">See home services →</span></div>
+      <div class="door3 reveal" data-view="smb"><div class="dk">FOR SMALL BUSINESSES</div><h3>Stay protected, lean</h3><p>Done-for-you security without hiring a team — real protection, fixed scope.</p><span class="go">See small-business offerings →</span></div>
+      <div class="door3 reveal" data-view="large"><div class="dk">FOR LARGE BUSINESSES</div><h3>Deepen your program</h3><p>Detection engineering, compliance, the professional platform, and custom builds.</p><span class="go">See enterprise offerings →</span></div>
+      <div class="door3 reveal" data-view="gov"><div class="dk">GOVERNMENT &amp; PUBLIC SECTOR</div><h3>Mission-grade security</h3><p>Compliance, validation, and engineering for agencies — available for subcontracting and partnership.</p><span class="go">See public-sector offerings →</span></div>
+    </div>
+
   </div>
 </section>
 
